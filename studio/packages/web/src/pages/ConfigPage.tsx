@@ -15,14 +15,18 @@ export function ConfigPage() {
     if (objects.isPending) return <p className="text-grey-500">Lade …</p>;
     if (!folder) {
         return list[0] ? (
-            <Navigate to={`/konfiguration/${list[0].folder}/felder`} replace />
+            <Navigate to={`/konfiguration/${list[0].folder}/query`} replace />
         ) : (
             <p>Keine Objekte.</p>
         );
     }
-    if (!tab) return <Navigate to={`/konfiguration/${folder}/felder`} replace />;
-    if (tab !== 'felder' && tab !== 'wertemapping') {
-        return <Navigate to={`/konfiguration/${folder}/felder`} replace />;
+    // Alte Adressen (felder, wertemapping) und unbekannte Reiter führen zum passenden neuen Reiter.
+    const renamed: Record<string, ConfigTab> = { felder: 'mapping', wertemapping: 'werte' };
+    const known: ConfigTab[] = ['query', 'mapping', 'werte'];
+    if (!tab || !known.includes(tab as ConfigTab)) {
+        return (
+            <Navigate to={`/konfiguration/${folder}/${(tab && renamed[tab]) || 'query'}`} replace />
+        );
     }
 
     return (

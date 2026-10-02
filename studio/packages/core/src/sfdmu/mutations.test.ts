@@ -54,7 +54,7 @@ beforeEach(async () => {
     dir = await mkdtemp(path.join(tmpdir(), 'sfdmu-'));
     await mkdir(file('020_Contact'));
     await writeFile(file('020_Contact', 'export.json'), JSON.stringify(exportJson));
-    await writeFile(file('ValueMapping.csv'), csv);
+    await writeFile(file('020_Contact', 'ValueMapping.csv'), csv);
 });
 
 describe('setFieldMapping', () => {
@@ -149,12 +149,12 @@ describe('setFieldExcluded', () => {
 });
 
 describe('setValueMapping', () => {
-    it('ergänzt Zeilen, lässt andere Objekte unberührt und aktiviert useValuesMapping', async () => {
+    it('ergänzt Zeilen in der Datei des Ordners, lässt andere Objekte darin unberührt und aktiviert useValuesMapping', async () => {
         await setValueMapping(dir, await detail(), {
             field: 'MailingCountry',
             rows: [{ from: 'USA', to: 'United States' }]
         });
-        const text = await readFile(file('ValueMapping.csv'), 'utf8');
+        const text = await readFile(file('020_Contact', 'ValueMapping.csv'), 'utf8');
         expect(text).toContain('Account,BillingCountry,USA,United States');
         expect(text).toContain('Contact,MailingCountry,USA,United States');
         expect((await readExport()).objects[1].useValuesMapping).toBe(true);
@@ -179,5 +179,78 @@ describe('setValueMapping', () => {
                 ]
             })
         ).rejects.toThrow(/doppelt/);
+    });
+});
+
+describe('Parent-Einträge', () => {
+    const parentConfig = {
+        objects: [
+            {
+                query: 'SELECT Id, Name, Industry FROM Account',
+                operation: 'Upsert',
+                master: false,
+                externalId: 'Name'
+            },
+            { query: 'SELECT Id, Email FROM Contact', operation: 'Upsert', externalId: 'Email' }
+        ]
+    };
+
+    beforeEach(async () => {
+        await writeFile(file('020_Contact', 'export.json'), JSON.stringify(parentConfig));
+    });
+
+    it('liefert das Detail eines Parent-Eintrags mit eigenen Feldern', async () => {
+        const d = await objectDetail(dir, '020_Contact', {}, 0);
+        expect(d).toMatchObject({
+            object: 'Account',
+            parentIndex: 0,
+            operation: 'Upsert',
+            externalId: 'Name',
+            lastRun: null
+        });
+        expect(d.fields.map((f) => f.name)).toEqual(['Id', 'Name', 'Industry']);
+        expect((await objectDetail(dir, '020_Contact', {})).parentIndex).toBeNull();
+        await expect(objectDetail(dir, '020_Contact', {}, 1)).rejects.toThrow(/Unbekannter Parent/);
+    });
+
+    it('schreibt Mapping und Ausschluss in den Parent-Eintrag, nicht ins Zielobjekt', async () => {
+        const accountTarget: DescribeResult = {
+            ok: true,
+            fields: {
+                Industry: {
+                    type: 'x',
+                    baseType: 'string',
+                    label: 'x',
+                    createable: true,
+                    updateable: true
+                },
+                Branche__c: {
+                    type: 'x',
+                    baseType: 'string',
+                    label: 'x',
+                    createable: true,
+                    updateable: true
+                }
+            }
+        };
+        await setFieldMapping(
+            dir,
+            await objectDetail(dir, '020_Contact', {}, 0),
+            { sourceField: 'Industry', targetField: 'Branche__c' },
+            accountTarget
+        );
+        let cfg = await readExport();
+        expect(cfg.objects[0].fieldMapping).toEqual([
+            { sourceField: 'Industry', targetField: 'Branche__c' }
+        ]);
+        expect(cfg.objects[1].fieldMapping).toBeUndefined();
+
+        await setFieldExcluded(dir, await objectDetail(dir, '020_Contact', {}, 0), {
+            field: 'Industry',
+            excluded: true
+        });
+        cfg = await readExport();
+        expect(cfg.objects[0].excludedFields).toEqual(['Industry']);
+        expect(cfg.objects[0].fieldMapping).toBeUndefined();
     });
 });

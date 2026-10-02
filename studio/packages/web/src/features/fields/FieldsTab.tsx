@@ -12,7 +12,8 @@ interface Props {
     onlyDiff: boolean;
     running: boolean;
     report: Report;
-    onOpenValueMapping: (field: string) => void;
+    // Ohne diese Funktion (mitgezogene Parents) ist das Wertemapping-Tag nur eine Anzeige.
+    onOpenValueMapping?: (field: string) => void;
 }
 
 const th =
@@ -26,13 +27,14 @@ function Hints({
 }: {
     f: FieldInfo;
     detail: ObjectDetail;
-    onOpenValueMapping: (field: string) => void;
+    onOpenValueMapping?: (field: string) => void;
 }) {
     const count = detail.valueMappings.filter((m) => m.field === f.name).length;
     return (
         <>
             {f.externalId && <Tag tone="key">External ID</Tag>}
-            {f.valueMapped && (
+            {f.valueMapped && !onOpenValueMapping && <Tag tone="map">Wertemapping ({count})</Tag>}
+            {f.valueMapped && onOpenValueMapping && (
                 <button
                     type="button"
                     className="mr-1 mb-0.5 cursor-pointer rounded-full bg-open-blue px-2 py-px text-xs font-bold text-black hover:ring-2 hover:ring-digital-blue"
@@ -85,7 +87,7 @@ export function FieldsTab({
     const map = (sourceField: string, targetField: string) => {
         report('Speichere …');
         saveMapping.mutate(
-            { folder, sourceField, targetField },
+            { folder, parentIndex: detail.parentIndex ?? undefined, sourceField, targetField },
             {
                 onSuccess: () =>
                     report(`✓ export.json gespeichert: ${sourceField} → ${targetField}`),
@@ -96,7 +98,7 @@ export function FieldsTab({
     const exclude = (field: string, excluded: boolean) => {
         report('Speichere …');
         saveExcluded.mutate(
-            { folder, field, excluded },
+            { folder, parentIndex: detail.parentIndex ?? undefined, field, excluded },
             {
                 onSuccess: () =>
                     report(

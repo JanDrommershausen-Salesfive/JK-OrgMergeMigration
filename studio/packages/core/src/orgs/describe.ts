@@ -11,6 +11,9 @@ interface SfField {
     precision?: number;
     scale?: number;
     referenceTo?: string[];
+    relationshipName?: string | null;
+    nillable?: boolean;
+    defaultedOnCreate?: boolean;
     createable: boolean;
     updateable: boolean;
 }
@@ -46,7 +49,9 @@ export class DescribeCache {
                     baseType: f.type,
                     label: f.label,
                     createable: f.createable,
-                    updateable: f.updateable
+                    updateable: f.updateable,
+                    relationshipName: f.relationshipName ?? null,
+                    required: f.createable && f.nillable === false && f.defaultedOnCreate !== true
                 };
             }
             const result: DescribeResult = { ok: true, fields };

@@ -8,6 +8,7 @@ export interface ExportObject {
     query: string;
     operation: string;
     externalId?: string;
+    master?: boolean;
     useValuesMapping?: boolean;
     useFieldMapping?: boolean;
     fieldMapping?: { sourceField: string; targetField: string; targetObject?: string }[];
@@ -54,5 +55,49 @@ export async function updateTargetObject(
     await writeFileAtomic(exportFile(sfdmuDir, folder), JSON.stringify(config, null, 2) + '\n');
 }
 
-export const readValueMappingCsv = (sfdmuDir: string) =>
-    readFile(path.join(sfdmuDir, 'ValueMapping.csv'), 'utf8');
+// Ändert einen Eintrag der export.json: das Zielobjekt oder (mit parentIndex) einen Parent-Eintrag.
+export async function updateEntry(
+    sfdmuDir: string,
+    folder: string,
+    parentIndex: number | undefined,
+    change: (obj: ExportObject) => void
+): Promise<void> {
+    await updateExport(sfdmuDir, folder, (config) => {
+        const entry = entryOf(config, parentIndex);
+        change(entry);
+    });
+}
+
+// Zielobjekt oder Parent-Eintrag; Parent-Einträge stehen vor dem Zielobjekt.
+export function entryOf(config: ExportConfig, parentIndex: number | undefined): ExportObject {
+    if (parentIndex === undefined) return targetObject(config);
+    const entry = config.objects.slice(0, -1)[parentIndex];
+    if (!entry) throw notFound('Unbekannter Parent-Eintrag.');
+    return entry;
+}
+
+// Ändert die ganze export.json (Zielobjekt und Parent-Einträge) und schreibt sie atomar zurück.
+export async function updateExport(
+    sfdmuDir: string,
+    folder: string,
+    change: (config: ExportConfig) => void
+): Promise<void> {
+    const config = await readExport(sfdmuDir, folder);
+    change(config);
+    await writeFileAtomic(exportFile(sfdmuDir, folder), JSON.stringify(config, null, 2) + '\n');
+}
+
+// Wertemapping liegt pro Objektordner (<Ordner>/ValueMapping.csv), SFDMU liest die Datei im Lauf-Ordner.
+export const VALUE_MAPPING_HEADER = 'ObjectName,FieldName,RawValue,Value\n';
+export const valueMappingPath = (sfdmuDir: string, folder: string) =>
+    path.join(sfdmuDir, folder, 'ValueMapping.csv');
+
+// Fehlt die Datei (noch kein Wertemapping), gilt eine leere Datei mit Kopfzeile.
+export async function readValueMappingCsv(sfdmuDir: string, folder: string): Promise<string> {
+    try {
+        return await readFile(valueMappingPath(sfdmuDir, folder), 'utf8');
+    } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === 'ENOENT') return VALUE_MAPPING_HEADER;
+        throw err;
+    }
+}

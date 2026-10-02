@@ -20,8 +20,9 @@ sf org login web --alias CDEV5 --instance-url https://test.salesforce.com
 ```
 
 `run.sh` pins the source/target org IDs, refuses to write to a known production org and
-derives `--canmodify` from the live target. A copy of `ValueMapping.csv` is synced into the
-run folder before each run (gitignored there) — edit only the shared one in this directory.
+derives `--canmodify` from the live target. Each object folder has its own `ValueMapping.csv`
+(only that object's rows, plus rows of parents pulled along); SFDMU reads it from the run folder. A missing file
+is created empty before the run.
 
 ## GUI
 

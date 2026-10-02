@@ -69,8 +69,11 @@ fi
 shift
 RUN_DIR="${SCRIPT_DIR}/${OBJECT_DIR_NAME}"
 
-# SFDMU only reads ValueMapping.csv from the run folder; keep one shared copy and sync it in (gitignored there).
-cp "${SCRIPT_DIR}/ValueMapping.csv" "${RUN_DIR}/ValueMapping.csv"
+# SFDMU reads ValueMapping.csv from the run folder. Each object folder owns its file (only its own rows,
+# plus rows of parents pulled along); a missing file is created empty so objects without value mapping run too.
+if [[ ! -f "${RUN_DIR}/ValueMapping.csv" ]]; then
+  printf 'ObjectName,FieldName,RawValue,Value\n' > "${RUN_DIR}/ValueMapping.csv"
+fi
 
 resolve_org() {
   local alias="$1"

@@ -140,7 +140,7 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                     {formatWhen(m.startedAt)} · {m.sourceAlias} → {m.targetAlias}
                 </span>
                 <span className="flex-1" />
-                <Link className={EXPORT_LINK} to={`/konfiguration/${folder}/felder`}>
+                <Link className={EXPORT_LINK} to={`/konfiguration/${folder}`}>
                     Konfiguration öffnen
                 </Link>
             </div>

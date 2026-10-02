@@ -2,6 +2,7 @@ import type { FieldInfo, LastRun, ObjectDetail, ObjectSummary } from '@studio/sh
 import { notFound } from '../errors';
 import { parseCsv } from './csv';
 import {
+    entryOf,
     listFolders,
     objectOf,
     readExport,
@@ -47,16 +48,28 @@ export async function listObjects(sfdmuDir: string, lastRuns: LastRuns): Promise
 export async function objectDetail(
     sfdmuDir: string,
     folder: string,
-    lastRuns: LastRuns
+    lastRuns: LastRuns,
+    parentIndex?: number
 ): Promise<ObjectDetail> {
-    const entry = (await listObjects(sfdmuDir, lastRuns)).find((o) => o.folder === folder);
-    if (!entry) throw notFound('Unbekannter Ordner.');
-    const target = targetObject(await readExport(sfdmuDir, folder));
+    const summary = (await listObjects(sfdmuDir, lastRuns)).find((o) => o.folder === folder);
+    if (!summary) throw notFound('Unbekannter Ordner.');
+    const config = await readExport(sfdmuDir, folder);
+    const target = entryOf(config, parentIndex);
+    const index = parentIndex ?? config.objects.length - 1;
+    // Für Parent-Einträge: Objekt, Operation und Vorgänger stammen vom Eintrag selbst.
+    const entry = {
+        ...summary,
+        object: objectOf(target),
+        operation: target.operation,
+        externalId: target.externalId || null,
+        readonlyParents: config.objects.slice(0, index).map(objectOf),
+        lastRun: parentIndex === undefined ? summary.lastRun : null
+    };
     const select = target.query.match(/SELECT\s+([\s\S]+?)\s+FROM\s/i)?.[1] ?? '';
     const extIds = (target.externalId || '').split(';').filter(Boolean);
     const where = target.query.match(/\sWHERE\s+([\s\S]+)$/i)?.[1]?.trim() ?? null;
 
-    const csv = parseCsv(await readValueMappingCsv(sfdmuDir));
+    const csv = parseCsv(await readValueMappingCsv(sfdmuDir, folder));
     const valueMappings = csv
         .slice(1)
         .filter((r) => r[0] === entry.object)
@@ -88,5 +101,5 @@ export async function objectDetail(
                 renamed: targetOf.has(name) && targetField !== name
             };
         });
-    return { ...entry, where, fields, valueMappings };
+    return { ...entry, parentIndex: parentIndex ?? null, where, fields, valueMappings };
 }

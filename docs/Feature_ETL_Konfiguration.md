@@ -10,7 +10,7 @@ Alles, was eine Migration an Konfiguration braucht, soll gut in der GUI einstell
 
 - Feldvergleich Quelle gegen Ziel.
 - Feld-Mapping und Feld-Ausschlüsse (`/api/mapping`, `/api/exclude`).
-- Wertemapping je Feld (`/api/valuemapping`, `ValueMapping.csv`).
+- Wertemapping je Feld (`/api/valuemapping`, `<Objektordner>/ValueMapping.csv`, nur Zeilen des jeweiligen Objekts).
 
 ## Ausbauziele
 

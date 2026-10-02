@@ -48,7 +48,7 @@ export function OverviewPage() {
                                     <td className={td}>
                                         <Link
                                             className="font-bold text-digital-blue hover:underline"
-                                            to={`/konfiguration/${o.folder}/felder`}
+                                            to={`/konfiguration/${o.folder}`}
                                         >
                                             {o.folder.replace('_', ' · ')}
                                         </Link>

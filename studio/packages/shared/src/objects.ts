@@ -49,6 +49,7 @@ export const ValueMappingRowSchema = z.object({
 export type ValueMappingRow = z.infer<typeof ValueMappingRowSchema>;
 
 export const ObjectDetailSchema = ObjectSummarySchema.extend({
+    parentIndex: z.number().nullable(), // gesetzt: Detail eines Parent-Eintrags der export.json
     where: z.string().nullable(),
     fields: z.array(FieldInfoSchema),
     valueMappings: z.array(ValueMappingRowSchema)
@@ -68,6 +69,7 @@ export type ObjectListResponse = z.infer<typeof ObjectListResponseSchema>;
 // Anfragen, die export.json bzw. ValueMapping.csv ändern.
 export const MappingRequestSchema = z.object({
     folder: z.string(),
+    parentIndex: z.number().int().min(0).optional(),
     sourceField: z.string(),
     targetField: z.string()
 });
@@ -75,6 +77,7 @@ export type MappingRequest = z.infer<typeof MappingRequestSchema>;
 
 export const ExcludeRequestSchema = z.object({
     folder: z.string(),
+    parentIndex: z.number().int().min(0).optional(),
     field: z.string(),
     excluded: z.boolean()
 });
@@ -82,6 +85,7 @@ export type ExcludeRequest = z.infer<typeof ExcludeRequestSchema>;
 
 export const ValueMappingRequestSchema = z.object({
     folder: z.string(),
+    parentIndex: z.number().int().min(0).optional(),
     field: z.string(),
     rows: z.array(z.object({ from: z.string(), to: z.string() }))
 });

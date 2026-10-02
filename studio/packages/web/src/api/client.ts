@@ -1,5 +1,7 @@
 import {
     AvailableOrgsResponseSchema,
+    QueryCheckSchema,
+    QueryModelSchema,
     DescribeResponseSchema,
     ObjectDetailSchema,
     ObjectListResponseSchema,
@@ -9,6 +11,9 @@ import {
     RunLogResponseSchema,
     RunStatusSchema,
     type ExcludeRequest,
+    type ParentModeRequest,
+    type SaveFiltersRequest,
+    type SetFieldsRequest,
     type LoginRequest,
     type MappingRequest,
     type RunMode,
@@ -35,12 +40,23 @@ const enc = encodeURIComponent;
 
 export const api = {
     objects: () => request('/api/objects', ObjectListResponseSchema),
-    object: (folder: string) => request(`/api/object?folder=${enc(folder)}`, ObjectDetailSchema),
+    object: (folder: string, parent?: number) =>
+        request(
+            `/api/object?folder=${enc(folder)}${parent === undefined ? '' : `&parent=${parent}`}`,
+            ObjectDetailSchema
+        ),
     describe: (folder: string, refresh = false) =>
         request(
             `/api/describe?folder=${enc(folder)}${refresh ? '&refresh=1' : ''}`,
             DescribeResponseSchema
         ),
+    queryModel: (folder: string) => request(`/api/query?folder=${enc(folder)}`, QueryModelSchema),
+    saveFilters: (req: SaveFiltersRequest) => request('/api/query/filters', QueryModelSchema, req),
+    changeFields: (req: SetFieldsRequest) => request('/api/query/fields', QueryModelSchema, req),
+    describeObject: (object: string) =>
+        request(`/api/describe/object?object=${enc(object)}`, DescribeResponseSchema),
+    setParentMode: (req: ParentModeRequest) => request('/api/query/parent', QueryModelSchema, req),
+    checkQuery: (folder: string) => request('/api/query/check', QueryCheckSchema, { folder }),
     orgs: () => request('/api/orgs', OrgsResponseSchema),
     availableOrgs: () => request('/api/orgs/available', AvailableOrgsResponseSchema),
     login: (req: LoginRequest) => request('/api/orgs/login', AvailableOrgsResponseSchema, req),

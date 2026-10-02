@@ -1,13 +1,13 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
-import type { ObjectDetail } from '@studio/shared';
+import type { ObjectDetail, QueryModel } from '@studio/shared';
 import { api } from './client';
 
 export const useObjects = () => useQuery({ queryKey: ['objects'], queryFn: api.objects });
 
-export const useObject = (folder: string | null) =>
+export const useObject = (folder: string | null, parentIndex?: number) =>
     useQuery({
-        queryKey: ['object', folder],
-        queryFn: () => api.object(folder as string),
+        queryKey: ['object', folder, parentIndex ?? null],
+        queryFn: () => api.object(folder as string, parentIndex),
         enabled: folder !== null
     });
 
@@ -62,7 +62,7 @@ export const useRunStatus = () => useQuery({ queryKey: ['run'], queryFn: api.run
 
 // Schreibende Aufrufe liefern das neue Objekt-Detail zurück; es ersetzt den Cache-Eintrag.
 function storeDetail(client: QueryClient, detail: ObjectDetail) {
-    client.setQueryData(['object', detail.folder], detail);
+    client.setQueryData(['object', detail.folder, detail.parentIndex], detail);
 }
 
 export function useSaveMapping() {
@@ -107,3 +107,33 @@ export const useRunLog = (folder: string, id: string | null, enabled: boolean) =
         queryFn: () => api.runLog(folder, id as string),
         enabled: enabled && id !== null
     });
+
+export const useQueryModel = (folder: string) =>
+    useQuery({ queryKey: ['query', folder], queryFn: () => api.queryModel(folder) });
+
+// Query-Änderungen liefern das neue Modell zurück. Felder und Parents der Objektansicht ändern sich mit.
+function useQueryMutation<V>(folder: string, fn: (v: V) => Promise<QueryModel>) {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: fn,
+        onSuccess: (model) => {
+            client.setQueryData(['query', folder], model);
+            void client.invalidateQueries({ queryKey: ['object', folder] });
+            void client.invalidateQueries({ queryKey: ['describe', folder] });
+        }
+    });
+}
+
+export const useSaveFilters = (folder: string) => useQueryMutation(folder, api.saveFilters);
+export const useChangeFields = (folder: string) => useQueryMutation(folder, api.changeFields);
+
+// Describe eines beliebigen Objekts (zum Beispiel eines Parents).
+export const useDescribeObject = (object: string | null) =>
+    useQuery({
+        queryKey: ['describeObject', object],
+        queryFn: () => api.describeObject(object as string),
+        enabled: object !== null,
+        staleTime: 10 * 60 * 1000
+    });
+export const useSetParentMode = (folder: string) => useQueryMutation(folder, api.setParentMode);
+export const useCheckQuery = () => useMutation({ mutationFn: api.checkQuery });

@@ -2,6 +2,9 @@ import {
     ExcludeRequestSchema,
     LoginRequestSchema,
     MappingRequestSchema,
+    ParentModeRequestSchema,
+    SaveFiltersRequestSchema,
+    SetFieldsRequestSchema,
     SelectOrgsRequestSchema,
     StartRunRequestSchema,
     ValueMappingRequestSchema
@@ -11,6 +14,8 @@ import { z } from 'zod';
 import type { Studio } from '@studio/core';
 
 const FolderQuery = z.object({ folder: z.string() });
+const ObjectQuery = z.object({ object: z.string() });
+const ParentQuery = FolderQuery.extend({ parent: z.coerce.number().int().min(0).optional() });
 const RunQuery = FolderQuery.extend({ id: z.string() });
 const ExportQuery = RunQuery.extend({ kind: z.enum(['errors', 'missing-parents']) });
 const DescribeQuery = FolderQuery.extend({ refresh: z.enum(['0', '1']).optional() });
@@ -18,11 +23,29 @@ const DescribeQuery = FolderQuery.extend({ refresh: z.enum(['0', '1']).optional(
 // Objekte, Felder, Mappings und Orgs. Die Routen validieren nur und rufen Studio auf.
 export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, { studio }) => {
     app.get('/objects', () => studio.objects());
-    app.get('/object', (req) => studio.object(FolderQuery.parse(req.query).folder));
+    app.get('/object', (req) => {
+        const q = ParentQuery.parse(req.query);
+        return studio.object(q.folder, q.parent);
+    });
     app.get('/describe', (req) => {
         const q = DescribeQuery.parse(req.query);
         return studio.describe(q.folder, q.refresh === '1');
     });
+    app.get('/query', (req) => studio.queryModel(FolderQuery.parse(req.query).folder));
+    app.post('/query/filters', (req) =>
+        studio.saveFilters(SaveFiltersRequestSchema.parse(req.body))
+    );
+    app.post('/query/fields', (req) =>
+        studio.changeQueryFields(SetFieldsRequestSchema.parse(req.body))
+    );
+    app.post('/query/parent', (req) =>
+        studio.setParentMode(ParentModeRequestSchema.parse(req.body))
+    );
+    app.post('/query/check', (req) => studio.checkQuery(FolderQuery.parse(req.body).folder));
+
+    app.get('/describe/object', (req) =>
+        studio.describeObject(ObjectQuery.parse(req.query).object)
+    );
     app.get('/orgs', () => studio.orgs());
     app.get('/orgs/available', () => studio.availableOrgs());
     app.post('/orgs/login', (req) => studio.login(LoginRequestSchema.parse(req.body)));

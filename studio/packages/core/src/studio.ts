@@ -7,12 +7,17 @@ import type {
     MappingRequest,
     ObjectDetail,
     ObjectListResponse,
+    ParentModeRequest,
+    QueryCheck,
+    QueryModel,
     ProjectConfig,
     OrgsResponse,
     RunDetail,
     RunListResponse,
     RunEvent,
     RunMode,
+    SaveFiltersRequest,
+    SetFieldsRequest,
     SelectOrgsRequest,
     ValueMappingRequest
 } from '@studio/shared';
@@ -31,6 +36,8 @@ import {
 } from './project/runConfig';
 import { saveProject } from './project/save';
 import { LastRunStore } from './runs/lastRuns';
+import { checkQuery } from './query/check';
+import { changeFields, queryModel, saveFilters, setParentMode } from './query/model';
 import { RunManager } from './runs/runManager';
 import { archiveRun } from './results/archive';
 import { ResultStore } from './results/store';
@@ -78,8 +85,8 @@ export class Studio {
         };
     }
 
-    async object(folder: string): Promise<ObjectDetail> {
-        return objectDetail(this.config.sfdmuDir, folder, await this.lastRuns.all());
+    async object(folder: string, parentIndex?: number): Promise<ObjectDetail> {
+        return objectDetail(this.config.sfdmuDir, folder, await this.lastRuns.all(), parentIndex);
     }
 
     async orgs(): Promise<OrgsResponse> {
@@ -103,25 +110,33 @@ export class Studio {
 
     async setMapping(req: MappingRequest): Promise<ObjectDetail> {
         this.assertIdle();
-        const detail = await this.object(req.folder);
+        const detail = await this.object(req.folder, req.parentIndex);
         const target = await this.describeCache.describe(
             this.requireOrgs().target.alias,
             detail.object
         );
         await setFieldMapping(this.config.sfdmuDir, detail, req, target);
-        return this.object(req.folder);
+        return this.object(req.folder, req.parentIndex);
     }
 
     async setExcluded(req: ExcludeRequest): Promise<ObjectDetail> {
         this.assertIdle();
-        await setFieldExcluded(this.config.sfdmuDir, await this.object(req.folder), req);
-        return this.object(req.folder);
+        await setFieldExcluded(
+            this.config.sfdmuDir,
+            await this.object(req.folder, req.parentIndex),
+            req
+        );
+        return this.object(req.folder, req.parentIndex);
     }
 
     async setValueMapping(req: ValueMappingRequest): Promise<ObjectDetail> {
         this.assertIdle();
-        await setValueMapping(this.config.sfdmuDir, await this.object(req.folder), req);
-        return this.object(req.folder);
+        await setValueMapping(
+            this.config.sfdmuDir,
+            await this.object(req.folder, req.parentIndex),
+            req
+        );
+        return this.object(req.folder, req.parentIndex);
     }
 
     // Live-Läufe laufen nur, wenn das Ziel eine Sandbox ist und die Orgs den gepinnten IDs entsprechen.
@@ -142,6 +157,57 @@ export class Studio {
 
     subscribeRun(listener: (event: RunEvent) => void): () => void {
         return this.runs.subscribe(listener);
+    }
+
+    async queryModel(folder: string): Promise<QueryModel> {
+        return queryModel(this.config.sfdmuDir, folder);
+    }
+
+    async saveFilters(req: SaveFiltersRequest): Promise<QueryModel> {
+        this.assertIdle();
+        await saveFilters(this.config.sfdmuDir, req.folder, req);
+        return this.queryModel(req.folder);
+    }
+
+    async changeQueryFields(req: SetFieldsRequest): Promise<QueryModel> {
+        this.assertIdle();
+        const model = await this.queryModel(req.folder);
+        const parent = req.parentIndex === undefined ? null : model.parents[req.parentIndex];
+        if (req.parentIndex !== undefined && !parent)
+            throw badRequest('Unbekannter Parent-Eintrag.');
+        const object = parent ? parent.object : model.object;
+        const source = await this.describeCache.describe(this.requireOrgs().source.alias, object);
+        await changeFields(this.config.sfdmuDir, req.folder, req, source);
+        return this.queryModel(req.folder);
+    }
+
+    // Describe für ein beliebiges Objekt (zum Beispiel einen Parent), nicht nur das Zielobjekt eines Ordners.
+    async describeObject(object: string): Promise<DescribeResponse> {
+        if (!/^\w+$/.test(object)) throw badRequest('Ungültiger Objektname.');
+        const { source, target } = this.requireOrgs();
+        const [src, tgt] = await Promise.all([
+            this.describeCache.describe(source.alias, object),
+            this.describeCache.describe(target.alias, object)
+        ]);
+        return { source: src, target: tgt };
+    }
+
+    async setParentMode(req: ParentModeRequest): Promise<QueryModel> {
+        this.assertIdle();
+        await setParentMode(this.config.sfdmuDir, req.folder, req.index, req.mode);
+        return this.queryModel(req.folder);
+    }
+
+    // Lesende Prüfung gegen Quelle und Ziel: Treffer, Beispielzeilen, fehlende Parents.
+    async checkQuery(folder: string): Promise<QueryCheck> {
+        const model = await this.queryModel(folder);
+        const { source, target } = this.requireOrgs();
+        return checkQuery({
+            model,
+            sourceAlias: source.alias,
+            targetAlias: target.alias,
+            sourceDescribe: await this.describeCache.describe(source.alias, model.object)
+        });
     }
 
     async runResults(folder: string): Promise<RunListResponse> {

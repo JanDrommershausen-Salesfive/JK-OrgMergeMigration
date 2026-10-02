@@ -5,11 +5,10 @@ import type {
     ObjectDetail,
     ValueMappingRequest
 } from '@studio/shared';
-import path from 'node:path';
 import { badRequest, conflict } from '../errors';
 import { writeFileAtomic } from '../util/fs';
 import { parseCsv, toCsv } from './csv';
-import { readValueMappingCsv, updateTargetObject } from './exportConfig';
+import { readValueMappingCsv, updateEntry, valueMappingPath } from './exportConfig';
 
 const FIELD_NAME = /^\w+$/;
 
@@ -48,7 +47,7 @@ export async function setFieldMapping(
             throw badRequest(`Zielfeld ${targetField} ist im Ziel nicht schreibbar.`);
     }
 
-    await updateTargetObject(sfdmuDir, detail.folder, (obj) => {
+    await updateEntry(sfdmuDir, detail.folder, detail.parentIndex ?? undefined, (obj) => {
         const mappings = (obj.fieldMapping ?? []).filter((m) => m.sourceField !== sourceField);
         if (targetField !== sourceField) mappings.push({ sourceField, targetField });
         if (mappings.length) {
@@ -83,7 +82,7 @@ export async function setFieldExcluded(
         }
     }
 
-    await updateTargetObject(sfdmuDir, detail.folder, (obj) => {
+    await updateEntry(sfdmuDir, detail.folder, detail.parentIndex ?? undefined, (obj) => {
         const set = new Set(obj.excludedFields ?? []);
         if (excluded) {
             set.add(name);
@@ -100,8 +99,8 @@ export async function setFieldExcluded(
     });
 }
 
-// Ersetzt alle ValueMapping.csv-Zeilen eines Objekts und Felds. Die CSV gilt für alle Objekte,
-// andere Zeilen bleiben unverändert.
+// Ersetzt alle Zeilen eines Objekts und Felds in der ValueMapping.csv dieses Objektordners.
+// Zeilen anderer Objekte (mitgezogene Parents) bleiben unverändert.
 export async function setValueMapping(
     sfdmuDir: string,
     detail: ObjectDetail,
@@ -119,7 +118,7 @@ export async function setValueMapping(
         clean.push(r);
     }
 
-    const original = await readValueMappingCsv(sfdmuDir);
+    const original = await readValueMappingCsv(sfdmuDir, detail.folder);
     const [header = [], ...body] = parseCsv(original);
     const newRows = clean.map((r) => [detail.object, field, r.from, r.to]);
     const out: string[][] = [];
@@ -136,11 +135,11 @@ export async function setValueMapping(
     }
     if (!inserted) out.push(...newRows);
     const text = toCsv([header, ...out], /\n$/.test(original));
-    if (text !== original) await writeFileAtomic(path.join(sfdmuDir, 'ValueMapping.csv'), text);
+    if (text !== original) await writeFileAtomic(valueMappingPath(sfdmuDir, detail.folder), text);
 
     // SFDMU wendet ValueMapping.csv nur auf Objekte an, die per useValuesMapping zustimmen.
     const anyForObject = out.some((r) => r[0] === detail.object);
-    await updateTargetObject(sfdmuDir, detail.folder, (obj) => {
+    await updateEntry(sfdmuDir, detail.folder, detail.parentIndex ?? undefined, (obj) => {
         if (anyForObject === !!obj.useValuesMapping) return;
         if (anyForObject) obj.useValuesMapping = true;
         else delete obj.useValuesMapping;

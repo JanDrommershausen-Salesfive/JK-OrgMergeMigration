@@ -71,7 +71,7 @@ const meta = {
 
 const routes: Record<string, unknown> = {
     '/api/objects': objects,
-    '/api/object?': { ...contact, where: null, valueMappings: [], fields: [] },
+    '/api/object?': { ...contact, parentIndex: null, where: null, valueMappings: [], fields: [] },
     '/api/orgs': { source: org('us-prod', false), target: org('CDEV5', true), checkedAt: 'x' },
     '/api/run': { running: false, folder: null, mode: null },
     '/api/results/all': { runs: [meta] },
@@ -122,10 +122,26 @@ describe('App', () => {
     });
 
     it('zeigt die Konfiguration unter /konfiguration/…', async () => {
-        renderAt('/konfiguration/020_Contact/felder');
+        renderAt('/konfiguration/020_Contact/mapping');
         expect(await screen.findByRole('heading', { name: 'Contact' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Lauf starten' })).toBeInTheDocument();
         expect(screen.getByRole('tab', { name: /Wertemapping/ })).toBeInTheDocument();
+    });
+
+    it('öffnet die Konfiguration im Reiter Query und leitet alte Adressen um', async () => {
+        renderAt('/konfiguration/020_Contact');
+        expect(await screen.findByRole('tab', { name: /Query/ })).toHaveAttribute(
+            'aria-current',
+            'page'
+        );
+    });
+
+    it('leitet die alte Adresse /felder auf Mapping um', async () => {
+        renderAt('/konfiguration/020_Contact/felder');
+        expect(await screen.findByRole('tab', { name: /^Mapping$/ })).toHaveAttribute(
+            'aria-current',
+            'page'
+        );
     });
 
     it('zeigt unter /laeufe den Lauf mit klickbaren Kacheln', async () => {

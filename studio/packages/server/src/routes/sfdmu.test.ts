@@ -23,7 +23,6 @@ beforeAll(async () => {
             protectedOrgIds: ['00D000000000001']
         })
     );
-    await writeFile(path.join(sfdmu, 'ValueMapping.csv'), 'ObjectName,FieldName,RawValue,Value\n');
     await writeFile(
         path.join(sfdmu, '020_Contact', 'export.json'),
         JSON.stringify({
@@ -210,5 +209,51 @@ describe('Ergebnis-Routen', () => {
             headers
         });
         expect(evil.statusCode).toBe(404);
+    });
+});
+
+describe('Query-Routen', () => {
+    it('liefert das Query-Modell und speichert Filter', async () => {
+        const model = await app.inject({
+            method: 'GET',
+            url: '/api/query?folder=020_Contact',
+            headers
+        });
+        expect(model.json()).toMatchObject({ object: 'Contact', supported: true, parents: [] });
+
+        const saved = await app.inject({
+            method: 'POST',
+            url: '/api/query/filters',
+            headers,
+            payload: {
+                folder: '020_Contact',
+                filters: [{ field: 'Phone', op: '!=', value: { kind: 'null' } }]
+            }
+        });
+        expect(saved.statusCode).toBe(200);
+        expect(saved.json().filters).toEqual([
+            { field: 'Phone', op: '!=', value: { kind: 'null' } }
+        ]);
+    });
+
+    it('lehnt ungültige Filter und Parent-Wechsel am Zielobjekt ab', async () => {
+        const bad = await app.inject({
+            method: 'POST',
+            url: '/api/query/filters',
+            headers,
+            payload: {
+                folder: '020_Contact',
+                filters: [{ field: 'x y', op: '=', value: { kind: 'null' } }]
+            }
+        });
+        expect(bad.statusCode).toBe(400);
+        const parent = await app.inject({
+            method: 'POST',
+            url: '/api/query/parent',
+            headers,
+            payload: { folder: '020_Contact', index: 0, mode: 'read' }
+        });
+        expect(parent.statusCode).toBe(400);
+        expect(parent.json().error).toMatch(/Unbekannter/);
     });
 });

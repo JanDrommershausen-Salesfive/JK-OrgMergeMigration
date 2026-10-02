@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Link, NavLink, useNavigate, useSearchParams } from 'react-router';
-import { useDescribe, useObject } from '../../api/queries';
+import { useObject } from '../../api/queries';
 import { Button, Tag } from '../../components/ui';
-import { FieldsTab } from '../fields/FieldsTab';
+import { MappingTab } from '../mapping/MappingTab';
 import { formatWhen, lastRunFindings, modeLabel } from '../results/format';
 import { useRunContext } from '../run/RunContext';
-import { ValuesTab } from '../values/ValuesTab';
+import { QueryTab } from '../query/QueryTab';
+import { ValuesPage } from '../values/ValuesPage';
 import { useSaveMessage } from './saveMessage';
 
-export type ConfigTab = 'felder' | 'wertemapping';
+// Reihenfolge entspricht dem Ablauf: Query (was lese ich), Mapping (wohin damit), Werte (welche Werte ändern sich).
+export type ConfigTab = 'query' | 'mapping' | 'werte';
 
 interface Props {
     folder: string;
@@ -19,7 +21,6 @@ interface Props {
 // Konfiguration eines Objekts: Kopf mit Lauf-Status und -Start, darunter Felder und Wertemapping.
 export function ObjectDetail({ folder, tab, onStartRun }: Props) {
     const object = useObject(folder);
-    const describe = useDescribe(folder);
     const run = useRunContext();
     const navigate = useNavigate();
     const [params] = useSearchParams();
@@ -92,14 +93,13 @@ export function ObjectDetail({ folder, tab, onStartRun }: Props) {
                 role="tablist"
                 className="mt-4 flex items-center gap-2 border-b border-grey-line px-6"
             >
-                <NavLink role="tab" to={`/konfiguration/${folder}/felder`} className={tabClass}>
-                    Felder ({d.fields.length})
+                <NavLink role="tab" to={`/konfiguration/${folder}/query`} className={tabClass}>
+                    Query ({d.fields.length})
                 </NavLink>
-                <NavLink
-                    role="tab"
-                    to={`/konfiguration/${folder}/wertemapping`}
-                    className={tabClass}
-                >
+                <NavLink role="tab" to={`/konfiguration/${folder}/mapping`} className={tabClass}>
+                    Mapping
+                </NavLink>
+                <NavLink role="tab" to={`/konfiguration/${folder}/werte`} className={tabClass}>
                     Wertemapping ({d.valueMappings.length})
                 </NavLink>
                 <span className="flex-1" />
@@ -111,7 +111,7 @@ export function ObjectDetail({ folder, tab, onStartRun }: Props) {
                         {message.text}
                     </span>
                 )}
-                {tab === 'felder' && (
+                {tab === 'mapping' && (
                     <label className="flex cursor-pointer items-center gap-1.5 text-[13px]">
                         <input
                             type="checkbox"
@@ -124,29 +124,31 @@ export function ObjectDetail({ folder, tab, onStartRun }: Props) {
             </div>
 
             <div role="tabpanel" className="max-h-[65vh] overflow-auto px-6 pt-4 pb-6">
-                {tab === 'felder' ? (
-                    <FieldsTab
-                        detail={d}
-                        describe={describe.data}
-                        describeError={describe.error?.message ?? null}
+                {tab === 'mapping' ? (
+                    <MappingTab
+                        folder={folder}
+                        object={d.object}
                         onlyDiff={onlyDiff}
                         running={run.running}
                         report={report}
                         onOpenValueMapping={(field) =>
                             navigate(
-                                `/konfiguration/${folder}/wertemapping?feld=${encodeURIComponent(field)}`
+                                `/konfiguration/${folder}/werte?feld=${encodeURIComponent(field)}`
                             )
                         }
                     />
+                ) : tab === 'query' ? (
+                    <QueryTab folder={folder} running={run.running} report={report} />
                 ) : (
-                    <ValuesTab
-                        detail={d}
+                    <ValuesPage
+                        folder={folder}
+                        object={d.object}
                         filterField={params.get('feld')}
                         running={run.running}
                         report={report}
                         onFilterChange={(field) =>
                             navigate(
-                                `/konfiguration/${folder}/wertemapping${field ? `?feld=${encodeURIComponent(field)}` : ''}`
+                                `/konfiguration/${folder}/werte${field ? `?feld=${encodeURIComponent(field)}` : ''}`
                             )
                         }
                     />

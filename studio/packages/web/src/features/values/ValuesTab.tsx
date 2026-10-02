@@ -43,9 +43,15 @@ function ValueGroup({
         lastSaved.current = clean(next);
         report('Speichere …');
         save.mutate(
-            { folder: detail.folder, field, rows: next },
             {
-                onSuccess: () => report(`✓ ValueMapping.csv gespeichert (${field})`),
+                folder: detail.folder,
+                parentIndex: detail.parentIndex ?? undefined,
+                field,
+                rows: next
+            },
+            {
+                onSuccess: () =>
+                    report(`✓ ${detail.folder}/ValueMapping.csv gespeichert (${field})`),
                 onError: (e) => report(e.message, true)
             }
         );
@@ -123,8 +129,9 @@ export function ValuesTab({ detail, filterField, running, report, onFilterChange
         <>
             <p className="mb-3 text-[13px] text-grey-500">
                 Werte, die beim Schreiben ins Ziel ersetzt werden (Quellwert → Zielwert). Änderungen
-                speichern sofort in <span className="font-mono">sfdmu/ValueMapping.csv</span>, die
-                Datei gilt für alle Objekte.
+                speichern sofort in{' '}
+                <span className="font-mono">{detail.folder}/ValueMapping.csv</span>, nur für{' '}
+                {detail.object}.
             </p>
             {filterField && (
                 <p className="mb-3 flex flex-wrap items-center gap-2 text-[13px] text-grey-500">
@@ -137,7 +144,7 @@ export function ValuesTab({ detail, filterField, running, report, onFilterChange
             {names.length ? (
                 names.map((n) => (
                     <ValueGroup
-                        key={`${detail.folder}:${n}`}
+                        key={`${detail.folder}:${detail.parentIndex ?? 'main'}:${n}`}
                         field={n}
                         saved={saved.get(n) ?? []}
                         detail={detail}

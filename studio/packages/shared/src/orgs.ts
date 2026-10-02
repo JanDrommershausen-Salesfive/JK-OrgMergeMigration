@@ -34,7 +34,9 @@ export const DescribedFieldSchema = z.object({
     baseType: z.string(),
     label: z.string(),
     createable: z.boolean(),
-    updateable: z.boolean()
+    updateable: z.boolean(),
+    relationshipName: z.string().nullable().optional(),
+    required: z.boolean().optional() // im Ziel ohne Wert nicht anlegbar (Pflichtfeld ohne Standard)
 });
 export type DescribedField = z.infer<typeof DescribedFieldSchema>;
 
