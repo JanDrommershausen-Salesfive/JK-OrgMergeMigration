@@ -113,6 +113,15 @@
   .tag.ok { background:#e3f4ea; color:var(--ok); font-weight:700; }
   .tag.bad { background:var(--bad-soft); color:var(--bad); font-weight:700; }
   .tag.ren { background:var(--sf-digital-blue); color:var(--white); font-weight:700; }
+  select.tgt { font:13px ui-monospace,Menlo,monospace; max-width:300px; width:100%; padding:4px 6px; border:1px solid var(--grey-line); border-radius:var(--r-sm); background:var(--white); color:var(--sf-ink); }
+  select.tgt.renamed { border-color:var(--sf-digital-blue); color:var(--sf-digital-blue); font-weight:700; }
+  select.tgt:disabled { background:var(--grey-100); opacity:1; color:var(--grey-500); }
+  .tgtwrap { display:flex; align-items:center; gap:6px; }
+  .unmap { all:unset; box-sizing:border-box; cursor:pointer; flex:none; width:24px; height:24px; border-radius:50%; text-align:center; line-height:22px; font-size:16px; color:var(--grey-500); border:1px solid var(--grey-line); }
+  .unmap.inc { color:var(--sf-digital-blue); border-color:var(--sf-digital-blue); }
+  .unmap:hover { color:var(--bad); border-color:var(--bad); background:var(--bad-soft); }
+  .unmap:focus-visible { outline:2px solid var(--sf-digital-blue); outline-offset:2px; }
+  #savemsg { font-size:13px; color:var(--ok); margin-right:var(--s3); } #savemsg.err { color:var(--bad); }
   .empty { color:var(--grey-500); padding:var(--s6) 0; }
   .banner { background:var(--warn-bg); color:var(--warn-ink); border-radius:var(--r-sm); padding:var(--s2) var(--s3); font-size:13px; margin:0 0 var(--s3); }
 
@@ -179,6 +188,7 @@
       <button class="tab" role="tab" id="tab-fields" aria-selected="true" aria-controls="tabbody">Felder</button>
       <button class="tab" role="tab" id="tab-values" aria-selected="false" aria-controls="tabbody">Wertemapping</button>
       <span class="sp"></span>
+      <span id="savemsg" role="status"></span>
       <label id="difflabel"><input type="checkbox" id="onlydiff"> nur Abweichungen</label>
     </div>
     <div class="tabbody" id="tabbody" role="tabpanel"></div>
@@ -270,10 +280,12 @@ async function select(folder, refresh = false) {
 /* Compare one query field with its describe data in source and target. */
 function fieldStatus(f) {
   const d = st.describe;
+  if (f.excluded) return { key: 'excluded', label: 'von Migration ausgeschlossen', tag: '' };
   if (!d) return { key: 'pending', label: 'prüfe …', tag: '' };
   if (!d.target.ok) return { key: 'unknown', label: 'Ziel nicht lesbar', tag: 'warn' };
   const src = d.source.ok ? d.source.fields[f.name] : null;
   const tgt = d.target.fields[f.targetField];
+  if (d.source.ok && !src) return { key: 'srcmissing', label: 'fehlt in Quelle, wird ausgelassen', tag: 'warn', src, tgt };
   if (!tgt) return { key: 'missing', label: '✕ fehlt im Ziel', tag: 'bad', src, tgt };
   if (tgt.createable === false && f.targetField !== 'Id' && tgt.baseType !== 'address') return { key: 'readonly', label: 'im Ziel nicht schreibbar', tag: 'warn', src, tgt };
   const polymorphic = (x) => /^reference\(\d+ Objekte\)$/.test(x.type);
@@ -302,6 +314,51 @@ function renderDetail() {
   if (st.tab === 'fields') renderFields(d); else renderValues(d);
 }
 
+function targetCell(f, s) {
+  const d = st.describe;
+  if (f.excluded) return `<div class="tgtwrap"><span class="mono">${esc(f.targetField)}</span>${removeButton(f)}</div>`;
+  const canEdit = d && d.target.ok && !st.running && !f.externalId && f.name !== 'Id';
+  if (!canEdit) {
+    const why = f.externalId ? 'External-ID-Felder können hier nicht umgemappt werden' : '';
+    return `<span class="mono"${f.renamed ? ' style="font-weight:700;color:var(--sf-digital-blue)"' : ''} title="${esc(why)}">${esc(f.targetField)}</span>`;
+  }
+  const fields = d.target.fields;
+  const names = Object.keys(fields).filter((n) => fields[n].createable !== false || n === f.targetField).sort((a, b) => a.localeCompare(b));
+  const opts = [];
+  if (f.renamed) opts.push(`<option value="${esc(f.name)}">↺ Zurücksetzen (${esc(f.name)})</option>`);
+  if (!fields[f.targetField]) opts.push(`<option value="${esc(f.targetField)}" selected>${esc(f.targetField)} (fehlt im Ziel)</option>`);
+  for (const n of names) opts.push(`<option value="${esc(n)}"${n === f.targetField ? ' selected' : ''}>${esc(n)} · ${esc(fields[n].type.slice(0, 28))}</option>`);
+  return `<div class="tgtwrap"><select class="tgt${f.renamed ? ' renamed' : ''}" data-src="${esc(f.name)}" aria-label="Zielfeld für ${esc(f.name)}">${opts.join('')}</select>${removeButton(f)}</div>`;
+}
+
+/* × removes a field from the mapping: first a rename (back to 1:1), otherwise the field leaves the migration. */
+function removeButton(f) {
+  if (st.running || f.externalId || f.name === 'Id') return '';
+  if (f.excluded) return `<button class="unmap inc" data-include="${esc(f.name)}" title="Feld wieder in die Migration aufnehmen" aria-label="${esc(f.name)} wieder aufnehmen">↺</button>`;
+  if (f.renamed) return `<button class="unmap" data-unmap="${esc(f.name)}" title="Mapping entkoppeln (zurück zu ${esc(f.name)})" aria-label="Mapping für ${esc(f.name)} entkoppeln">×</button>`;
+  return `<button class="unmap" data-exclude="${esc(f.name)}" title="Feld aus der Migration nehmen (Zielfeld ${esc(f.targetField)} wird frei)" aria-label="${esc(f.name)} aus der Migration nehmen">×</button>`;
+}
+
+async function saveExclude(field, excluded) {
+  const msg = $('savemsg');
+  msg.className = ''; msg.textContent = 'Speichere …';
+  const res = await fetch('/api/exclude', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folder: st.selected, field, excluded }) });
+  if (!res.ok) { msg.className = 'err'; msg.textContent = await res.text(); renderDetail(); return; }
+  st.detail = await res.json();
+  renderDetail();
+  msg.textContent = excluded ? `✓ export.json gespeichert: ${field} ausgeschlossen` : `✓ export.json gespeichert: ${field} wieder aufgenommen`;
+}
+
+async function saveMapping(sourceField, targetField) {
+  const msg = $('savemsg');
+  msg.className = ''; msg.textContent = 'Speichere …';
+  const res = await fetch('/api/mapping', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folder: st.selected, sourceField, targetField }) });
+  if (!res.ok) { msg.className = 'err'; msg.textContent = await res.text(); renderDetail(); return; }
+  st.detail = await res.json();
+  renderDetail();
+  msg.textContent = `✓ export.json gespeichert: ${sourceField} → ${targetField}`;
+}
+
 function renderFields(d) {
   const rows = d.fields.map((f) => ({ f, s: fieldStatus(f) }));
   const count = (k) => rows.filter((r) => r.s.key === k).length;
@@ -310,7 +367,7 @@ function renderFields(d) {
   else {
     if (!st.describe.target.ok) head += `<div class="banner">Ziel-Describe fehlgeschlagen: ${esc(st.describe.target.error)}. Es wird nur die Feldliste ohne Abgleich gezeigt.</div>`;
     if (!st.describe.source.ok) head += `<div class="banner">Quell-Describe fehlgeschlagen: ${esc(st.describe.source.error)}. Quelltypen fehlen.</div>`;
-    if (st.describe.target.ok) head += `<p class="summary"><span class="tag ok">${count('ok')} 1:1</span><span class="tag ren">${count('mapped')} gemappt</span><span class="tag bad">${count('missing')} fehlen im Ziel</span><span class="tag warn">${count('type') + count('readonly')} mit Abweichung</span></p>`;
+    if (st.describe.target.ok || count('excluded')) head += `<p class="summary"><span class="tag ok">${count('ok')} 1:1</span><span class="tag ren">${count('mapped')} gemappt</span><span class="tag bad">${count('missing')} fehlen im Ziel</span><span class="tag warn">${count('type') + count('readonly') + count('srcmissing')} mit Abweichung</span><span class="tag">${count('excluded')} ausgeschlossen</span></p>`;
   }
   const shown = st.onlyDiff ? rows.filter((r) => r.s.key !== 'ok') : rows;
   if (!shown.length) { $('tabbody').innerHTML = head + '<p class="empty">Keine Abweichungen.</p>'; return; }
@@ -326,9 +383,9 @@ function renderFields(d) {
         const srcType = s.src ? s.src.type : (st.describe && st.describe.source.ok ? '–' : '');
         const tgtType = s.tgt ? s.tgt.type : (s.key === 'missing' ? '–' : '');
         const typeDiff = s.key === 'type';
-        return `<tr><td class="mono">${esc(f.name)}</td><td class="type mono">${esc(srcType)}</td>
+        return `<tr${f.excluded ? ' class="dim"' : ''}><td class="mono"${f.excluded ? ' style="text-decoration:line-through"' : ''}>${esc(f.name)}</td><td class="type mono">${esc(srcType)}</td>
           <td class="arr${f.renamed ? ' renamed' : ''}">→</td>
-          <td class="mono"${f.renamed ? ' style="font-weight:700;color:var(--sf-digital-blue)"' : ''}>${esc(f.targetField)}</td>
+          <td>${targetCell(f, s)}</td>
           <td class="type mono"${typeDiff ? ' style="color:var(--warn-ink);font-weight:700"' : ''}>${esc(tgtType)}</td>
           <td><span class="tag ${s.tag}">${esc(s.label)}</span></td><td>${tags.join('')}</td></tr>`;
       }).join('')}</tbody></table>`;
@@ -371,6 +428,7 @@ async function run() {
   st.running = true;
   updateRun();
   setTerminal(true);
+  renderDetail();
   const log = $('log');
   log.textContent = '';
   try {
@@ -391,6 +449,7 @@ async function run() {
     log.textContent += '\nVerbindung zur GUI verloren: ' + e.message;
   } finally {
     st.running = false;
+    renderDetail();
     st.cfg = await (await fetch('/api/objects')).json();
     st.objects = st.cfg.objects;
     renderList();
@@ -402,6 +461,14 @@ async function run() {
 $('objlist').onclick = (e) => { const b = e.target.closest('button'); if (b && !st.running) select(b.dataset.folder); };
 $('tab-fields').onclick = () => { st.tab = 'fields'; st.detail && renderDetail(); };
 $('tab-values').onclick = () => { st.tab = 'values'; st.detail && renderDetail(); };
+$('tabbody').onclick = (e) => {
+  const b = e.target.closest('button.unmap');
+  if (!b || st.running) return;
+  if (b.dataset.unmap) saveMapping(b.dataset.unmap, b.dataset.unmap);
+  else if (b.dataset.exclude) saveExclude(b.dataset.exclude, true);
+  else if (b.dataset.include) saveExclude(b.dataset.include, false);
+};
+$('tabbody').onchange = (e) => { const el = e.target.closest('select.tgt'); if (el) saveMapping(el.dataset.src, el.value); };
 $('onlydiff').onchange = (e) => { st.onlyDiff = e.target.checked; st.detail && renderDetail(); };
 $('m-sim').onclick = () => { st.mode = 'simulation'; updateRun(); };
 $('m-live').onclick = () => { st.mode = 'live'; updateRun(); };

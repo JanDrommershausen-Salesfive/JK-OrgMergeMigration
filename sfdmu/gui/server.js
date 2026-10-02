@@ -99,6 +99,7 @@ function objectDetail(folder) {
     const valueMappings = csv.slice(1).filter((r) => r[0] === entry.object).map((r) => ({ field: r[1], from: r[2], to: r[3] }));
     const mappedFields = new Set(valueMappings.map((m) => m.field));
     const fieldMapping = (target.fieldMapping || []).filter((m) => !m.targetObject || m.targetObject === entry.object);
+    const excludedSet = new Set(target.excludedFields || []);
     const targetOf = new Map(fieldMapping.map((m) => [m.sourceField, m.targetField]));
 
     const fields = select.split(',').map((f) => f.trim()).filter(Boolean).map((name) => {
@@ -112,6 +113,7 @@ function objectDetail(folder) {
             owner: name === 'OwnerId' || /(^|By|To)UserId$|^(ActivatedById|CompanyAuthorizedById|CustomerAuthorizedById|AssetProvidedById|AssetServicedById)$/.test(name),
             externalId: extIds.includes(name),
             valueMapped: mappedFields.has(name),
+            excluded: excludedSet.has(name),
             targetField: targetOf.get(name) || name,
             renamed: targetOf.has(name) && targetOf.get(name) !== name
         };
@@ -258,6 +260,94 @@ async function handleRun(req, res) {
     };
 }
 
+// Sets (or clears, when targetField equals sourceField) one fieldMapping entry in the object's own export.json.
+async function handleMapping(req, res) {
+    if (current) return res.writeHead(409).end('Während eines Laufs kann nichts geändert werden.');
+    let body;
+    try {
+        body = JSON.parse(await readBody(req));
+    } catch {
+        return res.writeHead(400).end('Ungültige Anfrage.');
+    }
+    const { folder, sourceField, targetField } = body;
+    const detail = objectDetail(folder);
+    if (!detail) return res.writeHead(400).end('Unbekannter Ordner.');
+    const field = detail.fields.find((f) => f.name === sourceField);
+    if (!field) return res.writeHead(400).end(`Feld ${sourceField} steht nicht in der Query.`);
+    if (typeof targetField !== 'string' || !/^\w+$/.test(targetField)) return res.writeHead(400).end('Ungültiger Zielfeld-Name.');
+    if (field.externalId) return res.writeHead(400).end('External-ID-Felder können hier nicht umgemappt werden (die Readonly-Parents in anderen Ordnern würden abweichen).');
+    if (sourceField === 'Id') return res.writeHead(400).end('Id kann nicht umgemappt werden.');
+
+    if (field.excluded) return res.writeHead(400).end(`${sourceField} ist von der Migration ausgeschlossen. Erst wieder aufnehmen.`);
+    const clash = detail.fields.find((f) => f.name !== sourceField && !f.excluded && f.targetField === targetField);
+    if (clash) return res.writeHead(409).end(`Zielfeld ${targetField} wird bereits von ${clash.name} befüllt.`);
+
+    if (targetField !== sourceField) {
+        const t = await describeObject(readRunConfig().targetAlias, detail.object);
+        if (t.ok) {
+            const tf = t.fields[targetField];
+            if (!tf) return res.writeHead(400).end(`Zielfeld ${targetField} existiert im Ziel nicht.`);
+            if (tf.createable === false) return res.writeHead(400).end(`Zielfeld ${targetField} ist im Ziel nicht schreibbar.`);
+        }
+    }
+
+    const file = path.join(SFDMU_DIR, folder, 'export.json');
+    const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const obj = config.objects[config.objects.length - 1];
+    let mappings = (obj.fieldMapping || []).filter((m) => m.sourceField !== sourceField);
+    if (targetField !== sourceField) mappings.push({ sourceField, targetField });
+    if (mappings.length) {
+        obj.fieldMapping = mappings;
+        obj.useFieldMapping = true;
+    } else {
+        delete obj.fieldMapping;
+        delete obj.useFieldMapping;
+    }
+    const tmp = file + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(config, null, 2) + '\n');
+    fs.renameSync(tmp, file);
+    json(res, objectDetail(folder));
+}
+
+// Takes a field out of (or back into) the migration via SFDMU's excludedFields. The field stays in the query.
+async function handleExclude(req, res) {
+    if (current) return res.writeHead(409).end('Während eines Laufs kann nichts geändert werden.');
+    let body;
+    try {
+        body = JSON.parse(await readBody(req));
+    } catch {
+        return res.writeHead(400).end('Ungültige Anfrage.');
+    }
+    const { folder, field: name, excluded } = body;
+    const detail = objectDetail(folder);
+    if (!detail) return res.writeHead(400).end('Unbekannter Ordner.');
+    const field = detail.fields.find((f) => f.name === name);
+    if (!field) return res.writeHead(400).end(`Feld ${name} steht nicht in der Query.`);
+    if (name === 'Id' || field.externalId) return res.writeHead(400).end('Id und External-ID-Felder können nicht ausgeschlossen werden.');
+    if (!excluded) {
+        const clash = detail.fields.find((f) => f.name !== name && !f.excluded && f.targetField === field.targetField);
+        if (clash) return res.writeHead(409).end(`Zielfeld ${field.targetField} wird inzwischen von ${clash.name} befüllt. Erst dort das Mapping ändern.`);
+    }
+
+    const file = path.join(SFDMU_DIR, folder, 'export.json');
+    const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const obj = config.objects[config.objects.length - 1];
+    const set = new Set(obj.excludedFields || []);
+    if (excluded) {
+        set.add(name);
+        // An excluded field must not keep a rename that would block its target field for others.
+        const mappings = (obj.fieldMapping || []).filter((m) => m.sourceField !== name);
+        if (mappings.length) obj.fieldMapping = mappings;
+        else { delete obj.fieldMapping; delete obj.useFieldMapping; }
+    } else set.delete(name);
+    if (set.size) obj.excludedFields = [...set];
+    else delete obj.excludedFields;
+    const tmp = file + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(config, null, 2) + '\n');
+    fs.renameSync(tmp, file);
+    json(res, objectDetail(folder));
+}
+
 const json = (res, data) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(data));
@@ -296,6 +386,8 @@ const server = http.createServer(async (req, res) => {
             const [source, target] = await Promise.all([checkOrg(c.sourceAlias, c.expectedSourceId), checkOrg(c.targetAlias, c.expectedTargetId)]);
             return json(res, { source, target, checkedAt: new Date().toISOString() });
         }
+        if (req.method === 'POST' && url.pathname === '/api/exclude') return await handleExclude(req, res);
+        if (req.method === 'POST' && url.pathname === '/api/mapping') return await handleMapping(req, res);
         if (req.method === 'POST' && url.pathname === '/api/run') return await handleRun(req, res);
         if (req.method === 'POST' && url.pathname === '/api/stop') {
             if (current && current.stopRun) current.stopRun();
