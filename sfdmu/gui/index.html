@@ -5,117 +5,422 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SFDMU Migration</title>
 <style>
-  :root { --bg:#f6f7f9; --card:#fff; --text:#1c2430; --muted:#667085; --line:#e2e5ea; --accent:#0b5fff; --danger:#c62828; --logbg:#0f1720; --logtext:#d5dde8; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#12161c; --card:#1a2029; --text:#e6eaf0; --muted:#8c97a7; --line:#2b3340; --accent:#5b9bff; --danger:#ff6b6b; } }
-  * { box-sizing: border-box; }
-  body { margin:0; font:15px/1.5 system-ui,sans-serif; background:var(--bg); color:var(--text); }
-  main { max-width:1000px; margin:0 auto; padding:24px 16px; }
-  h1 { font-size:20px; margin:0 0 4px; }
-  .sub { color:var(--muted); margin:0 0 20px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:16px; }
-  label { display:block; font-weight:600; margin-bottom:6px; }
-  select, input[type=text] { width:100%; padding:8px 10px; font:inherit; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--text); }
-  .info { color:var(--muted); font-size:13px; margin-top:8px; }
-  .modes { display:flex; gap:20px; margin:16px 0 8px; flex-wrap:wrap; }
-  .modes label { font-weight:400; display:flex; gap:6px; align-items:center; margin:0; }
-  .live-box { display:none; margin-top:12px; padding:12px; border:1px solid var(--danger); border-radius:6px; }
-  .live-box.on { display:block; }
-  .live-box strong { color:var(--danger); }
-  .row { display:flex; gap:10px; margin-top:16px; }
-  button { font:inherit; padding:9px 18px; border-radius:6px; border:0; cursor:pointer; background:var(--accent); color:#fff; font-weight:600; }
-  button.danger { background:var(--danger); }
-  button.secondary { background:transparent; color:var(--text); border:1px solid var(--line); }
-  button:disabled { opacity:.45; cursor:not-allowed; }
-  pre { margin:0; background:var(--logbg); color:var(--logtext); padding:14px; border-radius:8px; height:380px; overflow:auto; font:12.5px/1.45 ui-monospace,Menlo,monospace; white-space:pre-wrap; word-break:break-word; }
+  :root {
+    --sf-open-blue:#00D5DC; --sf-digital-blue:#0025D1; --sf-deep:#000058; --sf-ink:#323232; --sf-black:#000;
+    --grey-500:#898989; --grey-line:#DDDDE5; --grey-100:#F3F3F3; --off-white:#F7F7F9; --white:#fff;
+    --ok:#1a7f4b; --bad:#c62828; --bad-soft:#fdeceb; --warn-bg:#fff4d6; --warn-ink:#7a5300;
+    --font:Arial,"Helvetica Neue",Helvetica,sans-serif;
+    --r-sm:8px; --r-md:12px; --pill:9999px;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s6:24px; --s8:32px; --s12:48px;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.5 var(--font); letter-spacing:-0.01em; color:var(--sf-ink); background:var(--off-white); }
+  :focus-visible { outline:2px solid var(--sf-digital-blue); outline-offset:2px; }
+  .mono { font-family:ui-monospace,Menlo,monospace; font-size:13px; }
+
+  /* Header */
+  header { background:var(--sf-deep); color:var(--white); padding:var(--s6) var(--s8) var(--s6); }
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:var(--s4); margin-bottom:var(--s4); }
+  .topbar img { height:26px; width:auto; display:block; }
+  .eyebrow { font-weight:700; font-size:12px; letter-spacing:0; color:var(--sf-open-blue); margin:0 0 var(--s1); }
+  h1 { margin:0; font-weight:400; font-size:28px; line-height:1.2; letter-spacing:-0.03em; }
+  .orgs { display:grid; grid-template-columns:1fr auto 1fr; gap:var(--s4); align-items:stretch; margin-top:var(--s4); }
+  .org { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.18); border-radius:var(--r-md); padding:var(--s3) var(--s6); min-width:0; }
+  .org .role { font-size:12px; font-weight:700; color:var(--sf-open-blue); display:flex; align-items:center; gap:var(--s2); }
+  .org .alias { font-size:22px; letter-spacing:-0.03em; margin:var(--s1) 0; }
+  .org .meta { font-size:13px; color:rgba(255,255,255,.7); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .org .meta.err { color:#ffb4ae; white-space:normal; }
+  .arrow { align-self:center; color:var(--sf-open-blue); font-size:28px; }
+  .dot { width:10px; height:10px; border-radius:50%; background:var(--grey-500); display:inline-block; flex:none; }
+  .dot.ok { background:#3ddc84; box-shadow:0 0 0 4px rgba(61,220,132,.18); }
+  .dot.bad { background:#ff6b63; box-shadow:0 0 0 4px rgba(255,107,99,.2); }
+  .dot.wait { animation:pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity:.35; } }
+  .status { margin-left:auto; font-weight:400; color:rgba(255,255,255,.85); }
+
+  /* Layout */
+  main { max-width:1600px; margin:0 auto; padding:var(--s6) var(--s8) var(--s12); display:grid; grid-template-columns:200px minmax(0,1fr); gap:var(--s6); align-items:start; }
+  .panel { background:var(--white); border:1px solid var(--grey-line); border-radius:var(--r-md); }
+  .panel > h2 { margin:0; padding:var(--s4) var(--s4) var(--s2); font-size:12px; font-weight:700; color:var(--sf-digital-blue); letter-spacing:0; }
+
+  /* Object list */
+  .objlist { list-style:none; margin:0; padding:var(--s2); max-height:640px; overflow:auto; }
+  .objlist button { all:unset; box-sizing:border-box; width:100%; display:flex; align-items:center; gap:var(--s2); padding:var(--s2) var(--s3); border-radius:var(--r-sm); cursor:pointer; }
+  .objlist button:hover { background:var(--grey-100); }
+  .objlist button:focus-visible { outline:2px solid var(--sf-digital-blue); }
+  .objlist button[aria-current=true] { background:var(--sf-deep); color:var(--white); }
+  .num { font-size:12px; color:var(--grey-500); width:24px; flex:none; }
+  [aria-current=true] .num { color:var(--sf-open-blue); }
+  .objname { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px; }
+  .lr { font-size:12px; flex:none; }
+  .lr.ok { color:var(--ok); } .lr.bad { color:var(--bad); }
+  [aria-current=true] .lr.ok { color:#3ddc84; } [aria-current=true] .lr.bad { color:#ff9a94; }
+
+  /* Detail */
+  .detail-head { padding:var(--s4) var(--s6) 0; }
+  .detail-head h3 { margin:0; font-weight:400; font-size:28px; letter-spacing:-0.03em; line-height:1.2; }
+  .badges { display:flex; flex-wrap:wrap; gap:var(--s2); margin:var(--s3) 0 var(--s4); }
+  .badge { font-size:12px; font-weight:700; padding:2px 10px; border-radius:var(--pill); background:var(--sf-open-blue); color:var(--sf-black); }
+  .badge.plain { background:var(--grey-100); color:var(--sf-ink); font-weight:400; }
+
+  /* Run toolbar */
+  .toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3); margin:0 var(--s6) var(--s4); padding:var(--s3) var(--s4); background:var(--off-white); border:1px solid var(--grey-line); border-radius:var(--r-md); transition:border-color .15s, background .15s; }
+  .toolbar.live { border-color:var(--bad); background:var(--bad-soft); }
+  .seg { display:inline-grid; grid-template-columns:1fr 1fr; background:var(--grey-100); border-radius:var(--pill); padding:3px; }
+  .toolbar.live .seg { background:rgba(198,40,40,.1); }
+  .seg button { all:unset; text-align:center; cursor:pointer; padding:6px 18px; border-radius:var(--pill); font-weight:700; font-size:14px; color:var(--grey-500); }
+  .seg button:focus-visible { outline:2px solid var(--sf-digital-blue); }
+  .seg button[aria-pressed=true] { background:var(--white); color:var(--sf-deep); box-shadow:0 1px 2px rgba(0,0,0,.12); }
+  .seg button.livebtn[aria-pressed=true] { background:var(--bad); color:var(--white); }
+  .hint { font-size:13px; color:var(--grey-500); flex:1; min-width:180px; }
+  .toolbar.live .hint { color:var(--bad); font-weight:700; }
+  button.btn { font:inherit; font-weight:700; border:1px solid transparent; border-radius:var(--pill); padding:8px 20px; min-height:44px; cursor:pointer; transition:background .12s, border-color .12s; }
+  .btn.primary { background:var(--sf-digital-blue); color:var(--white); }
+  .btn.primary:hover:not(:disabled) { background:var(--sf-deep); }
+  .btn.primary.danger { background:var(--bad); }
+  .btn.ghost { background:transparent; border-color:var(--grey-line); color:var(--sf-ink); }
+  .btn.ghost:hover:not(:disabled) { border-color:var(--sf-ink); }
+  .btn.small { min-height:36px; padding:6px 16px; }
+  .btn.onDark { background:transparent; color:var(--white); border-color:rgba(255,255,255,.4); }
+  .btn.onDark:hover:not(:disabled) { border-color:var(--white); }
+  button:disabled { opacity:.4; cursor:not-allowed; }
+  .blocker { width:100%; font-size:13px; color:var(--bad); margin:0; min-height:0; }
+  .blocker:empty { display:none; }
+
+  /* Tabs + table */
+  .tabs { display:flex; align-items:center; gap:var(--s2); padding:0 var(--s6); border-bottom:1px solid var(--grey-line); }
+  .tab { all:unset; cursor:pointer; padding:var(--s2) var(--s3); font-weight:700; font-size:14px; color:var(--grey-500); border-bottom:2px solid transparent; margin-bottom:-1px; }
+  .tab:hover { color:var(--sf-ink); }
+  .tab[aria-selected=true] { color:var(--sf-digital-blue); border-bottom-color:var(--sf-digital-blue); }
+  .tab:focus-visible { outline:2px solid var(--sf-digital-blue); }
+  .tabs .sp { flex:1; }
+  .tabs label { font-size:13px; display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .tabbody { padding:var(--s4) var(--s6) var(--s6); max-height:560px; overflow:auto; }
+  .summary { display:flex; flex-wrap:wrap; gap:var(--s2); align-items:center; margin:0 0 var(--s3); font-size:13px; color:var(--grey-500); }
+  .note { font-size:13px; color:var(--grey-500); margin:0 0 var(--s3); }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th { text-align:left; font-size:12px; color:var(--grey-500); font-weight:700; padding:var(--s2) var(--s3); border-bottom:1px solid var(--grey-line); position:sticky; top:0; background:var(--white); z-index:1; white-space:nowrap; }
+  th.grp { color:var(--sf-digital-blue); border-bottom:0; padding-bottom:0; }
+  td { padding:var(--s2) var(--s3); border-bottom:1px solid var(--grey-100); vertical-align:top; }
+  td.type { color:var(--grey-500); white-space:nowrap; }
+  td.arr { color:var(--grey-500); width:28px; text-align:center; padding:var(--s2) 0; }
+  td.arr.renamed { color:var(--sf-digital-blue); font-weight:700; }
+  tr.dim td { color:var(--grey-500); }
+  .tag { display:inline-block; font-size:12px; padding:1px 8px; border-radius:var(--pill); background:var(--grey-100); margin:0 4px 2px 0; white-space:nowrap; }
+  .tag.key { background:var(--sf-digital-blue); color:var(--white); font-weight:700; }
+  .tag.warn { background:var(--warn-bg); color:var(--warn-ink); }
+  .tag.map { background:var(--sf-open-blue); color:var(--sf-black); font-weight:700; }
+  .tag.ok { background:#e3f4ea; color:var(--ok); font-weight:700; }
+  .tag.bad { background:var(--bad-soft); color:var(--bad); font-weight:700; }
+  .tag.ren { background:var(--sf-digital-blue); color:var(--white); font-weight:700; }
+  .empty { color:var(--grey-500); padding:var(--s6) 0; }
+  .banner { background:var(--warn-bg); color:var(--warn-ink); border-radius:var(--r-sm); padding:var(--s2) var(--s3); font-size:13px; margin:0 0 var(--s3); }
+
+  /* Terminal */
+  .terminal { grid-column:1 / -1; background:#0b0f19; border-radius:var(--r-md); overflow:hidden; }
+  .term-bar { display:flex; align-items:center; gap:var(--s2); padding:var(--s2) var(--s4); background:#141a2a; color:rgba(255,255,255,.7); font-size:12px; font-weight:700; }
+  .term-bar .sp { flex:1; }
+  .term-bar button { all:unset; cursor:pointer; padding:2px 12px; border-radius:var(--pill); border:1px solid rgba(255,255,255,.25); font-weight:400; }
+  .term-bar button:hover { border-color:#fff; color:#fff; }
+  .term-bar button:focus-visible { outline:2px solid var(--sf-open-blue); }
+  .term-bar .toggle { border:0; padding:0; font-weight:700; color:rgba(255,255,255,.85); }
+  pre#log { margin:0; padding:var(--s4); height:320px; overflow:auto; color:#d5dde8; font:12.5px/1.5 ui-monospace,Menlo,monospace; white-space:pre-wrap; word-break:break-word; }
+  pre#log[hidden] { display:none; }
+
+  @media (max-width:900px) { main { grid-template-columns:1fr; } .objlist { max-height:200px; } }
+  @media (max-width:760px) {
+    header { padding:var(--s4); } main { padding:var(--s4); }
+    .orgs { grid-template-columns:1fr; } .arrow { transform:rotate(90deg); justify-self:center; }
+    .tabbody { padding:var(--s3); } .toolbar, .tabs, .detail-head { margin-left:var(--s3); margin-right:var(--s3); padding-left:var(--s3); padding-right:var(--s3); }
+  }
+  @media (prefers-reduced-motion:reduce) { .dot.wait { animation:none; } * { transition:none !important; } }
 </style>
 </head>
 <body>
-<main>
-  <h1>SFDMU Migration</h1>
-  <p class="sub">US PROD → EU CDEV5 · immer genau ein Objekt pro Lauf</p>
-
-  <div class="card">
-    <label for="obj">Objekt</label>
-    <select id="obj"></select>
-    <div class="info" id="objinfo"></div>
-
-    <div class="modes">
-      <label><input type="radio" name="mode" value="simulation" checked> Simulation (schreibt nichts)</label>
-      <label><input type="radio" name="mode" value="live"> Live (schreibt nach <span class="alias"></span>)</label>
-    </div>
-    <div class="live-box" id="livebox">
-      <strong>Live-Lauf:</strong> Daten werden in <span class="alias"></span> geschrieben.
-      Zur Bestätigung den Alias eingeben:
-      <input type="text" id="confirm" autocomplete="off" style="margin-top:8px">
-    </div>
-
-    <div class="row">
-      <button id="run">Starten</button>
-      <button id="stop" class="secondary" disabled>Abbrechen</button>
-    </div>
+<header>
+  <div class="topbar">
+    <img src="/assets/logo.svg" alt="Salesfive">
+    <button class="btn onDark small" id="recheck">Verbindung prüfen</button>
   </div>
+  <p class="eyebrow">Datenmigration</p>
+  <h1>SFDMU Migration</h1>
+  <div class="orgs" aria-live="polite">
+    <div class="org" id="org-source"></div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="org" id="org-target"></div>
+  </div>
+</header>
 
-  <pre id="log">Noch kein Lauf gestartet.</pre>
+<main>
+  <section class="panel" aria-labelledby="h-obj">
+    <h2 id="h-obj">OBJEKTE</h2>
+    <ul class="objlist" id="objlist"></ul>
+  </section>
+
+  <section class="panel" aria-labelledby="detail-title">
+    <div class="detail-head">
+      <p class="eyebrow" style="color:var(--sf-digital-blue)" id="detail-eyebrow">Objekt</p>
+      <h3 id="detail-title">…</h3>
+      <div class="badges" id="detail-badges"></div>
+    </div>
+
+    <div class="toolbar" id="toolbar">
+      <div class="seg" role="group" aria-label="Modus">
+        <button id="m-sim" aria-pressed="true">Simulation</button>
+        <button id="m-live" class="livebtn" aria-pressed="false">Live</button>
+      </div>
+      <span class="hint" id="modehint"></span>
+      <button class="btn primary" id="run">Starten</button>
+      <button class="btn ghost" id="stop" disabled>Abbrechen</button>
+      <p class="blocker" id="blocker" role="status"></p>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-fields" aria-selected="true" aria-controls="tabbody">Felder</button>
+      <button class="tab" role="tab" id="tab-values" aria-selected="false" aria-controls="tabbody">Wertemapping</button>
+      <span class="sp"></span>
+      <label id="difflabel"><input type="checkbox" id="onlydiff"> nur Abweichungen</label>
+    </div>
+    <div class="tabbody" id="tabbody" role="tabpanel"></div>
+  </section>
+
+  <section class="terminal" aria-label="Terminal">
+    <div class="term-bar">
+      <button class="toggle" id="termtoggle" aria-expanded="false">▸ TERMINAL</button>
+      <span class="sp"></span><button id="copylog">Kopieren</button><button id="clearlog">Löschen</button>
+    </div>
+    <pre id="log" hidden>Noch kein Lauf gestartet.</pre>
+  </section>
 </main>
 
 <script>
 const $ = (id) => document.getElementById(id);
-let state = { objects: [], targetAlias: '' };
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
-const mode = () => document.querySelector('input[name=mode]:checked').value;
+const st = { cfg: null, objects: [], selected: null, detail: null, describe: null, tab: 'fields', mode: 'simulation', orgs: null, running: false, onlyDiff: false };
 
-function renderInfo() {
-  const o = state.objects.find((x) => x.folder === $('obj').value);
-  if (!o) return;
-  const parents = o.readonlyParents.length ? o.readonlyParents.join(', ') : 'keine';
-  $('objinfo').textContent = `Operation: ${o.operation} · External ID: ${o.externalId || 'keine (Insert, Duplikate bei Wiederholung)'} · Readonly-Parents: ${parents}`;
+/* ---------- Orgs ---------- */
+function orgCard(el, role, org, alias) {
+  if (!org) {
+    el.innerHTML = `<div class="role"><span class="dot wait"></span>${role}<span class="status">prüfe …</span></div><div class="alias">${esc(alias)}</div><div class="meta">&nbsp;</div>`;
+    return;
+  }
+  if (!org.connected) {
+    el.innerHTML = `<div class="role"><span class="dot bad"></span>${role}<span class="status">nicht verbunden</span></div>
+      <div class="alias">${esc(org.alias)}</div><div class="meta err">${esc(org.error)} (<span class="mono">sf org login web --alias ${esc(org.alias)}</span>)</div>`;
+    return;
+  }
+  const mismatch = !org.idMatches;
+  el.innerHTML = `<div class="role"><span class="dot ${mismatch ? 'bad' : 'ok'}"></span>${role}<span class="status">${mismatch ? 'falsche Org' : 'verbunden'}</span></div>
+    <div class="alias">${esc(org.alias)} <span style="font-size:13px;color:rgba(255,255,255,.7)">${org.isSandbox ? 'Sandbox' : 'Production'}</span></div>
+    <div class="meta" title="${esc(org.instanceUrl)}">${esc(org.name)} · ${esc(org.instance)} · …${esc(org.orgId.slice(-4))}</div>
+    <div class="meta">${esc(org.username || '')}</div>
+    ${mismatch ? '<div class="meta err">Alias zeigt auf eine andere Org als in run.sh festgelegt.</div>' : ''}`;
 }
 
-function updateButtons(running = false) {
-  const liveOk = mode() !== 'live' || $('confirm').value === state.targetAlias;
-  $('run').disabled = running || !liveOk;
-  $('run').className = mode() === 'live' ? 'danger' : '';
-  $('stop').disabled = !running;
-  $('livebox').classList.toggle('on', mode() === 'live');
+async function checkOrgs() {
+  $('recheck').disabled = true;
+  st.orgs = null;
+  orgCard($('org-source'), 'QUELLE', null, st.cfg.sourceAlias);
+  orgCard($('org-target'), 'ZIEL', null, st.cfg.targetAlias);
+  updateRun();
+  try {
+    st.orgs = await (await fetch('/api/orgs')).json();
+  } catch {
+    st.orgs = { source: { connected: false, alias: st.cfg.sourceAlias, error: 'GUI-Server nicht erreichbar' }, target: { connected: false, alias: st.cfg.targetAlias, error: 'GUI-Server nicht erreichbar' } };
+  }
+  orgCard($('org-source'), 'QUELLE', st.orgs.source);
+  orgCard($('org-target'), 'ZIEL', st.orgs.target);
+  $('recheck').disabled = false;
+  updateRun();
 }
 
-async function load() {
-  const r = await (await fetch('/api/objects')).json();
-  state = r;
-  document.querySelectorAll('.alias').forEach((e) => (e.textContent = r.targetAlias));
-  $('obj').innerHTML = r.objects.map((o) => `<option value="${o.folder}">${o.folder}</option>`).join('');
-  renderInfo();
-  updateButtons(r.running);
+/* ---------- Objects ---------- */
+function lastRunBadge(lr) {
+  if (!lr) return '';
+  const t = new Date(lr.at).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  const title = `Letzter Lauf: ${lr.mode === 'live' ? 'Live' : 'Simulation'}, ${new Date(lr.at).toLocaleString('de-DE')}${lr.ok ? '' : ', fehlgeschlagen oder abgebrochen'}`;
+  return `<span class="lr ${lr.ok ? 'ok' : 'bad'}" title="${esc(title)}">${lr.ok ? '✓' : '✕'} ${t}${lr.mode === 'live' ? ' L' : ''}</span>`;
+}
+
+function renderList() {
+  $('objlist').innerHTML = st.objects.map((o) => {
+    const [num, ...rest] = o.folder.split('_');
+    return `<li><button data-folder="${esc(o.folder)}" aria-current="${o.folder === st.selected}"><span class="num">${esc(num)}</span><span class="objname">${esc(rest.join('_'))}</span>${lastRunBadge(o.lastRun)}</button></li>`;
+  }).join('');
+}
+
+async function select(folder, refresh = false) {
+  st.selected = folder;
+  st.describe = null;
+  renderList();
+  $('detail-title').textContent = 'Lade …';
+  st.detail = await (await fetch('/api/object?folder=' + encodeURIComponent(folder))).json();
+  renderDetail();
+  updateRun();
+  // Describe calls hit both orgs (slow), so the field list is shown first and enriched afterwards.
+  try {
+    const d = await (await fetch(`/api/describe?folder=${encodeURIComponent(folder)}${refresh ? '&refresh=1' : ''}`)).json();
+    if (st.selected === folder) { st.describe = d; renderDetail(); }
+  } catch {
+    if (st.selected === folder) { st.describe = { source: { ok: false, error: 'GUI-Server nicht erreichbar' }, target: { ok: false, error: 'GUI-Server nicht erreichbar' } }; renderDetail(); }
+  }
+}
+
+/* Compare one query field with its describe data in source and target. */
+function fieldStatus(f) {
+  const d = st.describe;
+  if (!d) return { key: 'pending', label: 'prüfe …', tag: '' };
+  if (!d.target.ok) return { key: 'unknown', label: 'Ziel nicht lesbar', tag: 'warn' };
+  const src = d.source.ok ? d.source.fields[f.name] : null;
+  const tgt = d.target.fields[f.targetField];
+  if (!tgt) return { key: 'missing', label: '✕ fehlt im Ziel', tag: 'bad', src, tgt };
+  if (tgt.createable === false && f.targetField !== 'Id' && tgt.baseType !== 'address') return { key: 'readonly', label: 'im Ziel nicht schreibbar', tag: 'warn', src, tgt };
+  const polymorphic = (x) => /^reference\(\d+ Objekte\)$/.test(x.type);
+  const same = src && (polymorphic(src) && polymorphic(tgt) ? true : src.type === tgt.type);
+  if (src && !same) return { key: 'type', label: 'Typ/Länge weicht ab', tag: 'warn', src, tgt };
+  if (f.renamed) return { key: 'mapped', label: '⇄ gemappt', tag: 'ren', src, tgt };
+  return { key: 'ok', label: '✓ 1:1', tag: 'ok', src, tgt };
+}
+
+function renderDetail() {
+  const d = st.detail;
+  $('detail-eyebrow').textContent = d.folder.split('_')[0] + ' · Objekt';
+  $('detail-title').textContent = d.object;
+  $('detail-badges').innerHTML = [
+    `<span class="badge">${esc(d.operation)}</span>`,
+    `<span class="badge plain">External ID: ${esc(d.externalId || 'keine, Insert erzeugt Duplikate')}</span>`,
+    `<span class="badge plain">Readonly-Parents: ${d.readonlyParents.length ? esc(d.readonlyParents.join(', ')) : 'keine'}</span>`,
+    d.where ? `<span class="badge plain mono" title="Filter der Query">${esc(d.where)}</span>` : ''
+  ].join('');
+  $('tab-fields').textContent = `Felder (${d.fields.length})`;
+  $('tab-values').textContent = `Wertemapping (${d.valueMappings.length})`;
+  $('tab-fields').setAttribute('aria-selected', st.tab === 'fields');
+  $('tab-values').setAttribute('aria-selected', st.tab === 'values');
+  $('difflabel').style.display = st.tab === 'fields' ? '' : 'none';
+
+  if (st.tab === 'fields') renderFields(d); else renderValues(d);
+}
+
+function renderFields(d) {
+  const rows = d.fields.map((f) => ({ f, s: fieldStatus(f) }));
+  const count = (k) => rows.filter((r) => r.s.key === k).length;
+  let head = '';
+  if (!st.describe) head = '<p class="note">Typen werden aus Quelle und Ziel geladen …</p>';
+  else {
+    if (!st.describe.target.ok) head += `<div class="banner">Ziel-Describe fehlgeschlagen: ${esc(st.describe.target.error)}. Es wird nur die Feldliste ohne Abgleich gezeigt.</div>`;
+    if (!st.describe.source.ok) head += `<div class="banner">Quell-Describe fehlgeschlagen: ${esc(st.describe.source.error)}. Quelltypen fehlen.</div>`;
+    if (st.describe.target.ok) head += `<p class="summary"><span class="tag ok">${count('ok')} 1:1</span><span class="tag ren">${count('mapped')} gemappt</span><span class="tag bad">${count('missing')} fehlen im Ziel</span><span class="tag warn">${count('type') + count('readonly')} mit Abweichung</span></p>`;
+  }
+  const shown = st.onlyDiff ? rows.filter((r) => r.s.key !== 'ok') : rows;
+  if (!shown.length) { $('tabbody').innerHTML = head + '<p class="empty">Keine Abweichungen.</p>'; return; }
+  $('tabbody').innerHTML = head + `<table><thead>
+      <tr><th class="grp" colspan="2">QUELLE</th><th></th><th class="grp" colspan="2">ZIEL</th><th></th><th></th></tr>
+      <tr><th>API-Name</th><th>Typ</th><th></th><th>API-Name</th><th>Typ</th><th>Status</th><th>Hinweise</th></tr></thead><tbody>${shown.map(({ f, s }) => {
+        const tags = [];
+        if (f.externalId) tags.push('<span class="tag key">External ID</span>');
+        if (f.valueMapped) tags.push('<span class="tag map">Wertemapping</span>');
+        if (f.owner) tags.push('<span class="tag warn">User-Lookup, Owner offen</span>');
+        else if (f.lookup && f.parent) tags.push(`<span class="tag">Lookup → ${esc(f.parent)}${f.parentReadonly ? ' (via Readonly)' : ' (nicht auflösbar)'}</span>`);
+        else if (f.lookup) tags.push('<span class="tag">Lookup</span>');
+        const srcType = s.src ? s.src.type : (st.describe && st.describe.source.ok ? '–' : '');
+        const tgtType = s.tgt ? s.tgt.type : (s.key === 'missing' ? '–' : '');
+        const typeDiff = s.key === 'type';
+        return `<tr><td class="mono">${esc(f.name)}</td><td class="type mono">${esc(srcType)}</td>
+          <td class="arr${f.renamed ? ' renamed' : ''}">→</td>
+          <td class="mono"${f.renamed ? ' style="font-weight:700;color:var(--sf-digital-blue)"' : ''}>${esc(f.targetField)}</td>
+          <td class="type mono"${typeDiff ? ' style="color:var(--warn-ink);font-weight:700"' : ''}>${esc(tgtType)}</td>
+          <td><span class="tag ${s.tag}">${esc(s.label)}</span></td><td>${tags.join('')}</td></tr>`;
+      }).join('')}</tbody></table>`;
+}
+
+function renderValues(d) {
+  if (!d.valueMappings.length) { $('tabbody').innerHTML = '<p class="empty">Für dieses Objekt sind keine Werte-Ersetzungen hinterlegt.</p>'; return; }
+  $('tabbody').innerHTML = `<p class="note">Werte, die beim Schreiben ins Ziel ersetzt werden. Gepflegt in <span class="mono">sfdmu/ValueMapping.csv</span>.</p>
+    <table><thead><tr><th>Feld</th><th>Quellwert</th><th></th><th>Zielwert</th></tr></thead><tbody>${d.valueMappings.map((m) =>
+      `<tr><td class="mono">${esc(m.field)}</td><td>${esc(m.from)}</td><td class="arr">→</td><td>${esc(m.to)}</td></tr>`).join('')}</tbody></table>`;
+}
+
+/* ---------- Run ---------- */
+function updateRun() {
+  const live = st.mode === 'live';
+  $('m-sim').setAttribute('aria-pressed', !live);
+  $('m-live').setAttribute('aria-pressed', live);
+  $('toolbar').classList.toggle('live', live);
+  $('modehint').textContent = live ? `Live schreibt Datensätze nach ${st.cfg.targetAlias}.` : 'Simulation liest nur und schreibt nichts ins Ziel.';
+  $('run').classList.toggle('danger', live);
+  $('run').textContent = live ? 'Live starten' : 'Simulation starten';
+
+  const orgsOk = st.orgs && st.orgs.source.connected && st.orgs.target.connected && st.orgs.source.idMatches && st.orgs.target.idMatches;
+  let blocker = '';
+  if (!st.selected) blocker = 'Bitte ein Objekt wählen.';
+  else if (!st.orgs) blocker = 'Verbindung wird geprüft …';
+  else if (!orgsOk) blocker = 'Quelle und Ziel müssen verbunden sein.';
+  $('blocker').textContent = st.running ? '' : blocker;
+  $('run').disabled = st.running || !!blocker;
+  $('stop').disabled = !st.running;
+}
+
+function setTerminal(open) {
+  $('log').hidden = !open;
+  $('termtoggle').setAttribute('aria-expanded', open);
+  $('termtoggle').textContent = (open ? '▾' : '▸') + ' TERMINAL';
 }
 
 async function run() {
-  updateButtons(true);
+  st.running = true;
+  updateRun();
+  setTerminal(true);
   const log = $('log');
   log.textContent = '';
-  const res = await fetch('/api/run', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ folder: $('obj').value, mode: mode(), confirm: $('confirm').value })
-  });
-  if (!res.ok) { log.textContent = await res.text(); updateButtons(false); return; }
-  const reader = res.body.getReader();
-  const dec = new TextDecoder();
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    log.textContent += dec.decode(value);
-    log.scrollTop = log.scrollHeight;
+  try {
+    const res = await fetch('/api/run', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ folder: st.selected, mode: st.mode })
+    });
+    if (!res.ok) { log.textContent = await res.text(); return; }
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      log.textContent += dec.decode(value);
+      log.scrollTop = log.scrollHeight;
+    }
+  } catch (e) {
+    log.textContent += '\nVerbindung zur GUI verloren: ' + e.message;
+  } finally {
+    st.running = false;
+    st.cfg = await (await fetch('/api/objects')).json();
+    st.objects = st.cfg.objects;
+    renderList();
+    updateRun();
   }
-  $('confirm').value = '';
-  updateButtons(false);
 }
 
-$('obj').onchange = renderInfo;
-document.querySelectorAll('input[name=mode]').forEach((e) => (e.onchange = () => updateButtons()));
-$('confirm').oninput = () => updateButtons();
+/* ---------- Wiring ---------- */
+$('objlist').onclick = (e) => { const b = e.target.closest('button'); if (b && !st.running) select(b.dataset.folder); };
+$('tab-fields').onclick = () => { st.tab = 'fields'; st.detail && renderDetail(); };
+$('tab-values').onclick = () => { st.tab = 'values'; st.detail && renderDetail(); };
+$('onlydiff').onchange = (e) => { st.onlyDiff = e.target.checked; st.detail && renderDetail(); };
+$('m-sim').onclick = () => { st.mode = 'simulation'; updateRun(); };
+$('m-live').onclick = () => { st.mode = 'live'; updateRun(); };
 $('run').onclick = run;
 $('stop').onclick = () => fetch('/api/stop', { method: 'POST' });
-load();
+$('recheck').onclick = () => { checkOrgs(); if (st.selected) select(st.selected, true); };
+$('termtoggle').onclick = () => setTerminal($('log').hidden);
+$('clearlog').onclick = () => { $('log').textContent = ''; };
+$('copylog').onclick = () => navigator.clipboard.writeText($('log').textContent);
+
+(async () => {
+  st.cfg = await (await fetch('/api/objects')).json();
+  st.objects = st.cfg.objects;
+  st.running = st.cfg.running;
+  renderList();
+  checkOrgs();
+  setInterval(() => { if (!st.running) checkOrgs(); }, 5 * 60 * 1000);
+  if (st.objects.length) select(st.objects[0].folder);
+})();
 </script>
 </body>
 </html>
