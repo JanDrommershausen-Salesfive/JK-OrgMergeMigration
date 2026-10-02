@@ -1,6 +1,8 @@
 import {
     ExcludeRequestSchema,
+    LoginRequestSchema,
     MappingRequestSchema,
+    SelectOrgsRequestSchema,
     StartRunRequestSchema,
     ValueMappingRequestSchema
 } from '@studio/shared';
@@ -20,6 +22,9 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
         return studio.describe(q.folder, q.refresh === '1');
     });
     app.get('/orgs', () => studio.orgs());
+    app.get('/orgs/available', () => studio.availableOrgs());
+    app.post('/orgs/login', (req) => studio.login(LoginRequestSchema.parse(req.body)));
+    app.post('/orgs/select', (req) => studio.selectOrgs(SelectOrgsRequestSchema.parse(req.body)));
 
     app.post('/mapping', (req) => studio.setMapping(MappingRequestSchema.parse(req.body)));
     app.post('/exclude', (req) => studio.setExcluded(ExcludeRequestSchema.parse(req.body)));

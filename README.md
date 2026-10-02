@@ -11,14 +11,15 @@ git clone https://github.com/JanDrommershausen-Salesfive/JK-OrgMergeMigration.gi
 cd JK-OrgMergeMigration
 
 sf plugins install sfdmu                                   # einmalig, globales sf-Plugin
-sf org login web --alias us-prod                           # Quelle (US Production)
-sf org login web --alias CDEV5 --instance-url https://test.salesforce.com   # Ziel (EU CDEV5, Sandbox)
+npm --prefix studio install                                # einmalig, Abhängigkeiten der GUI
 
-npm run sfdmu:gui                                          # GUI öffnet sich im Browser
+npm run studio                                             # Migration Studio, http://127.0.0.1:4174
 ```
 
-Die Aliase müssen genau `us-prod` und `CDEV5` heißen, `sfdmu/run.sh` prüft sie zusätzlich gegen feste Org-IDs.
-Die GUI braucht kein `npm install`. Details: [sfdmu/README.md](sfdmu/README.md), Projektdokumente: [docs/](docs/).
+Orgs werden in der GUI ausgewählt (**Orgs auswählen**) und bei Bedarf dort per Browser angemeldet, VS Code ist nicht nötig.
+Die Auswahl pinnt die Org-IDs in `migration.project.json`; `sfdmu/run.sh` liest dieselbe Datei und stoppt, wenn ein Alias auf eine andere Org zeigt.
+Alternativ geht der Login weiter per CLI (`sf org login web --alias <alias>`).
+Die ältere GUI ohne Build (`npm run sfdmu:gui`) bleibt vorerst erhalten. Details: [studio/README.md](studio/README.md), [sfdmu/README.md](sfdmu/README.md), Projektdokumente: [docs/](docs/).
 
 ---
 

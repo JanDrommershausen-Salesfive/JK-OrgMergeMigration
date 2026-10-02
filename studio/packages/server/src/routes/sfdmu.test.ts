@@ -13,8 +13,13 @@ beforeAll(async () => {
     const sfdmu = path.join(dir, 'sfdmu');
     await mkdir(path.join(sfdmu, '020_Contact'), { recursive: true });
     await writeFile(
-        path.join(sfdmu, 'run.sh'),
-        'SOURCE_ALIAS="a"\nTARGET_ALIAS="b"\nEXPECTED_SOURCE_ID="00D1"\nEXPECTED_TARGET_ID="00D2"\nPROD_ORG_IDS=("00D1")\n'
+        path.join(dir, 'migration.project.json'),
+        JSON.stringify({
+            name: 'T',
+            source: { alias: 'a', orgId: '00D000000000001' },
+            target: { alias: 'b', orgId: '00D000000000002' },
+            protectedOrgIds: ['00D000000000001']
+        })
     );
     await writeFile(path.join(sfdmu, 'ValueMapping.csv'), 'ObjectName,FieldName,RawValue,Value\n');
     await writeFile(
@@ -37,6 +42,7 @@ describe('sfdmu-Routen', () => {
         const res = await app.inject({ method: 'GET', url: '/api/objects', headers });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toMatchObject({
+            configured: true,
             sourceAlias: 'a',
             targetAlias: 'b',
             objects: [{ folder: '020_Contact', object: 'Contact', externalId: 'Email' }]
@@ -75,5 +81,34 @@ describe('sfdmu-Routen', () => {
         });
         expect(res.statusCode).toBe(400);
         expect(res.json().error).toMatch(/External-ID/);
+    });
+});
+
+describe('Projekt ohne Orgs', () => {
+    it('meldet configured=false und sperrt Org-Abfragen', async () => {
+        const dir = await mkdtemp(path.join(tmpdir(), 'empty-'));
+        const empty = await buildApp({ projectDir: dir, port });
+        const objects = await empty.inject({ method: 'GET', url: '/api/objects', headers });
+        expect(objects.json()).toMatchObject({ configured: false, objects: [], sourceAlias: '' });
+        const orgs = await empty.inject({ method: 'GET', url: '/api/orgs', headers });
+        expect(orgs.statusCode).toBe(409);
+        expect(orgs.json().error).toMatch(/Noch keine Orgs/);
+    });
+
+    it('lehnt ungültige Aliase bei Login und Auswahl ab', async () => {
+        const bad = await app.inject({
+            method: 'POST',
+            url: '/api/orgs/login',
+            headers,
+            payload: { alias: '--evil', kind: 'production' }
+        });
+        expect(bad.statusCode).toBe(400);
+        const sel = await app.inject({
+            method: 'POST',
+            url: '/api/orgs/select',
+            headers,
+            payload: { sourceAlias: 'a b', targetAlias: 'x' }
+        });
+        expect(sel.statusCode).toBe(400);
     });
 });

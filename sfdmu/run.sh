@@ -1,29 +1,53 @@
 #!/usr/bin/env bash
 #
-# Runs ONE SFDMU object folder of the JK US PROD -> JK EU CDEV5 migration.
-# Source and target aliases are fixed below on purpose: this script refuses to run
-# against anything else, so a copy-paste mistake or a changed default org can't
-# accidentally point it at the wrong org.
+# Runs ONE SFDMU object folder of the configured migration (source -> target org).
+# Source and target come from migration.project.json, never from the default org:
+# this script refuses to run if an alias no longer points to the org pinned there,
+# so a copy-paste mistake or a changed default org can't hit the wrong org.
 #
 # Usage:
 #   ./run.sh 020_Contact          # simulation only (-m), no writes
-#   ./run.sh 020_Contact --live   # actually writes to CDEV5
+#   ./run.sh 020_Contact --live   # actually writes to the target org
 #   ./run.sh                      # lists available object folders
 
 set -euo pipefail
 
-SOURCE_ALIAS="us-prod"
-TARGET_ALIAS="CDEV5"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Org IDs pinned at setup time (2026-09-29). If either alias ever gets
-# re-authenticated against a different org, the mismatch check below stops the run.
-EXPECTED_SOURCE_ID="00DDn000006CppDMAS"
-EXPECTED_TARGET_ID="00D9K00000KSJIxUAP"
+# Orgs come from migration.project.json (written by the org selection in Migration Studio):
+# aliases, org IDs pinned at selection time and the protected (production) org IDs.
+# If an alias is ever re-authenticated against a different org, the mismatch check below stops the run.
+PROJECT_FILE="${SCRIPT_DIR}/../migration.project.json"
+if [[ ! -f "$PROJECT_FILE" ]]; then
+  echo "ABORT: ${PROJECT_FILE} not found. Select source and target org in Migration Studio first." >&2
+  exit 1
+fi
+
+read_project() {
+  node -e '
+    const p = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+    const need = (v, n) => { if (!v) { console.error("migration.project.json: " + n + " fehlt"); process.exit(1); } return v; };
+    console.log(need(p.source && p.source.alias, "source.alias"));
+    console.log(need(p.target && p.target.alias, "target.alias"));
+    console.log(need(p.source && p.source.orgId, "source.orgId"));
+    console.log(need(p.target && p.target.orgId, "target.orgId"));
+    for (const id of p.protectedOrgIds || []) console.log(id);
+  ' "$PROJECT_FILE"
+}
+PROJECT_VALUES=()
+while IFS= read -r line; do PROJECT_VALUES+=("$line"); done < <(read_project)
+if [[ ${#PROJECT_VALUES[@]} -lt 4 ]]; then
+  echo "ABORT: could not read ${PROJECT_FILE}." >&2
+  exit 1
+fi
+SOURCE_ALIAS="${PROJECT_VALUES[0]}"
+TARGET_ALIAS="${PROJECT_VALUES[1]}"
+EXPECTED_SOURCE_ID="${PROJECT_VALUES[2]}"
+EXPECTED_TARGET_ID="${PROJECT_VALUES[3]}"
 
 # Known production org IDs. The target must never resolve to one of these.
-PROD_ORG_IDS=("00DDn000006CppDMAS" "00D7Q00000Ch276UAB")
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROD_ORG_IDS=()
+if [[ ${#PROJECT_VALUES[@]} -gt 4 ]]; then PROD_ORG_IDS=("${PROJECT_VALUES[@]:4}"); fi
 
 OBJECT_DIR_NAME="${1:-}"
 if [[ -z "$OBJECT_DIR_NAME" || ! -f "${SCRIPT_DIR}/${OBJECT_DIR_NAME}/export.json" ]]; then
@@ -64,7 +88,7 @@ if [[ "$TARGET_ID" != "$EXPECTED_TARGET_ID"* ]]; then
   exit 1
 fi
 
-for prod_id in "${PROD_ORG_IDS[@]}"; do
+for prod_id in ${PROD_ORG_IDS[@]+"${PROD_ORG_IDS[@]}"}; do
   if [[ "$TARGET_ID" == "$prod_id"* ]]; then
     echo "ABORT: target org ID ${TARGET_ID} matches a known production org. Refusing to write." >&2
     exit 1

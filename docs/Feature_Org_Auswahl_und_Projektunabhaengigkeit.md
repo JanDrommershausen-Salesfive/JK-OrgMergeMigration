@@ -1,6 +1,6 @@
 # Feature: Org-Auswahl und projektunabhängige GUI
 
-Stand: 2026-10-02 · Status: Konzept, noch nicht gebaut
+Stand: 2026-10-02 · Status: Org-Auswahl, Login und Pinnen umgesetzt (Migration Studio). Offen: Projektauswahl im GUI, Zielprofile, JK-Reste im Code.
 
 ## Ziel
 
@@ -64,3 +64,20 @@ Eine Datei pro Projekt, zum Beispiel `migration.project.json` im Projektordner (
 - Reicht `sf org list` mit angemeldeten Orgs, oder soll die GUI eigene Anmeldung verwalten? (Empfehlung: nur die `sf`-CLI nutzen, keine eigenen Tokens speichern.)
 - Wie wird bei mehreren Projekten umgeschaltet: Projektordner pro Start oder Projektwechsel im GUI?
 - Wo liegt das Werkzeug langfristig (eigenes Repo, npm-Paket)?
+
+## Umgesetzt (2026-10-02)
+
+- **Auswahl in der GUI:** Dialog "Orgs auswählen/ändern" listet die angemeldeten Orgs (`sf org list`), je eine Liste für Quelle und Ziel. Orgs ohne Alias und Produktivorgs als Ziel sind nicht wählbar.
+- **Login in der GUI:** "Neue Org anmelden" startet `sf org login web` (Production, Sandbox oder eigene My-Domain-URL unter salesforce.com/force.com). Der Browser öffnet sich auf dem Rechner, auf dem der Server läuft.
+- **Bestätigen und pinnen:** Zweiter Schritt zeigt Org-ID und Instanz-URL beider Orgs. Erst "Festlegen" schreibt `migration.project.json`. Der Server prüft dabei beide Verbindungen, Quelle ≠ Ziel und `IsSandbox` des Ziels.
+- **Geschützte Orgs:** Eine Produktivquelle wird automatisch in `protectedOrgIds` aufgenommen und ist danach als Ziel gesperrt.
+- **`run.sh`** hat keine festen Aliase oder IDs mehr, sondern liest `migration.project.json`. Ohne die Datei bricht es ab.
+- **Live-Läufe** prüfen zusätzlich in `core`, dass das Ziel eine Sandbox ist und die Orgs den gepinnten IDs entsprechen.
+- Ohne `migration.project.json` zeigt die GUI "Orgs auswählen" und sperrt Läufe.
+
+## Noch offen
+
+- Projektauswahl beim Start (heute: Projektordner per `--project` oder aktuelles Verzeichnis).
+- Mehrere Zielprofile pro Projekt.
+- Objektliste und Lookup-Zuordnung sind noch JK-nah (`LOOKUP_PARENT` in `core`).
+- Der Login-Dialog ist nicht gegen eine echte neue Org getestet.

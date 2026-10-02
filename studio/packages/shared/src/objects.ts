@@ -52,6 +52,7 @@ export type ObjectDetail = z.infer<typeof ObjectDetailSchema>;
 export const ObjectListResponseSchema = z.object({
     objects: z.array(ObjectSummarySchema),
     running: z.boolean(),
+    configured: z.boolean(),
     sourceAlias: z.string(),
     targetAlias: z.string()
 });

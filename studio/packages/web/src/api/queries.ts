@@ -20,8 +20,43 @@ export const useDescribe = (folder: string | null) =>
         staleTime: 10 * 60 * 1000
     });
 
-export const useOrgs = () =>
-    useQuery({ queryKey: ['orgs'], queryFn: api.orgs, refetchInterval: 5 * 60 * 1000 });
+export const useOrgs = (enabled: boolean) =>
+    useQuery({
+        queryKey: ['orgs'],
+        queryFn: api.orgs,
+        enabled,
+        refetchInterval: 5 * 60 * 1000
+    });
+
+// Angemeldete Orgs der sf-CLI; wird nur beim Öffnen der Auswahl geladen.
+export const useAvailableOrgs = (enabled: boolean) =>
+    useQuery({
+        queryKey: ['orgs', 'available'],
+        queryFn: api.availableOrgs,
+        enabled,
+        staleTime: 0
+    });
+
+export function useLogin() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.login,
+        onSuccess: (data) => client.setQueryData(['orgs', 'available'], data)
+    });
+}
+
+// Nach der Auswahl sind alle Org-abhängigen Daten (Status, Describe, Objekte) veraltet.
+export function useSelectOrgs() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.selectOrgs,
+        onSuccess: (data) => {
+            client.setQueryData(['objects'], data);
+            void client.invalidateQueries({ queryKey: ['orgs'] });
+            void client.invalidateQueries({ queryKey: ['describe'] });
+        }
+    });
+}
 
 export const useRunStatus = () => useQuery({ queryKey: ['run'], queryFn: api.runStatus });
 

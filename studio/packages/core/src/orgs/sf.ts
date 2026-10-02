@@ -7,14 +7,19 @@ export interface SfResult {
 }
 
 // Ruft die sf-CLI mit --json auf. Fehler und leere Ausgaben werden zu status 1.
-export function sf(args: string[]): Promise<SfResult> {
+export function sf(args: string[], timeoutMs = 60_000): Promise<SfResult> {
     return new Promise((resolve) => {
-        execFile('sf', [...args, '--json'], { timeout: 60_000, maxBuffer: 5e6 }, (err, stdout) => {
-            try {
-                resolve(JSON.parse(stdout) as SfResult);
-            } catch {
-                resolve({ status: 1, message: err ? err.message : 'Keine Ausgabe von sf' });
+        execFile(
+            'sf',
+            [...args, '--json'],
+            { timeout: timeoutMs, maxBuffer: 5e6 },
+            (err, stdout) => {
+                try {
+                    resolve(JSON.parse(stdout) as SfResult);
+                } catch {
+                    resolve({ status: 1, message: err ? err.message : 'Keine Ausgabe von sf' });
+                }
             }
-        });
+        );
     });
 }

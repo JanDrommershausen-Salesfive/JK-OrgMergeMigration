@@ -23,6 +23,7 @@ export interface ExportConfig {
 export const objectOf = (o: ExportObject): string => o.query.match(/FROM\s+(\w+)/)?.[1] ?? '';
 
 export function listFolders(sfdmuDir: string): string[] {
+    if (!existsSync(sfdmuDir)) return [];
     return readdirSync(sfdmuDir)
         .filter((d) => /^\d+_/.test(d) && existsSync(path.join(sfdmuDir, d, 'export.json')))
         .sort();

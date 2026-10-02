@@ -5,16 +5,19 @@ import { Panel } from '../components/ui';
 import { DetailPanel } from '../features/detail/DetailPanel';
 import { ObjectList } from '../features/objects/ObjectList';
 import { OrgHeader } from '../features/orgs/OrgHeader';
+import { OrgPicker } from '../features/orgs/OrgPicker';
 import { RunToolbar } from '../features/run/RunToolbar';
 import { Terminal } from '../features/run/Terminal';
 import { useRun } from '../features/run/useRun';
 
 export function App() {
     const objects = useObjects();
-    const orgs = useOrgs();
+    const configured = objects.data?.configured ?? false;
+    const orgs = useOrgs(configured);
     const run = useRun();
     const [picked, setPicked] = useState<string | null>(null);
     const [mode, setMode] = useState<RunMode>('simulation');
+    const [pickerOpen, setPickerOpen] = useState(false);
 
     const list = objects.data?.objects ?? [];
     const selected = picked ?? list[0]?.folder ?? null;
@@ -26,8 +29,19 @@ export function App() {
     return (
         <div>
             <OrgHeader
+                configured={configured}
                 sourceAlias={objects.data?.sourceAlias ?? ''}
                 targetAlias={objects.data?.targetAlias ?? ''}
+                running={run.running}
+                onChangeOrgs={() => setPickerOpen(true)}
+            />
+            <OrgPicker
+                open={pickerOpen}
+                onClose={() => setPickerOpen(false)}
+                current={{
+                    source: objects.data?.sourceAlias ?? '',
+                    target: objects.data?.targetAlias ?? ''
+                }}
             />
             <main className="mx-auto grid max-w-[1600px] grid-cols-1 items-start gap-6 px-8 pt-6 pb-12 max-sm:px-4 lg:grid-cols-[200px_minmax(0,1fr)]">
                 <Panel label="Objekte">

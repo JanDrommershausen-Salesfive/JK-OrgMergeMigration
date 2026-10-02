@@ -1,0 +1,8 @@
+{
+  "name": "JK US → EU",
+  "source": { "alias": "us-prod", "orgId": "00DDn000006CppDMAS" },
+  "target": { "alias": "CDEV5", "orgId": "00D9K00000KSJIxUAP" },
+  "protectedOrgIds": ["00DDn000006CppDMAS", "00D7Q00000Ch276UAB"],
+  "objectsDir": "sfdmu",
+  "docsDir": "docs"
+}

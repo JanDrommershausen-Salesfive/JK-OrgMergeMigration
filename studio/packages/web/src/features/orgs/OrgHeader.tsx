@@ -66,14 +66,22 @@ function OrgCard({
     );
 }
 
-export function OrgHeader({
-    sourceAlias,
-    targetAlias
-}: {
+interface HeaderProps {
+    configured: boolean;
     sourceAlias: string;
     targetAlias: string;
-}) {
-    const orgs = useOrgs();
+    running: boolean;
+    onChangeOrgs: () => void;
+}
+
+export function OrgHeader({
+    configured,
+    sourceAlias,
+    targetAlias,
+    running,
+    onChangeOrgs
+}: HeaderProps) {
+    const orgs = useOrgs(configured);
     const client = useQueryClient();
     const checking = useIsFetching({ queryKey: ['orgs'] }) > 0;
     const error = orgs.error ? 'GUI-Server nicht erreichbar' : null;
@@ -89,43 +97,56 @@ export function OrgHeader({
         <header className="bg-deep px-8 py-6 text-white">
             <div className="mb-4 flex items-center justify-between gap-4">
                 <img src="/logo.svg" alt="Salesfive" className="block h-[26px] w-auto" />
-                <Button
-                    variant="onDark"
-                    small
-                    disabled={checking}
-                    onClick={() => {
-                        void client.invalidateQueries({ queryKey: ['orgs'] });
-                        void client.invalidateQueries({ queryKey: ['describe'] });
-                    }}
-                >
-                    Verbindung prüfen
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="onDark" small disabled={running} onClick={onChangeOrgs}>
+                        {configured ? 'Orgs ändern' : 'Orgs auswählen'}
+                    </Button>
+                    {configured && (
+                        <Button
+                            variant="onDark"
+                            small
+                            disabled={checking}
+                            onClick={() => {
+                                void client.invalidateQueries({ queryKey: ['orgs'] });
+                                void client.invalidateQueries({ queryKey: ['describe'] });
+                            }}
+                        >
+                            Verbindung prüfen
+                        </Button>
+                    )}
+                </div>
             </div>
             <p className="mb-1 text-xs font-bold text-open-blue">Datenmigration</p>
             <h1 className="text-[28px] leading-tight font-normal tracking-tighter">
                 Migration Studio
             </h1>
-            <div
-                className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-[1fr_auto_1fr]"
-                aria-live="polite"
-            >
-                <OrgCard
-                    role="QUELLE"
-                    alias={sourceAlias}
-                    org={error ? failed(sourceAlias) : orgs.data?.source}
-                />
+            {configured ? (
                 <div
-                    className="self-center justify-self-center text-[28px] text-open-blue max-md:rotate-90"
-                    aria-hidden="true"
+                    className="mt-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-[1fr_auto_1fr]"
+                    aria-live="polite"
                 >
-                    →
+                    <OrgCard
+                        role="QUELLE"
+                        alias={sourceAlias}
+                        org={error ? failed(sourceAlias) : orgs.data?.source}
+                    />
+                    <div
+                        className="self-center justify-self-center text-[28px] text-open-blue max-md:rotate-90"
+                        aria-hidden="true"
+                    >
+                        →
+                    </div>
+                    <OrgCard
+                        role="ZIEL"
+                        alias={targetAlias}
+                        org={error ? failed(targetAlias) : orgs.data?.target}
+                    />
                 </div>
-                <OrgCard
-                    role="ZIEL"
-                    alias={targetAlias}
-                    org={error ? failed(targetAlias) : orgs.data?.target}
-                />
-            </div>
+            ) : (
+                <p className="mt-4 text-sm text-white/85">
+                    Für dieses Projekt sind noch keine Orgs festgelegt.
+                </p>
+            )}
         </header>
     );
 }

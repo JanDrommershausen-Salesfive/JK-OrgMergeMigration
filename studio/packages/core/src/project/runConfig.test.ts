@@ -1,22 +1,34 @@
+import { mkdtemp, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { parseRunScript } from './runConfig';
+import { PROJECT_FILE } from './load';
+import { loadRunConfig } from './runConfig';
 
-const script = `
-SOURCE_ALIAS="us-prod"
-TARGET_ALIAS="CDEV5"
-EXPECTED_SOURCE_ID="00DDn000006CppDMAS"
-EXPECTED_TARGET_ID="00D9K00000KSJIxUAP"
-PROD_ORG_IDS=("00DDn000006CppDMAS" "00D7Q00000Ch276UAB")
-`;
+describe('loadRunConfig', () => {
+    it('liefert ohne Projektdatei eine Konfiguration ohne Orgs', async () => {
+        const dir = await mkdtemp(path.join(tmpdir(), 'cfg-'));
+        const c = await loadRunConfig(dir);
+        expect(c.source).toBeNull();
+        expect(c.target).toBeNull();
+        expect(c.sfdmuDir).toBe(path.join(dir, 'sfdmu'));
+    });
 
-describe('parseRunScript', () => {
-    it('liest Aliase, Org-IDs und geschützte Orgs', () => {
-        expect(parseRunScript(script)).toEqual({
-            sourceAlias: 'us-prod',
-            targetAlias: 'CDEV5',
-            expectedSourceId: '00DDn000006CppDMAS',
-            expectedTargetId: '00D9K00000KSJIxUAP',
-            protectedOrgIds: ['00DDn000006CppDMAS', '00D7Q00000Ch276UAB']
-        });
+    it('liest Orgs und geschützte IDs aus der Projektdatei', async () => {
+        const dir = await mkdtemp(path.join(tmpdir(), 'cfg-'));
+        await writeFile(
+            path.join(dir, PROJECT_FILE),
+            JSON.stringify({
+                name: 'T',
+                source: { alias: 'a', orgId: '00D000000000001' },
+                target: { alias: 'b', orgId: '00D000000000002' },
+                protectedOrgIds: ['00D000000000001'],
+                objectsDir: 'migration'
+            })
+        );
+        const c = await loadRunConfig(dir);
+        expect(c.target?.alias).toBe('b');
+        expect(c.protectedOrgIds).toEqual(['00D000000000001']);
+        expect(c.sfdmuDir).toBe(path.join(dir, 'migration'));
     });
 });

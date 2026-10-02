@@ -1,12 +1,15 @@
 import {
+    AvailableOrgsResponseSchema,
     DescribeResponseSchema,
     ObjectDetailSchema,
     ObjectListResponseSchema,
     OrgsResponseSchema,
     RunStatusSchema,
     type ExcludeRequest,
+    type LoginRequest,
     type MappingRequest,
     type RunMode,
+    type SelectOrgsRequest,
     type ValueMappingRequest
 } from '@studio/shared';
 import type { ZodType } from 'zod';
@@ -36,6 +39,10 @@ export const api = {
             DescribeResponseSchema
         ),
     orgs: () => request('/api/orgs', OrgsResponseSchema),
+    availableOrgs: () => request('/api/orgs/available', AvailableOrgsResponseSchema),
+    login: (req: LoginRequest) => request('/api/orgs/login', AvailableOrgsResponseSchema, req),
+    selectOrgs: (req: SelectOrgsRequest) =>
+        request('/api/orgs/select', ObjectListResponseSchema, req),
     runStatus: () => request('/api/run', RunStatusSchema),
     startRun: (folder: string, mode: RunMode) =>
         request('/api/run', RunStatusSchema, { folder, mode }),
