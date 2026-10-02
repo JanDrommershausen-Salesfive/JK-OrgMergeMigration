@@ -3,7 +3,9 @@ import { RunModeSchema } from './objects';
 
 export const StartRunRequestSchema = z.object({
     folder: z.string(),
-    mode: RunModeSchema
+    mode: RunModeSchema,
+    cohortId: z.string().optional(), // Lauf auf eine Kohorte beschränken
+    keepFilters: z.boolean().optional() // eigene Filter der Objekte zusätzlich zur Kohorte anwenden
 });
 export type StartRunRequest = z.infer<typeof StartRunRequestSchema>;
 

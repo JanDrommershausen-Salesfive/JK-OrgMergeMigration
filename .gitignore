@@ -52,6 +52,7 @@ $RECYCLE.BIN/
 
 # Migration Studio
 studio/packages/web/dist/
-runs/
+/runs/
 # Lokale Org-Auswahl von Migration Studio (pro Person, nicht im Git)
 migration.project.json
+/cohorts/

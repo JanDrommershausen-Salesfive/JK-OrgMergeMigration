@@ -54,9 +54,9 @@ export function useRun() {
     }, [connect, disconnect]);
 
     const start = useCallback(
-        async (folder: string, mode: RunMode) => {
+        async (folder: string, mode: RunMode, cohortId?: string, keepFilters?: boolean) => {
             try {
-                await api.startRun(folder, mode);
+                await api.startRun(folder, mode, cohortId, keepFilters);
             } catch (e) {
                 setLog(e instanceof Error ? e.message : String(e));
                 return;

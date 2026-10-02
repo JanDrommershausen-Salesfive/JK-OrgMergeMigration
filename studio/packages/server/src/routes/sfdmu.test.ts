@@ -257,3 +257,32 @@ describe('Query-Routen', () => {
         expect(parent.json().error).toMatch(/Unbekannter/);
     });
 });
+
+describe('Kohorten-Routen', () => {
+    it('liefert eine leere Liste und lehnt ungültige Anfragen ab', async () => {
+        const list = await app.inject({ method: 'GET', url: '/api/cohorts', headers });
+        expect(list.json()).toEqual({ cohorts: [] });
+
+        const bad = await app.inject({
+            method: 'POST',
+            url: '/api/cohorts',
+            headers,
+            payload: { name: 'x', rule: { kind: 'sample', size: 99999 } }
+        });
+        expect(bad.statusCode).toBe(400);
+
+        const unknown = await app.inject({
+            method: 'GET',
+            url: '/api/cohorts/preview?id=nix',
+            headers
+        });
+        expect(unknown.statusCode).toBe(404);
+        const del = await app.inject({
+            method: 'POST',
+            url: '/api/cohorts/delete',
+            headers,
+            payload: { id: '..' }
+        });
+        expect(del.statusCode).toBe(404);
+    });
+});

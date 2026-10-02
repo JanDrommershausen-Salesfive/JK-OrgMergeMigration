@@ -1,5 +1,8 @@
 import {
     AvailableOrgsResponseSchema,
+    CohortListResponseSchema,
+    CohortPreviewSchema,
+    CohortSchema,
     QueryCheckSchema,
     QueryModelSchema,
     DescribeResponseSchema,
@@ -10,6 +13,7 @@ import {
     RunListResponseSchema,
     RunLogResponseSchema,
     RunStatusSchema,
+    type CreateCohortRequest,
     type ExcludeRequest,
     type ParentModeRequest,
     type SaveFiltersRequest,
@@ -20,10 +24,14 @@ import {
     type SelectOrgsRequest,
     type ValueMappingRequest
 } from '@studio/shared';
-import type { ZodType } from 'zod';
+import type { ZodType, ZodTypeDef } from 'zod';
 
 // Alle Antworten werden gegen das gemeinsame Schema geprüft, Fehlermeldungen kommen vom Server.
-async function request<T>(url: string, schema: ZodType<T>, body?: unknown): Promise<T> {
+async function request<T>(
+    url: string,
+    schema: ZodType<T, ZodTypeDef, unknown>,
+    body?: unknown
+): Promise<T> {
     const res = await fetch(url, {
         method: body === undefined ? 'GET' : 'POST',
         headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
@@ -71,8 +79,24 @@ export const api = {
     exportUrl: (folder: string, id: string, kind: 'errors' | 'missing-parents') =>
         `/api/results/export?folder=${enc(folder)}&id=${enc(id)}&kind=${kind}`,
     runStatus: () => request('/api/run', RunStatusSchema),
-    startRun: (folder: string, mode: RunMode) =>
-        request('/api/run', RunStatusSchema, { folder, mode }),
+    startRun: (folder: string, mode: RunMode, cohortId?: string, keepFilters?: boolean) =>
+        request('/api/run', RunStatusSchema, { folder, mode, cohortId, keepFilters }),
+    cohorts: () => request('/api/cohorts', CohortListResponseSchema),
+    createCohort: (req: CreateCohortRequest) => request('/api/cohorts', CohortSchema, req),
+    deleteCohort: async (id: string) => {
+        const res = await fetch('/api/cohorts/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        if (!res.ok)
+            throw new Error(
+                ((await res.json().catch(() => null)) as { error?: string } | null)?.error ??
+                    `HTTP ${res.status}`
+            );
+    },
+    cohortPreview: (id: string) =>
+        request(`/api/cohorts/preview?id=${enc(id)}`, CohortPreviewSchema),
     stopRun: async () => {
         await fetch('/api/stop', { method: 'POST' });
     },

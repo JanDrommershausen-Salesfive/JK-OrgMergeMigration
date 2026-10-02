@@ -54,6 +54,7 @@ export function RunList({ runs }: { runs: RunMeta[] }) {
                                     {r.counts.errors > 0 && ` · ${r.counts.errors} Fehler`}
                                     {r.counts.missingParents > 0 &&
                                         ` · ${r.counts.missingParents} ohne Parent`}
+                                    {r.cohort && ` · Kohorte ${r.cohort.name}`}
                                 </div>
                             </>
                         )}

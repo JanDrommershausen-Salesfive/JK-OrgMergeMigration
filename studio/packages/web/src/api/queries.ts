@@ -137,3 +137,30 @@ export const useDescribeObject = (object: string | null) =>
     });
 export const useSetParentMode = (folder: string) => useQueryMutation(folder, api.setParentMode);
 export const useCheckQuery = () => useMutation({ mutationFn: api.checkQuery });
+
+export const useCohorts = () => useQuery({ queryKey: ['cohorts'], queryFn: api.cohorts });
+
+export function useCreateCohort() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.createCohort,
+        onSuccess: () => void client.invalidateQueries({ queryKey: ['cohorts'] })
+    });
+}
+
+export function useDeleteCohort() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.deleteCohort,
+        onSuccess: () => void client.invalidateQueries({ queryKey: ['cohorts'] })
+    });
+}
+
+// Vorschau liest für jedes Objekt Zahlen aus der Quelle; deshalb erst auf Knopfdruck (enabled).
+export const useCohortPreview = (id: string | null, enabled: boolean) =>
+    useQuery({
+        queryKey: ['cohortPreview', id],
+        queryFn: () => api.cohortPreview(id as string),
+        enabled: enabled && id !== null,
+        staleTime: 5 * 60 * 1000
+    });

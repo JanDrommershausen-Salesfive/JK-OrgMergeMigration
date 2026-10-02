@@ -1,6 +1,6 @@
 import type { OrgsResponse, RunMode } from '@studio/shared';
 import { useState } from 'react';
-import { useObjects, useOrgs } from '../../api/queries';
+import { useCohorts, useObjects, useOrgs } from '../../api/queries';
 import { Dialog } from '../../components/Dialog';
 import { Button } from '../../components/ui';
 import { useRunContext } from './RunContext';
@@ -24,7 +24,10 @@ export function StartRunDialog({ folder, onClose }: Props) {
     const run = useRunContext();
     const objects = useObjects();
     const orgs = useOrgs(true);
+    const cohorts = useCohorts();
     const [mode, setMode] = useState<RunMode>('simulation');
+    const [cohortId, setCohortId] = useState('');
+    const [keepFilters, setKeepFilters] = useState(false);
     const live = mode === 'live';
     const target = objects.data?.targetAlias ?? '';
     const problem = blocker(run.running, orgs.data);
@@ -61,6 +64,37 @@ export function StartRunDialog({ folder, onClose }: Props) {
                     `Schreibt Datensätze nach ${target}. Nicht rückgängig zu machen.`
                 )}
             </div>
+            <label className="mt-4 block text-sm">
+                <span className="mb-1 block font-bold">Umfang</span>
+                <select
+                    value={cohortId}
+                    onChange={(e) => setCohortId(e.target.value)}
+                    className="w-full rounded-lg border border-grey-line bg-white px-2 py-2 text-sm"
+                >
+                    <option value="">Alle Datensätze laut Konfiguration</option>
+                    {(cohorts.data?.cohorts ?? []).map((c) => (
+                        <option key={c.id} value={c.id}>
+                            Kohorte: {c.name} ({c.count} {c.rootObject})
+                        </option>
+                    ))}
+                </select>
+                {cohortId && (
+                    <span className="mt-1 block text-[13px] text-grey-500">
+                        Nur Datensätze, die zur Kohorte gehören. Objekte ohne Bezug zur Kohorte
+                        starten nicht.
+                    </span>
+                )}
+            </label>
+            {cohortId && (
+                <label className="mt-2 flex cursor-pointer items-center gap-2 text-[13px]">
+                    <input
+                        type="checkbox"
+                        checked={keepFilters}
+                        onChange={(e) => setKeepFilters(e.target.checked)}
+                    />
+                    Eigene Filter der Objekte zusätzlich anwenden (zum Beispiel Zeitfilter)
+                </label>
+            )}
             {problem && (
                 <p role="status" className="mt-3 text-[13px] text-bad">
                     {problem}
@@ -74,7 +108,8 @@ export function StartRunDialog({ folder, onClose }: Props) {
                     variant={live ? 'danger' : 'primary'}
                     disabled={!!problem || !folder}
                     onClick={() => {
-                        if (folder) void run.start(folder, mode);
+                        if (folder)
+                            void run.start(folder, mode, cohortId || undefined, keepFilters);
                         setMode('simulation');
                         onClose();
                     }}

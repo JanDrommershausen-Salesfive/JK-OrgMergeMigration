@@ -36,6 +36,7 @@ export const DescribedFieldSchema = z.object({
     createable: z.boolean(),
     updateable: z.boolean(),
     relationshipName: z.string().nullable().optional(),
+    referenceTo: z.array(z.string()).optional(), // Ziel-Objekte eines Lookups
     required: z.boolean().optional() // im Ziel ohne Wert nicht anlegbar (Pflichtfeld ohne Standard)
 });
 export type DescribedField = z.infer<typeof DescribedFieldSchema>;

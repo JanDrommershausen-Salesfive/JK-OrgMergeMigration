@@ -18,6 +18,7 @@ export interface FinishedRun {
     signal: string | null;
     stopped: boolean;
     log: string;
+    options?: { exportFile?: string; cohort?: { id: string; name: string; count: number } };
 }
 
 export const runsDir = (projectDir: string, folder: string) =>
@@ -44,6 +45,12 @@ export async function archiveRun(run: FinishedRun): Promise<RunMeta> {
     for (const sub of ['target', 'reports']) {
         await cp(path.join(source, sub), path.join(dest, sub), { recursive: true }).catch(
             () => undefined // SFDMU legt die Ordner nur an, wenn etwas geschrieben wurde
+        );
+    }
+
+    if (run.options?.exportFile) {
+        await cp(run.options.exportFile, path.join(dest, 'effective-export.json')).catch(
+            () => undefined
         );
     }
 
@@ -81,7 +88,8 @@ export async function archiveRun(run: FinishedRun): Promise<RunMeta> {
         },
         summary: parsed.summary,
         warnings: parsed.warnings,
-        logErrors: parsed.errors.slice(0, 20)
+        logErrors: parsed.errors.slice(0, 20),
+        cohort: run.options?.cohort ?? null
     };
     await writeFile(path.join(dest, 'log.txt'), run.log);
     await writeFile(path.join(dest, 'meta.json'), JSON.stringify(meta, null, 2));

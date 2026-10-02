@@ -69,6 +69,21 @@ fi
 shift
 RUN_DIR="${SCRIPT_DIR}/${OBJECT_DIR_NAME}"
 
+# Options: --live (write to the target) and --export <file> (run with a generated export.json, for example
+# limited to a cohort; the stored export.json of the folder stays untouched).
+LIVE=0
+EXPORT_FILE=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --live) LIVE=1; shift ;;
+    --export)
+      EXPORT_FILE="${2:-}"
+      if [[ -z "$EXPORT_FILE" || ! -f "$EXPORT_FILE" ]]; then echo "ABORT: --export needs an existing file." >&2; exit 1; fi
+      shift 2 ;;
+    *) echo "Unknown option: $1" >&2; exit 1 ;;
+  esac
+done
+
 # SFDMU reads ValueMapping.csv from the run folder. Each object folder owns its file (only its own rows,
 # plus rows of parents pulled along); a missing file is created empty so objects without value mapping run too.
 if [[ ! -f "${RUN_DIR}/ValueMapping.csv" ]]; then
@@ -113,7 +128,7 @@ TARGET_DOMAIN="${TARGET_DOMAIN%/}"
 
 MODE_ARGS=("-m")
 MODE_LABEL="simulation"
-if [[ "${1:-}" == "--live" ]]; then
+if [[ "$LIVE" == "1" ]]; then
   MODE_ARGS=()
   MODE_LABEL="live"
   echo ""
@@ -132,10 +147,39 @@ echo "Object: ${OBJECT_DIR_NAME}"
 echo "Mode:   ${MODE_LABEL}"
 echo ""
 
+# With --export the run happens in a work folder with the generated export.json; the results are copied back
+# into the object folder afterwards, so everything downstream (results, archive) works the same.
+SFDMU_DIR="$RUN_DIR"
+WORK_DIR=""
+if [[ -n "$EXPORT_FILE" ]]; then
+  WORK_DIR="${SCRIPT_DIR}/.work/${OBJECT_DIR_NAME}"
+  mkdir -p "${WORK_DIR:?}"
+  rm -rf "${WORK_DIR:?}/target" "${WORK_DIR:?}/reports"
+  cp "$EXPORT_FILE" "${WORK_DIR}/export.json"
+  cp "${RUN_DIR}/ValueMapping.csv" "${WORK_DIR}/ValueMapping.csv"
+  SFDMU_DIR="$WORK_DIR"
+  echo "Export: generated file ${EXPORT_FILE} (the stored export.json is not used)"
+  echo ""
+fi
+
+set +e
 sf sfdmu run \
   --sourceusername "$SOURCE_ALIAS" \
   --targetusername "$TARGET_ALIAS" \
-  -p "$RUN_DIR" \
+  -p "$SFDMU_DIR" \
   --canmodify "$TARGET_DOMAIN" \
   --noprompt \
   "${MODE_ARGS[@]+"${MODE_ARGS[@]}"}"
+STATUS=$?
+set -e
+
+if [[ -n "$WORK_DIR" ]]; then
+  for sub in target reports; do
+    rm -rf "${RUN_DIR:?}/${sub}"
+    if [[ -d "${WORK_DIR}/${sub}" ]]; then
+      mkdir -p "${RUN_DIR}/${sub}"
+      cp -R "${WORK_DIR}/${sub}/." "${RUN_DIR}/${sub}/"
+    fi
+  done
+fi
+exit "$STATUS"

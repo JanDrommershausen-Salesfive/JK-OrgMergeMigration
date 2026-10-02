@@ -2,5 +2,6 @@
 */target/
 */reports/
 */source/
+.work/
 */*.log
 gui/last-runs.json

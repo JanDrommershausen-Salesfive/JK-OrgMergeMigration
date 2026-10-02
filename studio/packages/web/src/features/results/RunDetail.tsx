@@ -136,6 +136,11 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                     {m.object}
                 </h2>
                 <Tag tone={m.mode === 'live' ? 'bad' : 'plain'}>{modeLabel(m.mode)}</Tag>
+                {m.cohort && (
+                    <Tag tone="map">
+                        Kohorte: {m.cohort.name} ({m.cohort.count})
+                    </Tag>
+                )}
                 <span className="text-[13px] text-grey-500">
                     {formatWhen(m.startedAt)} · {m.sourceAlias} → {m.targetAlias}
                 </span>

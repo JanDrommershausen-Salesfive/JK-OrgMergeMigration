@@ -51,7 +51,8 @@ export const RunMetaSchema = z.object({
     counts: RunCountsSchema,
     summary: z.array(ObjectSummaryEntrySchema),
     warnings: z.array(LogWarningSchema),
-    logErrors: z.array(z.string())
+    logErrors: z.array(z.string()),
+    cohort: z.object({ id: z.string(), name: z.string(), count: z.number() }).nullable().optional()
 });
 export type RunMeta = z.infer<typeof RunMetaSchema>;
 

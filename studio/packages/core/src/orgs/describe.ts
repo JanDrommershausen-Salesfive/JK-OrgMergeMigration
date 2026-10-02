@@ -51,6 +51,7 @@ export class DescribeCache {
                     createable: f.createable,
                     updateable: f.updateable,
                     relationshipName: f.relationshipName ?? null,
+                    referenceTo: f.referenceTo ?? [],
                     required: f.createable && f.nillable === false && f.defaultedOnCreate !== true
                 };
             }

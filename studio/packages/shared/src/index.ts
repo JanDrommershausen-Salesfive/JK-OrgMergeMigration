@@ -1,4 +1,5 @@
 export * from './api';
+export * from './cohorts';
 export * from './objects';
 export * from './orgs';
 export * from './project';

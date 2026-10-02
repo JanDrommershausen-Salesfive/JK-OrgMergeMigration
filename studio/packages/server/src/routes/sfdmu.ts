@@ -1,4 +1,5 @@
 import {
+    CreateCohortRequestSchema,
     ExcludeRequestSchema,
     LoginRequestSchema,
     MappingRequestSchema,
@@ -15,6 +16,7 @@ import type { Studio } from '@studio/core';
 
 const FolderQuery = z.object({ folder: z.string() });
 const ObjectQuery = z.object({ object: z.string() });
+const IdBody = z.object({ id: z.string() });
 const ParentQuery = FolderQuery.extend({ parent: z.coerce.number().int().min(0).optional() });
 const RunQuery = FolderQuery.extend({ id: z.string() });
 const ExportQuery = RunQuery.extend({ kind: z.enum(['errors', 'missing-parents']) });
@@ -76,10 +78,18 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
             .send(file.text);
     });
 
+    app.get('/cohorts', () => studio.listCohorts());
+    app.post('/cohorts', (req) => studio.createCohort(CreateCohortRequestSchema.parse(req.body)));
+    app.post('/cohorts/delete', async (req, reply) => {
+        await studio.deleteCohort(IdBody.parse(req.body).id);
+        return reply.code(204).send();
+    });
+    app.get('/cohorts/preview', (req) => studio.cohortPreview(IdBody.parse(req.query).id));
+
     app.get('/run', () => studio.runStatus());
     app.post('/run', async (req, reply) => {
-        const { folder, mode } = StartRunRequestSchema.parse(req.body);
-        await studio.startRun(folder, mode);
+        const { folder, mode, cohortId, keepFilters } = StartRunRequestSchema.parse(req.body);
+        await studio.startRun(folder, mode, cohortId, keepFilters);
         return reply.code(202).send(studio.runStatus());
     });
     app.post('/stop', async (_req, reply) => {

@@ -1,6 +1,11 @@
+import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import type {
     AvailableOrgsResponse,
+    Cohort,
+    CohortListResponse,
+    CohortPreview,
+    CreateCohortRequest,
     DescribeResponse,
     ExcludeRequest,
     LoginRequest,
@@ -36,7 +41,18 @@ import {
 } from './project/runConfig';
 import { saveProject } from './project/save';
 import { LastRunStore } from './runs/lastRuns';
-import { checkQuery } from './query/check';
+import {
+    ROOT_OBJECT,
+    CohortStore,
+    applyCohort,
+    cohortId,
+    cohortPreview,
+    linksFor,
+    resolveCohortIds
+} from './cohorts';
+import { checkQuery, sfQuery } from './query/check';
+import { listFolders, readExport } from './sfdmu/exportConfig';
+import { writeFileAtomic } from './util/fs';
 import { changeFields, queryModel, saveFilters, setParentMode } from './query/model';
 import { RunManager } from './runs/runManager';
 import { archiveRun } from './results/archive';
@@ -51,11 +67,13 @@ export class Studio {
     private readonly lastRuns: LastRunStore;
     private runs: RunManager;
     private readonly results: ResultStore;
+    private readonly cohorts: CohortStore;
     private loginInProgress = false;
 
     private constructor(private config: RunConfig) {
         this.lastRuns = new LastRunStore(config.projectDir);
         this.results = new ResultStore(config.projectDir);
+        this.cohorts = new CohortStore(config.projectDir);
         this.runs = new RunManager(config.sfdmuDir, this.lastRuns, async (end) => {
             const c = this.config;
             const { object } = await this.object(end.folder);
@@ -140,11 +158,91 @@ export class Studio {
     }
 
     // Live-Läufe laufen nur, wenn das Ziel eine Sandbox ist und die Orgs den gepinnten IDs entsprechen.
-    async startRun(folder: string, mode: RunMode): Promise<void> {
+    async startRun(
+        folder: string,
+        mode: RunMode,
+        cohortId?: string,
+        keepFilters = false
+    ): Promise<void> {
         this.assertIdle();
         await this.object(folder); // unbekannter Ordner → 404
         if (mode === 'live') await this.assertLiveAllowed();
-        this.runs.start(folder, mode, this.requireOrgs().target.alias);
+        const options = cohortId ? await this.cohortRunOptions(folder, cohortId, keepFilters) : {};
+        this.runs.start(folder, mode, this.requireOrgs().target.alias, options);
+    }
+
+    // Erzeugt die Konfiguration für einen Lauf auf eine Kohorte (die gespeicherte export.json bleibt unberührt).
+    private async cohortRunOptions(folder: string, id: string, keepFilters: boolean) {
+        const cohort = await this.cohorts.get(id);
+        const config = await readExport(this.config.sfdmuDir, folder);
+        const scope = applyCohort(config, cohort, await linksFor(config, this.sourceLookups()), {
+            keepFilters
+        });
+        if (!scope.scoped) {
+            throw conflict(
+                `${folder} folgt der Kohorte nicht. ${scope.notes[0] ?? ''} Starte ohne Kohorte, wenn das gewollt ist.`.trim()
+            );
+        }
+        const dir = path.join(this.config.projectDir, 'runs', '.effective');
+        await mkdir(dir, { recursive: true });
+        const exportFile = path.join(dir, `${folder}.json`);
+        await writeFileAtomic(exportFile, JSON.stringify(scope.config, null, 2) + '\n');
+        return { exportFile, cohort: { id: cohort.id, name: cohort.name, count: cohort.count } };
+    }
+
+    private sourceLookups() {
+        const alias = this.requireOrgs().source.alias;
+        return async (object: string) => {
+            const d = await this.describeCache.describe(alias, object);
+            return d.ok ? d.fields : null;
+        };
+    }
+
+    async listCohorts(): Promise<CohortListResponse> {
+        return { cohorts: await this.cohorts.list() };
+    }
+
+    // Zieht die Root-Datensätze lesend aus der Quelle und friert die Ids ein.
+    async createCohort(req: CreateCohortRequest): Promise<Cohort> {
+        const { source } = this.requireOrgs();
+        const ids = await resolveCohortIds({
+            rootObject: ROOT_OBJECT,
+            rule: req.rule,
+            sourceAlias: source.alias,
+            run: sfQuery
+        });
+        const cohort: Cohort = {
+            id: cohortId(req.name),
+            name: req.name,
+            createdAt: new Date().toISOString(),
+            rootObject: ROOT_OBJECT,
+            rule: req.rule,
+            ids,
+            count: ids.length
+        };
+        await this.cohorts.save(cohort);
+        return cohort;
+    }
+
+    async deleteCohort(id: string): Promise<void> {
+        await this.cohorts.delete(id);
+    }
+
+    async cohortPreview(id: string): Promise<CohortPreview> {
+        const cohort = await this.cohorts.get(id);
+        const configs = await Promise.all(
+            listFolders(this.config.sfdmuDir).map(async (folder) => ({
+                folder,
+                config: await readExport(this.config.sfdmuDir, folder)
+            }))
+        );
+        return cohortPreview({
+            cohort,
+            configs,
+            lookups: this.sourceLookups(),
+            run: sfQuery,
+            sourceAlias: this.requireOrgs().source.alias
+        });
     }
 
     stopRun(): void {

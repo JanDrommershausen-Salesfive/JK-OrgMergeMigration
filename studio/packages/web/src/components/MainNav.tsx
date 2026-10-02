@@ -3,6 +3,7 @@ import { NavLink } from 'react-router';
 const ITEMS = [
     { to: '/', label: 'Übersicht', end: true },
     { to: '/konfiguration', label: 'Konfiguration', end: false },
+    { to: '/kohorten', label: 'Kohorten', end: false },
     { to: '/laeufe', label: 'Läufe', end: false }
 ];
 

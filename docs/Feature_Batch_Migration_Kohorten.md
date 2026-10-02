@@ -1,6 +1,6 @@
 # Feature: Batchweise Migration über Kohorten
 
-Stand: 2026-10-02 · Status: Konzept, noch nicht gebaut
+Stand: 2026-10-02 · Status: Kohorten, Vorschau und Läufe auf Kohorte umgesetzt (Seite "Kohorten"), Orchestrierung über alle Objekte und Wachstumsstufen offen
 
 ## Ziel
 
@@ -55,3 +55,20 @@ Jeder Batch ist ein Eintrag in der Lauf-Historie ([Feature_Lauf_Historie.md](Fea
 - Kardinalität: Wenige Accounts mit sehr vielen Kindern (Orders, Assets) können einen Batch sprengen. Braucht es ein Limit pro Account oder pro Objekt?
 - Beziehungen, die nicht über Account laufen (zum Beispiel Contact → ReportsTo, Asset → Product): Wie werden diese Parents nachgeladen? Vorschlag: SFDMU-Readonly-Parent-Objekte, wie beim Contact schon genutzt.
 - Eindeutige Wiederholbarkeit: Ein Batch muss bei erneutem Lauf dieselben Datensätze treffen (Id-Liste speichern, nicht erneut zufällig ziehen).
+
+## Umgesetzt (2026-10-02): Kohorten
+
+- **Seite "Kohorten":** Kohorten anlegen, ansehen, löschen. Zwei Arten: **zufällige Stichprobe** von N Accounts (optional mit Filter auf Account-Feldern) oder **feste Liste von Ids**. Die Auswahl liest nur aus der Quelle und wird **eingefroren** (Ids stehen in `cohorts/<id>.json`, lokal, nicht im Git). Höchstens **500** Accounts: Mit 600 Ids lief ein Probelauf, mit 2.000 lehnt Salesforce die Anfrage ab ("Request Header Fields Too Large").
+- **Vorschau auf Knopfdruck:** Pro Objekt die Zahl der Datensätze in der Kohorte (lesende COUNT-Abfragen), der Weg zum Account (zum Beispiel `Opportunity.AccountId`; Verweise auf Benutzer wie `CreatedBy` werden ignoriert) und eine grobe Speicherschätzung (2 KB je Datensatz, ohne Dateien und mitgezogene Parents). Beispiel Test 20 (20 Accounts): Contact 7, Opportunity 7, Quote 1, Order 121, Asset 17, Case 35.
+- **Lauf auf eine Kohorte:** Im Start-Dialog gibt es **Umfang**. Das Studio erzeugt dafür eine Konfiguration in `runs/.effective/<Ordner>.json` (die gespeicherte `export.json` bleibt unberührt) und `run.sh --export <Datei>` führt sie in einem Arbeitsordner (`sfdmu/.work/`) aus. Die Ergebnisse werden zurück in den Objektordner kopiert, das Archiv enthält zusätzlich `effective-export.json` und die Kohorte in der `meta.json`.
+- **So wird die Kohorte weitergegeben (per Probe mit SFDMU belegt):** Der Account-Eintrag bekommt `WHERE Id IN (…)`, alle davon abhängigen Einträge laufen als `master: false`. SFDMU holt dann nur die dazugehörigen Datensätze, auch über zwei Stufen (Opportunity → Position) und mit eigener Aufteilung langer Listen. Die Probe lieferte genau die gezählten Mengen (10 Contacts, 15 Opportunities, 11 Positionen bei 5 Accounts).
+- **Eigene Filter:** Bei einem Kohorten-Lauf entfallen die Filter der Objekte (zum Beispiel `CreatedDate = LAST_N_DAYS:7`), denn die Kohorte bestimmt den Umfang. Das Häkchen "Eigene Filter zusätzlich anwenden" behält sie.
+- **Objekte, die der Kohorte nicht folgen** (Stammdaten wie Product2, Pricebook2, PricebookEntry, und Objekte ohne Account-Eintrag in der Konfiguration wie OrderItem, Task, Event, ContentVersion) starten mit einer Kohorte nicht und laufen ohne Kohorte vollständig.
+- Geprüft per Simulation: Contact auf die Kohorte Test 20 liefert 7 Contacts, passend zur Vorschau.
+
+### Noch offen
+
+- Objekte ohne Account-Eintrag (OrderItem über Order, Task/Event über `WhatId`, ContentVersion) brauchen entweder Parent-Einträge in der Konfiguration oder eine automatisch erzeugte Kette.
+- Orchestrierung: alle Objekte einer Kohorte in der richtigen Reihenfolge nacheinander laufen lassen, mit Abbruch bei Fehlern.
+- Wachstumsstufen (50 → 500 → …) und Kohorten über 500 Accounts (Filter-Kohorte ohne Id-Liste).
+- Speicher- und Limitanzeige der Ziel-Sandbox vor dem Lauf, Sandbox leeren.
