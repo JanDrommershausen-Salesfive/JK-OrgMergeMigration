@@ -348,6 +348,66 @@ async function handleExclude(req, res) {
     json(res, objectDetail(folder));
 }
 
+const csvCell = (v) => (/[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+
+// Replaces all ValueMapping.csv rows of one object+field. The CSV is shared by all objects, so other rows are kept as they are.
+async function handleValueMapping(req, res) {
+    if (current) return res.writeHead(409).end('Während eines Laufs kann nichts geändert werden.');
+    let body;
+    try {
+        body = JSON.parse(await readBody(req));
+    } catch {
+        return res.writeHead(400).end('Ungültige Anfrage.');
+    }
+    const { folder, field, rows } = body;
+    const detail = objectDetail(folder);
+    if (!detail) return res.writeHead(400).end('Unbekannter Ordner.');
+    if (typeof field !== 'string' || !/^\w+$/.test(field)) return res.writeHead(400).end('Ungültiger Feldname.');
+    if (!Array.isArray(rows) || rows.length > 500) return res.writeHead(400).end('Ungültige Zeilen.');
+    const clean = [];
+    for (const r of rows) {
+        if (typeof r.from !== 'string' || typeof r.to !== 'string' || r.from.length > 255 || r.to.length > 255) return res.writeHead(400).end('Ungültige Werte.');
+        if (r.from.trim() === '') continue; // rows without a source value are not saved
+        if (clean.some((c) => c.from === r.from)) return res.writeHead(409).end(`Quellwert „${r.from}“ kommt doppelt vor.`);
+        clean.push({ from: r.from, to: r.to });
+    }
+
+    const csvFile = path.join(SFDMU_DIR, 'ValueMapping.csv');
+    const original = fs.readFileSync(csvFile, 'utf8');
+    const all = parseCsv(original);
+    const header = all[0];
+    const body_ = all.slice(1);
+    const out = [];
+    let inserted = false;
+    const newRows = clean.map((r) => [detail.object, field, r.from, r.to]);
+    for (const r of body_) {
+        if (r[0] === detail.object && r[1] === field) {
+            if (!inserted) { out.push(...newRows); inserted = true; }
+            continue;
+        }
+        out.push(r);
+    }
+    if (!inserted) out.push(...newRows);
+    const text = [header, ...out].map((r) => r.map(csvCell).join(',')).join('\n') + (/\n$/.test(original) ? '\n' : '');
+    if (text !== original) {
+        fs.writeFileSync(csvFile + '.tmp', text);
+        fs.renameSync(csvFile + '.tmp', csvFile);
+    }
+
+    // SFDMU only applies ValueMapping.csv to objects that opt in via useValuesMapping.
+    const anyForObject = out.some((r) => r[0] === detail.object);
+    const file = path.join(SFDMU_DIR, folder, 'export.json');
+    const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+    const obj = config.objects[config.objects.length - 1];
+    if (anyForObject !== !!obj.useValuesMapping) {
+        if (anyForObject) obj.useValuesMapping = true;
+        else delete obj.useValuesMapping;
+        fs.writeFileSync(file + '.tmp', JSON.stringify(config, null, 2) + '\n');
+        fs.renameSync(file + '.tmp', file);
+    }
+    json(res, objectDetail(folder));
+}
+
 const json = (res, data) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(data));
@@ -386,6 +446,7 @@ const server = http.createServer(async (req, res) => {
             const [source, target] = await Promise.all([checkOrg(c.sourceAlias, c.expectedSourceId), checkOrg(c.targetAlias, c.expectedTargetId)]);
             return json(res, { source, target, checkedAt: new Date().toISOString() });
         }
+        if (req.method === 'POST' && url.pathname === '/api/valuemapping') return await handleValueMapping(req, res);
         if (req.method === 'POST' && url.pathname === '/api/exclude') return await handleExclude(req, res);
         if (req.method === 'POST' && url.pathname === '/api/mapping') return await handleMapping(req, res);
         if (req.method === 'POST' && url.pathname === '/api/run') return await handleRun(req, res);

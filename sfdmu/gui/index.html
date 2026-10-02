@@ -122,6 +122,16 @@
   .unmap:hover { color:var(--bad); border-color:var(--bad); background:var(--bad-soft); }
   .unmap:focus-visible { outline:2px solid var(--sf-digital-blue); outline-offset:2px; }
   #savemsg { font-size:13px; color:var(--ok); margin-right:var(--s3); } #savemsg.err { color:var(--bad); }
+  .tagbtn { border:0; font:inherit; font-size:12px; cursor:pointer; }
+  .tagbtn:hover { box-shadow:0 0 0 2px var(--sf-digital-blue); }
+  .tagbtn:focus-visible { outline:2px solid var(--sf-digital-blue); outline-offset:2px; }
+  .vmgroup { border:1px solid var(--grey-line); border-radius:var(--r-md); padding:var(--s3) var(--s4); margin-bottom:var(--s3); }
+  .vmgroup h4 { margin:0 0 var(--s2); font-weight:700; font-size:14px; }
+  .vmrow { display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s2); }
+  .vmrow input { flex:1; min-width:0; max-width:320px; font:14px var(--font); padding:6px 10px; border:1px solid var(--grey-line); border-radius:var(--r-sm); background:var(--white); color:var(--sf-ink); }
+  .vmrow .arr { color:var(--grey-500); }
+  .vmadder { display:flex; gap:var(--s2); align-items:center; margin-top:var(--s4); }
+  .vmadder select { max-width:240px; }
   .empty { color:var(--grey-500); padding:var(--s6) 0; }
   .banner { background:var(--warn-bg); color:var(--warn-ink); border-radius:var(--r-sm); padding:var(--s2) var(--s3); font-size:13px; margin:0 0 var(--s3); }
 
@@ -207,7 +217,7 @@
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
-const st = { cfg: null, objects: [], selected: null, detail: null, describe: null, tab: 'fields', mode: 'simulation', orgs: null, running: false, onlyDiff: false };
+const st = { cfg: null, objects: [], selected: null, detail: null, describe: null, tab: 'fields', vmField: null, vmDraft: new Set(), mode: 'simulation', orgs: null, running: false, onlyDiff: false };
 
 /* ---------- Orgs ---------- */
 function orgCard(el, role, org, alias) {
@@ -262,7 +272,7 @@ function renderList() {
 
 async function select(folder, refresh = false) {
   st.selected = folder;
-  st.describe = null;
+  st.describe = null; st.vmField = null; st.vmDraft = new Set();
   renderList();
   $('detail-title').textContent = 'Lade …';
   st.detail = await (await fetch('/api/object?folder=' + encodeURIComponent(folder))).json();
@@ -376,7 +386,7 @@ function renderFields(d) {
       <tr><th>API-Name</th><th>Typ</th><th></th><th>API-Name</th><th>Typ</th><th>Status</th><th>Hinweise</th></tr></thead><tbody>${shown.map(({ f, s }) => {
         const tags = [];
         if (f.externalId) tags.push('<span class="tag key">External ID</span>');
-        if (f.valueMapped) tags.push('<span class="tag map">Wertemapping</span>');
+        if (f.valueMapped) tags.push(`<button class="tag map tagbtn" data-vm="${esc(f.name)}" title="Werte-Ersetzungen für ${esc(f.name)} anzeigen und bearbeiten">Wertemapping (${d.valueMappings.filter((m) => m.field === f.name).length})</button>`);
         if (f.owner) tags.push('<span class="tag warn">User-Lookup, Owner offen</span>');
         else if (f.lookup && f.parent) tags.push(`<span class="tag">Lookup → ${esc(f.parent)}${f.parentReadonly ? ' (via Readonly)' : ' (nicht auflösbar)'}</span>`);
         else if (f.lookup) tags.push('<span class="tag">Lookup</span>');
@@ -391,11 +401,40 @@ function renderFields(d) {
       }).join('')}</tbody></table>`;
 }
 
+function vmRow(from = '', to = '') {
+  return `<div class="vmrow"><input data-k="from" value="${esc(from)}" placeholder="Quellwert" aria-label="Quellwert"><span class="arr">→</span><input data-k="to" value="${esc(to)}" placeholder="Zielwert" aria-label="Zielwert"><button class="unmap vmdel" title="Zeile löschen" aria-label="Zeile löschen"${st.running ? ' disabled' : ''}>×</button></div>`;
+}
+
 function renderValues(d) {
-  if (!d.valueMappings.length) { $('tabbody').innerHTML = '<p class="empty">Für dieses Objekt sind keine Werte-Ersetzungen hinterlegt.</p>'; return; }
-  $('tabbody').innerHTML = `<p class="note">Werte, die beim Schreiben ins Ziel ersetzt werden. Gepflegt in <span class="mono">sfdmu/ValueMapping.csv</span>.</p>
-    <table><thead><tr><th>Feld</th><th>Quellwert</th><th></th><th>Zielwert</th></tr></thead><tbody>${d.valueMappings.map((m) =>
-      `<tr><td class="mono">${esc(m.field)}</td><td>${esc(m.from)}</td><td class="arr">→</td><td>${esc(m.to)}</td></tr>`).join('')}</tbody></table>`;
+  const groups = new Map();
+  d.valueMappings.forEach((m) => { if (!groups.has(m.field)) groups.set(m.field, []); groups.get(m.field).push(m); });
+  st.vmDraft.forEach((f) => { if (!groups.has(f)) groups.set(f, []); });
+  if (st.vmField && !groups.has(st.vmField)) groups.set(st.vmField, []);
+  const names = [...groups.keys()].filter((n) => !st.vmField || n === st.vmField);
+  const free = d.fields.map((f) => f.name).filter((n) => n !== 'Id' && !groups.has(n));
+  const dis = st.running ? ' disabled' : '';
+  const filter = st.vmField ? `<p class="summary"><span class="tag map">Feld: ${esc(st.vmField)}</span><button class="btn ghost small" id="vmall">Alle Felder anzeigen</button></p>` : '';
+  const adder = free.length ? `<div class="vmadder"><select id="vmaddfield" class="tgt" aria-label="Feld für neues Wertemapping">${free.map((n) => `<option>${esc(n)}</option>`).join('')}</select><button class="btn ghost small" id="vmaddgo"${dis}>+ Wertemapping für Feld</button></div>` : '';
+  $('tabbody').innerHTML = `<p class="note">Werte, die beim Schreiben ins Ziel ersetzt werden (Quellwert → Zielwert). Änderungen speichern sofort in <span class="mono">sfdmu/ValueMapping.csv</span>, die Datei gilt für alle Objekte.</p>${filter}
+    ${names.length ? names.map((n) => `<section class="vmgroup" data-field="${esc(n)}"><h4 class="mono">${esc(n)}</h4><div class="vmrows">${(groups.get(n).length ? groups.get(n) : [{ from: '', to: '' }]).map((m) => vmRow(m.from, m.to)).join('')}</div><button class="btn ghost small vmadd"${dis}>+ Zeile</button></section>`).join('') : '<p class="empty">Für dieses Objekt sind keine Werte-Ersetzungen hinterlegt.</p>'}
+    ${adder}`;
+}
+
+function vmCollect(group) {
+  return [...group.querySelectorAll('.vmrow')].map((r) => ({ from: r.querySelector('[data-k=from]').value, to: r.querySelector('[data-k=to]').value }));
+}
+
+async function saveValues(group) {
+  const field = group.dataset.field;
+  const msg = $('savemsg');
+  msg.className = ''; msg.textContent = 'Speichere …';
+  const res = await fetch('/api/valuemapping', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folder: st.selected, field, rows: vmCollect(group) }) });
+  if (!res.ok) { msg.className = 'err'; msg.textContent = await res.text(); return; }
+  st.detail = await res.json();
+  st.vmDraft.delete(field);
+  // No full re-render here: it would steal focus while tabbing between the input fields.
+  $('tab-values').textContent = `Wertemapping (${st.detail.valueMappings.length})`;
+  msg.textContent = `✓ ValueMapping.csv gespeichert (${field})`;
 }
 
 /* ---------- Run ---------- */
@@ -460,15 +499,29 @@ async function run() {
 /* ---------- Wiring ---------- */
 $('objlist').onclick = (e) => { const b = e.target.closest('button'); if (b && !st.running) select(b.dataset.folder); };
 $('tab-fields').onclick = () => { st.tab = 'fields'; st.detail && renderDetail(); };
-$('tab-values').onclick = () => { st.tab = 'values'; st.detail && renderDetail(); };
+$('tab-values').onclick = () => { st.tab = 'values'; st.vmField = null; st.detail && renderDetail(); };
 $('tabbody').onclick = (e) => {
   const b = e.target.closest('button.unmap');
+  const vm = e.target.closest('button[data-vm]');
+  if (vm) { st.tab = 'values'; st.vmField = vm.dataset.vm; renderDetail(); return; }
+  const grp = e.target.closest('.vmgroup');
+  if (e.target.closest('#vmall')) { st.vmField = null; renderDetail(); return; }
+  if (e.target.closest('#vmaddgo')) { st.vmDraft.add($('vmaddfield').value); renderDetail(); return; }
+  if (grp && e.target.closest('.vmadd')) { grp.querySelector('.vmrows').insertAdjacentHTML('beforeend', vmRow()); grp.querySelector('.vmrow:last-child input').focus(); return; }
+  if (grp && e.target.closest('.vmdel') && !st.running) {
+    e.target.closest('.vmrow').remove();
+    if (!grp.querySelector('.vmrow')) grp.querySelector('.vmrows').insertAdjacentHTML('beforeend', vmRow());
+    saveValues(grp);
+    return;
+  }
   if (!b || st.running) return;
   if (b.dataset.unmap) saveMapping(b.dataset.unmap, b.dataset.unmap);
   else if (b.dataset.exclude) saveExclude(b.dataset.exclude, true);
   else if (b.dataset.include) saveExclude(b.dataset.include, false);
 };
-$('tabbody').onchange = (e) => { const el = e.target.closest('select.tgt'); if (el) saveMapping(el.dataset.src, el.value); };
+$('tabbody').onchange = (e) => {
+  const inp = e.target.closest('.vmrow input');
+  if (inp) { if (!st.running) saveValues(inp.closest('.vmgroup')); return; } const el = e.target.closest('select.tgt'); if (el) saveMapping(el.dataset.src, el.value); };
 $('onlydiff').onchange = (e) => { st.onlyDiff = e.target.checked; st.detail && renderDetail(); };
 $('m-sim').onclick = () => { st.mode = 'simulation'; updateRun(); };
 $('m-live').onclick = () => { st.mode = 'live'; updateRun(); };
