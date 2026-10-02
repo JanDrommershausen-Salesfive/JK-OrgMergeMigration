@@ -50,7 +50,8 @@ Needs a re-run-safe key for those objects first, see the Klärungsliste.
 
 ## Further notes
 
-- Field/key decisions and open questions: [Klaerungsliste_US_EU_Feldabgleich_CDEV5.md](Klaerungsliste_US_EU_Feldabgleich_CDEV5.md)
+- Object scope and open items: [SFDMU_Objektumfang_und_offene_Punkte.md](../docs/SFDMU_Objektumfang_und_offene_Punkte.md)
+- Field/key decisions and open questions: [Klaerungsliste_US_EU_Feldabgleich_CDEV5.md](../docs/Klaerungsliste_US_EU_Feldabgleich_CDEV5.md)
 - `Insert` objects duplicate on every rerun until an `externalId` is defined.
 - Most queries filter `CreatedDate = LAST_N_DAYS:7`; the same filter is used on Readonly
   parents, so older parents show up as missing. Widen the filters for real runs.
