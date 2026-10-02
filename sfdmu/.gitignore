@@ -1,0 +1,6 @@
+# SFDMU run output and per-run copy of the shared mapping file
+*/target/
+*/reports/
+*/source/
+*/ValueMapping.csv
+*/*.log

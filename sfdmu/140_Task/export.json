@@ -1,0 +1,8 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, ActivityDate, CallDisposition, CallDurationInSeconds, CallObject, CallType, CompletedDateTime, Description, Email, IsRecurrence, IsReminderSet, Phone, Priority, RecurrenceInterval, RecurrenceRegeneratedType, Status, Subject, TaskSubtype, Type, WhatId, WhoId FROM Task WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Insert"
+    }
+  ]
+}

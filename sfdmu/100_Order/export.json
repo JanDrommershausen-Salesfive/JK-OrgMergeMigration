@@ -1,0 +1,28 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Name FROM Pricebook2",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Name, AccountId, CloseDate FROM Opportunity WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name;AccountId;CloseDate"
+    },
+    {
+      "query": "SELECT Id, Name, OpportunityId FROM Quote WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name;OpportunityId"
+    },
+    {
+      "query": "SELECT Id, AccountId, AccountNumber, ActivatedDate, BillingAddress, BillToContactId, CompanyAuthorizedDate, ContractEndDate, ContractId, ContractName, CustomerAuthorizedDate, Description, EffectiveDate, EndDate, IsReductionOrder, OpportunityId, OrderReferenceNumber, OriginalOrderId, PoDate, PoNumber, Pricebook2Id, QuoteId, ShippingAddress, ShipToContactId, Status, TotalAmount, Type FROM Order WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Insert"
+    }
+  ]
+}

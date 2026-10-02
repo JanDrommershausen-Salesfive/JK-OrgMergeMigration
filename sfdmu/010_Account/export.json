@@ -1,0 +1,10 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name, BillingStreet, BillingCity, BillingPostalCode, BillingCountry, Phone, Website, AccountNumber, AccountSource, AnnualRevenue, BillingAddress, Description, Fax, Industry, Jigsaw, NumberOfEmployees, Ownership, ParentId, Rating, ShippingAddress, Sic, SicDesc, Site, TickerSymbol, Tier, Type FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Upsert",
+      "externalId": "Name",
+      "useValuesMapping": true
+    }
+  ]
+}

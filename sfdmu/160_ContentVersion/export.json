@@ -1,0 +1,8 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, ContentSize, ContentSizeLong, Description, FileExtension, FileType, IsAssetEnabled, Language, SharingOption, SharingPrivacy, TagCsv, Title FROM ContentVersion WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Insert"
+    }
+  ]
+}

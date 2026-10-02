@@ -1,0 +1,15 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, FirstName, LastName, Email, Phone, AccountId, AssistantName, AssistantPhone, Birthdate, BuyerAttributes, ContactSource, Department, Description, DoNotCall, Fax, GenderIdentity, HasOptedOutOfEmail, HasOptedOutOfFax, HomePhone, Jigsaw, LastCURequestDate, LastCUUpdateDate, LeadSource, MailingAddress, MobilePhone, Name, OtherAddress, OtherPhone, Pronouns, ReportsToId, Title FROM Contact WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Upsert",
+      "externalId": "Email",
+      "useValuesMapping": true
+    }
+  ]
+}

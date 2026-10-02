@@ -1,0 +1,8 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, ActivityDate, ActivityDateTime, Attendees, Description, DurationInMinutes, Email, EndDateTime, EventSubtype, IsAllDayEvent, IsPrivate, IsRecurrence2, IsReminderSet, Location, Phone, ShowAs, StartDateTime, Subject, Type, WhatId, WhoId FROM Event WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Insert"
+    }
+  ]
+}

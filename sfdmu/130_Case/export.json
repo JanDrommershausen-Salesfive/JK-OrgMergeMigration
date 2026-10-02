@@ -1,0 +1,18 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Email FROM Contact WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Email"
+    },
+    {
+      "query": "SELECT Id, AccountId, AssetId, BusinessHoursId, ClosedDate, Comments, ContactEmail, ContactFax, ContactId, ContactMobile, ContactPhone, Description, IsClosedOnCreate, IsEscalated, Origin, ParentId, Priority, Reason, SourceId, Status, Subject, SuppliedCompany, SuppliedEmail, SuppliedName, SuppliedPhone, Type FROM Case WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Insert"
+    }
+  ]
+}

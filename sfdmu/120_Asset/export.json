@@ -1,0 +1,23 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Email FROM Contact WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Email"
+    },
+    {
+      "query": "SELECT Id, ProductCode FROM Product2",
+      "operation": "Readonly",
+      "externalId": "ProductCode"
+    },
+    {
+      "query": "SELECT Id, AccountId, Address, AssetLevel, ConsequenceOfFailure, ContactId, Description, DigitalAssetStatus, ExternalIdentifier, InstallDate, IsCompetitorProduct, IsInternal, LocationId, ManufactureDate, Name, ParentId, Price, Product2Id, ProductCode, ProductDescription, ProductFamily, PurchaseDate, Quantity, RootAssetId, SerialNumber, Status, StatusReason, StockKeepingUnit, UsageEndDate, Uuid FROM Asset WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Insert"
+    }
+  ]
+}

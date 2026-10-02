@@ -1,0 +1,23 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, ProductCode FROM Product2",
+      "operation": "Readonly",
+      "externalId": "ProductCode"
+    },
+    {
+      "query": "SELECT Id, Name FROM Pricebook2",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Product2Id, Pricebook2Id FROM PricebookEntry",
+      "operation": "Readonly",
+      "externalId": "Product2Id;Pricebook2Id"
+    },
+    {
+      "query": "SELECT Id, AvailableQuantity, Description, EndDate, ListPrice, OrderId, OriginalOrderItemId, Product2Id, PricebookEntryId, ProductCode, Quantity, QuoteLineItemId, ServiceDate, SubscriptionTerm, UnitPrice FROM OrderItem WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Insert"
+    }
+  ]
+}

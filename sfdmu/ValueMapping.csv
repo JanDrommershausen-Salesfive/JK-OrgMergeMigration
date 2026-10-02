@@ -1,0 +1,6 @@
+ObjectName,FieldName,RawValue,Value
+Account,BillingCountry,USA,United States
+Account,BillingCountry,England,United Kingdom
+Account,ShippingCountry,UK,United Kingdom
+Contact,MailingCountry,USA,United States
+Contact,MailingCountry,England,United Kingdom

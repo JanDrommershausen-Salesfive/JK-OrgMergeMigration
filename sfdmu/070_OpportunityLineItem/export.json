@@ -1,0 +1,33 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, ProductCode FROM Product2",
+      "operation": "Readonly",
+      "externalId": "ProductCode"
+    },
+    {
+      "query": "SELECT Id, Name FROM Pricebook2",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Product2Id, Pricebook2Id FROM PricebookEntry",
+      "operation": "Readonly",
+      "externalId": "Product2Id;Pricebook2Id"
+    },
+    {
+      "query": "SELECT Id, Name, AccountId, CloseDate FROM Opportunity WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name;AccountId;CloseDate"
+    },
+    {
+      "query": "SELECT Id, Description, Discount, ListPrice, Name, OpportunityId, Product2Id, PricebookEntryId, ProductCode, Quantity, ServiceDate, Subtotal, UnitPrice FROM OpportunityLineItem WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Insert"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Name FROM Pricebook2",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Name, StageName, CloseDate, Amount, AccountId, CampaignId, ContractId, Description, ExpectedRevenue, IqScore, IsPrivate, LeadSource, NextStep, Pricebook2Id, Probability, SyncedQuoteId, TotalOpportunityQuantity, Type FROM Opportunity WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Upsert",
+      "externalId": "Name;AccountId;CloseDate"
+    }
+  ]
+}

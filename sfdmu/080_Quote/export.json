@@ -1,0 +1,24 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name"
+    },
+    {
+      "query": "SELECT Id, Email FROM Contact WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Email"
+    },
+    {
+      "query": "SELECT Id, Name, AccountId, CloseDate FROM Opportunity WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Readonly",
+      "externalId": "Name;AccountId;CloseDate"
+    },
+    {
+      "query": "SELECT Id, AccountId, AdditionalAddress, AdditionalName, BillingAddress, BillingName, ContactId, ContractId, Description, Discount, Email, ExpirationDate, Fax, GrandTotal, IsSyncing, LineItemCount, Name, OpportunityId, Phone, QuoteToAddress, QuoteToName, ShippingAddress, ShippingHandling, ShippingName, Status, Subtotal, Tax, TotalPrice FROM Quote WHERE CreatedDate = LAST_N_DAYS:7",
+      "operation": "Upsert",
+      "externalId": "Name;OpportunityId"
+    }
+  ]
+}
