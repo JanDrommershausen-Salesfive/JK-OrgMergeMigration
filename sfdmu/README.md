@@ -23,6 +23,16 @@ sf org login web --alias CDEV5 --instance-url https://test.salesforce.com
 derives `--canmodify` from the live target. A copy of `ValueMapping.csv` is synced into the
 run folder before each run (gitignored there) — edit only the shared one in this directory.
 
+## GUI
+
+```bash
+npm run sfdmu:gui     # then open http://127.0.0.1:4173
+```
+
+Pick an object, choose simulation or live, start. Live runs require typing the target alias.
+Only one run at a time; closing the tab or "Abbrechen" stops the run. The GUI just calls
+`run.sh`, so all safety checks apply. It needs no `npm install`, only Node.
+
 ## How the folders relate
 
 Each `export.json` contains the object to migrate (full query, `Upsert`/`Insert`) plus its
