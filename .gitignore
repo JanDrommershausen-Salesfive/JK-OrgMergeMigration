@@ -49,3 +49,7 @@ $RECYCLE.BIN/
 
 # Test folder
 /test/
+
+# Migration Studio
+studio/packages/web/dist/
+runs/
