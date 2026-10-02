@@ -1,3 +1,27 @@
+# JK Org Merge Migration
+
+Datenmigration US-Org → EU-Org (JK) mit SFDMU, inklusive lokaler GUI.
+
+## Schnellstart
+
+Voraussetzungen: Git, Node 18+ und die [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli) (`sf`).
+
+```bash
+git clone https://github.com/JanDrommershausen-Salesfive/JK-OrgMergeMigration.git
+cd JK-OrgMergeMigration
+
+sf plugins install sfdmu                                   # einmalig, globales sf-Plugin
+sf org login web --alias us-prod                           # Quelle (US Production)
+sf org login web --alias CDEV5 --instance-url https://test.salesforce.com   # Ziel (EU CDEV5, Sandbox)
+
+npm run sfdmu:gui                                          # GUI öffnet sich im Browser
+```
+
+Die Aliase müssen genau `us-prod` und `CDEV5` heißen, `sfdmu/run.sh` prüft sie zusätzlich gegen feste Org-IDs.
+Die GUI braucht kein `npm install`. Details: [sfdmu/README.md](sfdmu/README.md), Projektdokumente: [docs/](docs/).
+
+---
+
 # Salesforce DX Project: Next Steps
 
 Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
