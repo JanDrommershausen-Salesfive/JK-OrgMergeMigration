@@ -17,7 +17,7 @@ npm run studio                                             # Migration Studio, h
 ```
 
 Orgs werden in der GUI ausgewählt (**Orgs auswählen**) und bei Bedarf dort per Browser angemeldet, VS Code ist nicht nötig.
-Die Auswahl pinnt die Org-IDs in `migration.project.json`; `sfdmu/run.sh` liest dieselbe Datei und stoppt, wenn ein Alias auf eine andere Org zeigt.
+Die Auswahl pinnt die Org-IDs in `migration.project.json`. Die Datei ist lokal (nicht im Git): Wer neu klont, wählt die Orgs einmal selbst aus. Wurde der Ordner kopiert, ignoriert das Studio die mitkopierte Datei. `sfdmu/run.sh` liest dieselbe Datei und stoppt, wenn ein Alias auf eine andere Org zeigt oder die Datei aus einem anderen Ordner stammt.
 Alternativ geht der Login weiter per CLI (`sf org login web --alias <alias>`).
 Die ältere GUI ohne Build (`npm run sfdmu:gui`) bleibt vorerst erhalten. Details: [studio/README.md](studio/README.md), [sfdmu/README.md](sfdmu/README.md), Projektdokumente: [docs/](docs/).
 

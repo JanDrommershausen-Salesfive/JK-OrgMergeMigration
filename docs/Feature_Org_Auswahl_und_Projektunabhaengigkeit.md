@@ -29,7 +29,7 @@ Die GUI soll nicht nur für JK (US PROD → EU CDEV5) funktionieren, sondern in 
 
 ## Projektkonfiguration
 
-Eine Datei pro Projekt, zum Beispiel `migration.project.json` im Projektordner (ohne Zugangsdaten, darf ins Git):
+Eine Datei pro Person und Projekt, `migration.project.json` im Projektordner (ohne Zugangsdaten, **nicht im Git**, siehe unten):
 
 ```json
 {
@@ -74,6 +74,9 @@ Eine Datei pro Projekt, zum Beispiel `migration.project.json` im Projektordner (
 - **`run.sh`** hat keine festen Aliase oder IDs mehr, sondern liest `migration.project.json`. Ohne die Datei bricht es ab.
 - **Live-Läufe** prüfen zusätzlich in `core`, dass das Ziel eine Sandbox ist und die Orgs den gepinnten IDs entsprechen.
 - Ohne `migration.project.json` zeigt die GUI "Orgs auswählen" und sperrt Läufe.
+
+- **Lokal statt im Git (2026-10-02):** `migration.project.json` steht in der `.gitignore`. Fehlt sie, startet die GUI mit "Orgs auswählen". Die Datei enthält `projectPath` (Ordner, in dem sie angelegt wurde). Stimmt er nicht mit dem aktuellen Ordner überein (Ordner kopiert), ignorieren Studio und `run.sh` die Datei und verlangen eine neue Auswahl.
+- **Folge:** Die Absicherung "Alias zeigt auf die gepinnte Org" gilt pro Rechner. Weil `protectedOrgIds` nicht mehr geteilt wird, bleibt der Schutz vor Produktivzielen im Wesentlichen die Sandbox-Prüfung des Ziels. Geplant: Projekteinstellungen (Name, Ordner, geschützte Org-IDs) in die versionierte `migration.config.json` ([Feature_Zentrale_Konfiguration_und_Orchestrierung.md](Feature_Zentrale_Konfiguration_und_Orchestrierung.md)), die persönliche Org-Wahl bleibt lokal.
 
 ## Noch offen
 

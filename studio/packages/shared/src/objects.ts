@@ -53,6 +53,7 @@ export const ObjectListResponseSchema = z.object({
     objects: z.array(ObjectSummarySchema),
     running: z.boolean(),
     configured: z.boolean(),
+    staleProjectPath: z.string().nullable(),
     sourceAlias: z.string(),
     targetAlias: z.string()
 });

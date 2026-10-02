@@ -20,7 +20,13 @@ import { listAvailableOrgs } from './orgs/available';
 import { loginOrg } from './orgs/login';
 import { checkPinnedOrg, checkTargetAllowed } from './orgs/safety';
 import { checkOrg } from './orgs/status';
-import { fromProject, loadRunConfig, type OrgPin, type RunConfig } from './project/runConfig';
+import {
+    fromProject,
+    loadRunConfig,
+    realPath,
+    type OrgPin,
+    type RunConfig
+} from './project/runConfig';
 import { saveProject } from './project/save';
 import { LastRunStore } from './runs/lastRuns';
 import { RunManager } from './runs/runManager';
@@ -48,6 +54,7 @@ export class Studio {
             objects: await listObjects(this.config.sfdmuDir, await this.lastRuns.all()),
             running: this.runs.status().running,
             configured: this.config.source !== null && this.config.target !== null,
+            staleProjectPath: this.config.staleProjectPath,
             sourceAlias: this.config.source?.alias ?? '',
             targetAlias: this.config.target?.alias ?? ''
         };
@@ -163,6 +170,7 @@ export class Studio {
             source: { alias: source.alias, orgId: source.orgId },
             target: { alias: target.alias, orgId: target.orgId },
             protectedOrgIds: [...protectedOrgIds],
+            projectPath: realPath(this.config.projectDir),
             objectsDir: this.relativeObjectsDir(),
             docsDir: this.config.docsDir
         };

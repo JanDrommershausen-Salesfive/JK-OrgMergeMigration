@@ -68,6 +68,7 @@ function OrgCard({
 
 interface HeaderProps {
     configured: boolean;
+    staleProjectPath: string | null;
     sourceAlias: string;
     targetAlias: string;
     running: boolean;
@@ -76,6 +77,7 @@ interface HeaderProps {
 
 export function OrgHeader({
     configured,
+    staleProjectPath,
     sourceAlias,
     targetAlias,
     running,
@@ -145,6 +147,8 @@ export function OrgHeader({
             ) : (
                 <p className="mt-4 text-sm text-white/85">
                     Für dieses Projekt sind noch keine Orgs festgelegt.
+                    {staleProjectPath &&
+                        ` Eine vorhandene Auswahl stammt aus ${staleProjectPath} und wird ignoriert.`}
                 </p>
             )}
         </header>

@@ -23,6 +23,7 @@ const objects = {
     ],
     running: false,
     configured: true,
+    staleProjectPath: null,
     sourceAlias: 'us-prod',
     targetAlias: 'CDEV5'
 };

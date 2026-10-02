@@ -31,12 +31,13 @@ read_project() {
     console.log(need(p.target && p.target.alias, "target.alias"));
     console.log(need(p.source && p.source.orgId, "source.orgId"));
     console.log(need(p.target && p.target.orgId, "target.orgId"));
+    console.log(p.projectPath || "");
     for (const id of p.protectedOrgIds || []) console.log(id);
   ' "$PROJECT_FILE"
 }
 PROJECT_VALUES=()
 while IFS= read -r line; do PROJECT_VALUES+=("$line"); done < <(read_project)
-if [[ ${#PROJECT_VALUES[@]} -lt 4 ]]; then
+if [[ ${#PROJECT_VALUES[@]} -lt 5 ]]; then
   echo "ABORT: could not read ${PROJECT_FILE}." >&2
   exit 1
 fi
@@ -44,10 +45,19 @@ SOURCE_ALIAS="${PROJECT_VALUES[0]}"
 TARGET_ALIAS="${PROJECT_VALUES[1]}"
 EXPECTED_SOURCE_ID="${PROJECT_VALUES[2]}"
 EXPECTED_TARGET_ID="${PROJECT_VALUES[3]}"
+PROJECT_PATH="${PROJECT_VALUES[4]}"
+
+# A copied project folder may carry a migration.project.json from somewhere else: refuse it.
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd -P)"
+if [[ -n "$PROJECT_PATH" && "$PROJECT_PATH" != "$PROJECT_ROOT" ]]; then
+  echo "ABORT: migration.project.json was created in ${PROJECT_PATH}, this is ${PROJECT_ROOT}." >&2
+  echo "Select source and target org again in Migration Studio." >&2
+  exit 1
+fi
 
 # Known production org IDs. The target must never resolve to one of these.
 PROD_ORG_IDS=()
-if [[ ${#PROJECT_VALUES[@]} -gt 4 ]]; then PROD_ORG_IDS=("${PROJECT_VALUES[@]:4}"); fi
+if [[ ${#PROJECT_VALUES[@]} -gt 5 ]]; then PROD_ORG_IDS=("${PROJECT_VALUES[@]:5}"); fi
 
 OBJECT_DIR_NAME="${1:-}"
 if [[ -z "$OBJECT_DIR_NAME" || ! -f "${SCRIPT_DIR}/${OBJECT_DIR_NAME}/export.json" ]]; then

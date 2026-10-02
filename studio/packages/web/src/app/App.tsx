@@ -30,6 +30,7 @@ export function App() {
         <div>
             <OrgHeader
                 configured={configured}
+                staleProjectPath={objects.data?.staleProjectPath ?? null}
                 sourceAlias={objects.data?.sourceAlias ?? ''}
                 targetAlias={objects.data?.targetAlias ?? ''}
                 running={run.running}

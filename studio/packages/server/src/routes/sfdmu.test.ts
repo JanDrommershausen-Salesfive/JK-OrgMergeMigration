@@ -89,7 +89,12 @@ describe('Projekt ohne Orgs', () => {
         const dir = await mkdtemp(path.join(tmpdir(), 'empty-'));
         const empty = await buildApp({ projectDir: dir, port });
         const objects = await empty.inject({ method: 'GET', url: '/api/objects', headers });
-        expect(objects.json()).toMatchObject({ configured: false, objects: [], sourceAlias: '' });
+        expect(objects.json()).toMatchObject({
+            configured: false,
+            staleProjectPath: null,
+            objects: [],
+            sourceAlias: ''
+        });
         const orgs = await empty.inject({ method: 'GET', url: '/api/orgs', headers });
         expect(orgs.statusCode).toBe(409);
         expect(orgs.json().error).toMatch(/Noch keine Orgs/);
