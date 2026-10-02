@@ -9,6 +9,8 @@ import type {
     ObjectListResponse,
     ProjectConfig,
     OrgsResponse,
+    RunDetail,
+    RunListResponse,
     RunEvent,
     RunMode,
     SelectOrgsRequest,
@@ -30,6 +32,9 @@ import {
 import { saveProject } from './project/save';
 import { LastRunStore } from './runs/lastRuns';
 import { RunManager } from './runs/runManager';
+import { archiveRun } from './results/archive';
+import { ResultStore } from './results/store';
+import { toCsv } from './sfdmu/csv';
 import { listObjects, objectDetail } from './sfdmu/objects';
 import { setFieldExcluded, setFieldMapping, setValueMapping } from './sfdmu/mutations';
 
@@ -38,11 +43,24 @@ export class Studio {
     private describeCache = new DescribeCache();
     private readonly lastRuns: LastRunStore;
     private runs: RunManager;
+    private readonly results: ResultStore;
     private loginInProgress = false;
 
     private constructor(private config: RunConfig) {
         this.lastRuns = new LastRunStore(config.projectDir);
-        this.runs = new RunManager(config.sfdmuDir, this.lastRuns);
+        this.results = new ResultStore(config.projectDir);
+        this.runs = new RunManager(config.sfdmuDir, this.lastRuns, async (end) => {
+            const c = this.config;
+            const { object } = await this.object(end.folder);
+            return archiveRun({
+                ...end,
+                projectDir: c.projectDir,
+                sfdmuDir: c.sfdmuDir,
+                object,
+                sourceAlias: c.source?.alias ?? '',
+                targetAlias: c.target?.alias ?? ''
+            });
+        });
     }
 
     static async open(projectDir: string): Promise<Studio> {
@@ -124,6 +142,45 @@ export class Studio {
 
     subscribeRun(listener: (event: RunEvent) => void): () => void {
         return this.runs.subscribe(listener);
+    }
+
+    async runResults(folder: string): Promise<RunListResponse> {
+        await this.object(folder); // unbekannter Ordner → 404
+        return { runs: await this.results.list(folder) };
+    }
+
+    async allRuns(): Promise<RunListResponse> {
+        return { runs: await this.results.listAll() };
+    }
+
+    async runDetail(folder: string, id: string): Promise<RunDetail> {
+        return this.results.detail(folder, id);
+    }
+
+    async runLog(folder: string, id: string): Promise<string> {
+        return this.results.log(folder, id);
+    }
+
+    // CSV für Excel (UTF-8 mit BOM) mit allen Fehlern bzw. fehlenden Parents eines Laufs.
+    async exportRun(folder: string, id: string, kind: 'errors' | 'missing-parents') {
+        const { errors, missing } = await this.results.tables(folder, id);
+        const rows =
+            kind === 'errors'
+                ? [
+                      ['Datei', 'Id', 'Old Id', 'Bezeichnung', 'Fehler'],
+                      ...errors.map((e) => [e.file, e.id, e.oldId, e.label, e.error])
+                  ]
+                : [
+                      ['Lookup-Feld', 'Parent-Objekt', 'Fehlender Wert', 'Record Id', 'Objekt'],
+                      ...missing.rows.map((r) => [
+                          r.lookupField,
+                          r.parentObject,
+                          r.value,
+                          r.recordId,
+                          r.object
+                      ])
+                  ];
+        return { filename: `${folder}_${id}_${kind}.csv`, text: '\uFEFF' + toCsv(rows, true) };
     }
 
     async availableOrgs(): Promise<AvailableOrgsResponse> {

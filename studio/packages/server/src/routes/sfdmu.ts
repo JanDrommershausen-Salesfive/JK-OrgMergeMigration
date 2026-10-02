@@ -11,6 +11,8 @@ import { z } from 'zod';
 import type { Studio } from '@studio/core';
 
 const FolderQuery = z.object({ folder: z.string() });
+const RunQuery = FolderQuery.extend({ id: z.string() });
+const ExportQuery = RunQuery.extend({ kind: z.enum(['errors', 'missing-parents']) });
 const DescribeQuery = FolderQuery.extend({ refresh: z.enum(['0', '1']).optional() });
 
 // Objekte, Felder, Mappings und Orgs. Die Routen validieren nur und rufen Studio auf.
@@ -31,6 +33,25 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
     app.post('/valuemapping', (req) =>
         studio.setValueMapping(ValueMappingRequestSchema.parse(req.body))
     );
+
+    app.get('/results/all', () => studio.allRuns());
+    app.get('/results', (req) => studio.runResults(FolderQuery.parse(req.query).folder));
+    app.get('/results/run', (req) => {
+        const q = RunQuery.parse(req.query);
+        return studio.runDetail(q.folder, q.id);
+    });
+    app.get('/results/log', async (req) => {
+        const q = RunQuery.parse(req.query);
+        return { log: await studio.runLog(q.folder, q.id) };
+    });
+    app.get('/results/export', async (req, reply) => {
+        const q = ExportQuery.parse(req.query);
+        const file = await studio.exportRun(q.folder, q.id, q.kind);
+        return reply
+            .header('Content-Type', 'text/csv; charset=utf-8')
+            .header('Content-Disposition', `attachment; filename="${file.filename}"`)
+            .send(file.text);
+    });
 
     app.get('/run', () => studio.runStatus());
     app.post('/run', async (req, reply) => {

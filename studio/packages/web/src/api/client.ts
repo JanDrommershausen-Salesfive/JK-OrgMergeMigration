@@ -4,6 +4,9 @@ import {
     ObjectDetailSchema,
     ObjectListResponseSchema,
     OrgsResponseSchema,
+    RunDetailSchema,
+    RunListResponseSchema,
+    RunLogResponseSchema,
     RunStatusSchema,
     type ExcludeRequest,
     type LoginRequest,
@@ -43,6 +46,14 @@ export const api = {
     login: (req: LoginRequest) => request('/api/orgs/login', AvailableOrgsResponseSchema, req),
     selectOrgs: (req: SelectOrgsRequest) =>
         request('/api/orgs/select', ObjectListResponseSchema, req),
+    runs: (folder: string) => request(`/api/results?folder=${enc(folder)}`, RunListResponseSchema),
+    allRuns: () => request('/api/results/all', RunListResponseSchema),
+    runDetail: (folder: string, id: string) =>
+        request(`/api/results/run?folder=${enc(folder)}&id=${enc(id)}`, RunDetailSchema),
+    runLog: (folder: string, id: string) =>
+        request(`/api/results/log?folder=${enc(folder)}&id=${enc(id)}`, RunLogResponseSchema),
+    exportUrl: (folder: string, id: string, kind: 'errors' | 'missing-parents') =>
+        `/api/results/export?folder=${enc(folder)}&id=${enc(id)}&kind=${kind}`,
     runStatus: () => request('/api/run', RunStatusSchema),
     startRun: (folder: string, mode: RunMode) =>
         request('/api/run', RunStatusSchema, { folder, mode }),

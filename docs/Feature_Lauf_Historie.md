@@ -1,6 +1,6 @@
 # Feature: Lauf-Historie
 
-Stand: 2026-10-02 · Status: Konzept, noch nicht gebaut
+Stand: 2026-10-02 · Status: Archiv pro Lauf umgesetzt (zentral unter `runs/<Ordner>/<Zeitstempel>/`), Vergleich und Aufräumen offen. Details: [GUI_Ergebnis_Tab_Idee.md](GUI_Ergebnis_Tab_Idee.md)
 
 ## Ziel
 

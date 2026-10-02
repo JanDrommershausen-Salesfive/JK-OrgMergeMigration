@@ -117,3 +117,17 @@ Der Umbau ist klein, solange der Prototyp klein ist. Jede Woche später wird er 
 ## Weiter offen
 
 - **Build/Start:** `npm run studio` (baut und startet) und `npm run studio:dev` (Vite + Server mit Hot Reload).
+
+## Navigation der GUI (2026-10-02)
+
+Hauptnavigation oben, jede Ansicht hat eine eigene Adresse (React Router), damit Neuladen, "Zurück" und Links funktionieren. Der Server liefert für alle Adressen außer `/api` die GUI aus.
+
+| Bereich | Adresse | Inhalt |
+|---|---|---|
+| Übersicht | `/` | Ein Blick auf den letzten Lauf jedes Objekts, Lauf starten |
+| Konfiguration | `/konfiguration/:objekt/felder`, `…/wertemapping` | Objektliste, Feldvergleich und Mapping, Wertemapping |
+| Läufe | `/laeufe/:objekt/:lauf?ansicht=fehler` | Läufe aller Objekte (filterbar), Details mit Kacheln als Umschalter |
+
+- **Lauf starten** läuft über einen Dialog mit bewusster Wahl von Simulation oder Live (Live mit eigener Bestätigung), von Übersicht und Konfiguration aus.
+- **Nach Laufende** erscheint ein Hinweis mit Link zum Ergebnis, statt automatisch umzuschalten. Das Terminal bleibt auf jeder Seite unten.
+- **Ordner:** `pages/` (eine Datei je Adresse), `features/<bereich>/` (Bausteine), `app/` (Layout und Routen). Die Seitenstruktur ist erweiterbar um Batches, Sandbox und Chat als weitere Bereiche.

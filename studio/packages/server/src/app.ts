@@ -41,6 +41,13 @@ export async function buildApp({ projectDir, webDist, port }: AppOptions) {
 
     if (webDist && existsSync(webDist)) {
         await app.register(fastifyStatic, { root: path.resolve(webDist) });
+        // Die GUI hat eigene URLs (/laeufe/…): alles außer /api liefert index.html.
+        app.setNotFoundHandler((req, reply) => {
+            if (req.method === 'GET' && !req.url.startsWith('/api')) {
+                return reply.sendFile('index.html');
+            }
+            return reply.code(404).send({ error: 'Nicht gefunden' });
+        });
     }
     return app;
 }

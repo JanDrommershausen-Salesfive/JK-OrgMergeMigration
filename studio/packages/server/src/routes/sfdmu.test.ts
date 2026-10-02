@@ -7,9 +7,11 @@ import { buildApp } from '../app';
 const port = 4174;
 const headers = { host: `127.0.0.1:${port}` };
 let app: Awaited<ReturnType<typeof buildApp>>;
+let projectDir = '';
 
 beforeAll(async () => {
     const dir = await mkdtemp(path.join(tmpdir(), 'proj-'));
+    projectDir = dir;
     const sfdmu = path.join(dir, 'sfdmu');
     await mkdir(path.join(sfdmu, '020_Contact'), { recursive: true });
     await writeFile(
@@ -115,5 +117,98 @@ describe('Projekt ohne Orgs', () => {
             payload: { sourceAlias: 'a b', targetAlias: 'x' }
         });
         expect(sel.statusCode).toBe(400);
+    });
+});
+
+describe('Ergebnis-Routen', () => {
+    const id = '2026-10-02T16-24-38Z';
+
+    beforeAll(async () => {
+        const dir = path.join(projectDir, 'runs', '020_Contact', id);
+        await mkdir(path.join(dir, 'target'), { recursive: true });
+        await writeFile(
+            path.join(dir, 'meta.json'),
+            JSON.stringify({
+                id,
+                folder: '020_Contact',
+                object: 'Contact',
+                mode: 'simulation',
+                startedAt: '2026-10-02T16:24:38.000Z',
+                endedAt: '2026-10-02T16:24:42.000Z',
+                durationMs: 4000,
+                ok: true,
+                stopped: false,
+                exitCode: 0,
+                signal: null,
+                sourceAlias: 'a',
+                targetAlias: 'b',
+                counts: {
+                    inserted: 1,
+                    updated: 0,
+                    deleted: 0,
+                    errors: 1,
+                    missingParents: 0,
+                    warnings: 0
+                },
+                summary: [],
+                warnings: [],
+                logErrors: []
+            })
+        );
+        await writeFile(path.join(dir, 'log.txt'), 'LOGTEXT');
+        await writeFile(
+            path.join(dir, 'target', 'Contact_insert_target.csv'),
+            '"Id","Old Id","Email","Errors"\n"F1","003A","a@b.de","Pflichtfeld fehlt"\n'
+        );
+    });
+
+    it('listet Läufe und liefert Details, Log und CSV', async () => {
+        const list = await app.inject({
+            method: 'GET',
+            url: '/api/results?folder=020_Contact',
+            headers
+        });
+        expect(list.json().runs.map((r: { id: string }) => r.id)).toEqual([id]);
+
+        const detail = await app.inject({
+            method: 'GET',
+            url: `/api/results/run?folder=020_Contact&id=${id}`,
+            headers
+        });
+        expect(detail.json()).toMatchObject({
+            errorsTotal: 1,
+            errors: [{ error: 'Pflichtfeld fehlt' }]
+        });
+
+        const log = await app.inject({
+            method: 'GET',
+            url: `/api/results/log?folder=020_Contact&id=${id}`,
+            headers
+        });
+        expect(log.json()).toEqual({ log: 'LOGTEXT' });
+
+        const csv = await app.inject({
+            method: 'GET',
+            url: `/api/results/export?folder=020_Contact&id=${id}&kind=errors`,
+            headers
+        });
+        expect(csv.headers['content-type']).toMatch(/text\/csv/);
+        expect(csv.headers['content-disposition']).toMatch(/attachment/);
+        expect(csv.body).toContain('Pflichtfeld fehlt');
+    });
+
+    it('antwortet 404 bei unbekanntem Lauf und lehnt Pfadtricks ab', async () => {
+        const unknown = await app.inject({
+            method: 'GET',
+            url: '/api/results/run?folder=020_Contact&id=nix',
+            headers
+        });
+        expect(unknown.statusCode).toBe(404);
+        const evil = await app.inject({
+            method: 'GET',
+            url: '/api/results/run?folder=020_Contact&id=..%2F..',
+            headers
+        });
+        expect(evil.statusCode).toBe(404);
     });
 });

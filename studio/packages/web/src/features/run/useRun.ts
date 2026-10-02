@@ -10,7 +10,19 @@ export function useRun() {
     const client = useQueryClient();
     const status = useRunStatus();
     const [log, setLog] = useState('');
+    const [finished, setFinished] = useState<string | null>(null); // Ordner des zuletzt beendeten Laufs
     const source = useRef<EventSource | null>(null);
+    const running = status.data?.running ?? false;
+    const runningFolder = useRef<string | null>(null);
+
+    // Läuft ein Lauf nicht mehr, merkt sich der Hinweis ("Ergebnis ansehen") den Ordner.
+    useEffect(() => {
+        if (running) runningFolder.current = status.data?.folder ?? null;
+        else if (runningFolder.current) {
+            setFinished(runningFolder.current);
+            runningFolder.current = null;
+        }
+    }, [running, status.data?.folder]);
 
     const disconnect = useCallback(() => {
         source.current?.close();
@@ -32,6 +44,7 @@ export function useRun() {
             disconnect();
             void client.invalidateQueries({ queryKey: ['run'] });
             void client.invalidateQueries({ queryKey: ['objects'] });
+            void client.invalidateQueries({ queryKey: ['runs'] });
         };
     }, [client, disconnect]);
 
@@ -56,5 +69,14 @@ export function useRun() {
 
     const stop = useCallback(() => void api.stopRun(), []);
 
-    return { running: status.data?.running ?? false, log, clearLog: () => setLog(''), start, stop };
+    return {
+        running,
+        runningFolder: status.data?.folder ?? null,
+        finished,
+        dismissFinished: () => setFinished(null),
+        log,
+        clearLog: () => setLog(''),
+        start,
+        stop
+    };
 }

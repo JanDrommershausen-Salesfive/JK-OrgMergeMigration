@@ -82,3 +82,28 @@ export function useSaveValueMapping() {
         onSuccess: (d) => storeDetail(client, d)
     });
 }
+
+// Archivierte Läufe eines Objekts, neueste zuerst. Wird nach jedem Lauf neu geladen (Schlüssel 'runs').
+export const useRuns = (folder: string | null) =>
+    useQuery({
+        queryKey: ['runs', folder],
+        queryFn: () => api.runs(folder as string),
+        enabled: folder !== null
+    });
+
+// Läufe aller Objekte, neueste zuerst (Schlüssel beginnt mit 'runs', wird nach jedem Lauf neu geladen).
+export const useAllRuns = () => useQuery({ queryKey: ['runs', 'all'], queryFn: api.allRuns });
+
+export const useRunDetail = (folder: string, id: string | null) =>
+    useQuery({
+        queryKey: ['runDetail', folder, id],
+        queryFn: () => api.runDetail(folder, id as string),
+        enabled: id !== null
+    });
+
+export const useRunLog = (folder: string, id: string | null, enabled: boolean) =>
+    useQuery({
+        queryKey: ['runLog', folder, id],
+        queryFn: () => api.runLog(folder, id as string),
+        enabled: enabled && id !== null
+    });

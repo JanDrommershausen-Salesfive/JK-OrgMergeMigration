@@ -7,7 +7,13 @@ export const LastRunSchema = z.object({
     at: z.string(),
     mode: RunModeSchema,
     ok: z.boolean(),
-    stopped: z.boolean()
+    stopped: z.boolean(),
+    // Kennzahlen des Laufs (ältere Einträge haben sie nicht)
+    inserted: z.number().optional(),
+    updated: z.number().optional(),
+    errors: z.number().optional(),
+    missingParents: z.number().optional(),
+    runId: z.string().optional()
 });
 export type LastRun = z.infer<typeof LastRunSchema>;
 

@@ -1,51 +1,41 @@
-import type { LastRun, ObjectSummary } from '@studio/shared';
+import type { ObjectSummary } from '@studio/shared';
+import { NavLink } from 'react-router';
+import { formatWhen, lastRunFindings, statusIcon } from '../results/format';
 
-const time = (iso: string) =>
-    new Date(iso).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-
-function LastRunBadge({ run }: { run: LastRun | null }) {
-    if (!run) return null;
-    const title = `Letzter Lauf: ${run.mode === 'live' ? 'Live' : 'Simulation'}, ${new Date(run.at).toLocaleString('de-DE')}${run.ok ? '' : ', fehlgeschlagen oder abgebrochen'}`;
+// Objektliste der Konfiguration. Der Status des letzten Laufs steht unter dem Namen,
+// damit lange Texte den Namen nicht verdrängen.
+export function ObjectList({ objects }: { objects: ObjectSummary[] }) {
     return (
-        <span
-            className={`flex-none text-xs ${run.ok ? 'text-ok' : 'text-bad'} group-aria-[current=true]:text-white`}
-            title={title}
-        >
-            {run.ok ? '✓' : '✕'} {time(run.at)}
-            {run.mode === 'live' ? ' L' : ''}
-        </span>
-    );
-}
-
-interface Props {
-    objects: ObjectSummary[];
-    selected: string | null;
-    disabled: boolean;
-    onSelect: (folder: string) => void;
-}
-
-export function ObjectList({ objects, selected, disabled, onSelect }: Props) {
-    return (
-        <ul className="m-0 max-h-[640px] list-none overflow-auto p-2 max-lg:max-h-52">
+        <ul className="m-0 max-h-[70vh] list-none overflow-auto p-2 max-lg:max-h-52">
             {objects.map((o) => {
                 const [num, ...rest] = o.folder.split('_');
+                const run = o.lastRun;
+                const findings = run ? lastRunFindings(run) : '';
                 return (
                     <li key={o.folder}>
-                        <button
-                            type="button"
-                            disabled={disabled}
-                            aria-current={o.folder === selected}
-                            onClick={() => onSelect(o.folder)}
-                            className="group flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-grey-100 aria-[current=true]:bg-deep aria-[current=true]:text-white disabled:cursor-not-allowed"
+                        <NavLink
+                            to={`/konfiguration/${o.folder}`}
+                            className={({ isActive }) =>
+                                `group flex items-start gap-2 rounded-lg px-3 py-2 ${isActive ? 'bg-deep text-white' : 'hover:bg-grey-100'}`
+                            }
                         >
-                            <span className="w-6 flex-none text-xs text-grey-500 group-aria-[current=true]:text-open-blue">
+                            <span className="w-6 flex-none pt-0.5 text-xs text-grey-500 group-aria-[current=page]:text-open-blue">
                                 {num}
                             </span>
-                            <span className="min-w-0 flex-1 truncate text-sm">
-                                {rest.join('_')}
+                            <span className="min-w-0 flex-1">
+                                <span className="block truncate text-sm">{rest.join('_')}</span>
+                                {run && (
+                                    <span
+                                        className={`block truncate text-xs ${run.ok ? 'text-ok' : 'text-bad'} group-aria-[current=page]:text-white/80`}
+                                        title={`Letzter Lauf: ${run.mode === 'live' ? 'Live' : 'Simulation'}, ${new Date(run.at).toLocaleString('de-DE')}`}
+                                    >
+                                        {statusIcon(run)} {formatWhen(run.at)}
+                                        {run.mode === 'live' ? ' · Live' : ''}
+                                        {findings && ` · ${findings}`}
+                                    </span>
+                                )}
                             </span>
-                            <LastRunBadge run={o.lastRun} />
-                        </button>
+                        </NavLink>
                     </li>
                 );
             })}
