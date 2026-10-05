@@ -1,11 +1,13 @@
 import type { Cohort, Filter, FilterNode, FilterValue } from '@studio/shared';
 
 export const ruleText = (c: Cohort): string =>
-    c.rule.kind === 'sample'
-        ? c.rule.filters.length
-            ? `Zufällig ${c.rule.size}, ${c.rule.filters.length} Filter`
-            : `Zufällig ${c.rule.size}, ohne Filter`
-        : `${c.rule.ids.length} feste Ids`;
+    c.series
+        ? `Block ${c.series.index} von ${c.series.total}, nach Erstelldatum`
+        : c.rule.kind === 'sample'
+          ? c.rule.filters.length
+              ? `Zufällig ${c.rule.size}, ${c.rule.filters.length} Filter`
+              : `Zufällig ${c.rule.size}, ohne Filter`
+          : `${c.rule.ids.length} feste Ids`;
 
 const valueText = (v: FilterValue): string => {
     switch (v.kind) {

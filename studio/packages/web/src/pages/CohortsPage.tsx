@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { NavLink, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useCohorts } from '../api/queries';
 import { Button, Panel } from '../components/ui';
 import { CohortDetail } from '../features/cohorts/CohortDetail';
+import { CohortList } from '../features/cohorts/CohortList';
+import { NewSeriesDialog } from '../features/cohorts/NewSeriesDialog';
 import { CohortsIntro } from '../features/cohorts/CohortsIntro';
 import { NewCohortDialog } from '../features/cohorts/NewCohortDialog';
-import { ruleText } from '../features/cohorts/cohortText';
 
 // Kohorten: feste Mengen von Account-Datensätzen für Batch-Läufe in kleiner Sandbox.
 export function CohortsPage() {
@@ -13,6 +14,7 @@ export function CohortsPage() {
     const navigate = useNavigate();
     const cohorts = useCohorts();
     const [creating, setCreating] = useState(false);
+    const [creatingSeries, setCreatingSeries] = useState(false);
     const list = cohorts.data?.cohorts ?? [];
     const selected = list.find((c) => c.id === id) ?? null;
 
@@ -24,9 +26,14 @@ export function CohortsPage() {
                 <Panel label="Kohorten">
                     <div className="flex items-center justify-between px-4 pt-4 pb-2">
                         <h2 className="text-xs font-bold text-digital-blue">KOHORTEN</h2>
-                        <Button small onClick={() => setCreating(true)}>
-                            + Neu
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button small variant="ghost" onClick={() => setCreatingSeries(true)}>
+                                Serie …
+                            </Button>
+                            <Button small onClick={() => setCreating(true)}>
+                                + Neu
+                            </Button>
+                        </div>
                     </div>
                     {!list.length && (
                         <p className="p-4 text-sm text-grey-500">
@@ -34,28 +41,7 @@ export function CohortsPage() {
                             testen.
                         </p>
                     )}
-                    <ul className="m-0 max-h-[70vh] list-none overflow-auto p-2">
-                        {list.map((c) => (
-                            <li key={c.id}>
-                                <NavLink
-                                    to={`/kohorten/${c.id}`}
-                                    className={({ isActive }) =>
-                                        `block rounded-lg px-3 py-2 ${isActive ? 'bg-deep text-white' : 'hover:bg-grey-100'}`
-                                    }
-                                >
-                                    <span className="block truncate text-sm font-bold">
-                                        {c.name}
-                                    </span>
-                                    <span className="block truncate text-xs opacity-70">
-                                        {c.count} {c.rootObject} · {ruleText(c)}
-                                    </span>
-                                    <span className="block truncate text-xs opacity-70">
-                                        angelegt {new Date(c.createdAt).toLocaleDateString('de-DE')}
-                                    </span>
-                                </NavLink>
-                            </li>
-                        ))}
-                    </ul>
+                    <CohortList cohorts={list} />
                 </Panel>
                 <Panel label="Kohorten-Details">
                     {selected ? (
@@ -72,6 +58,12 @@ export function CohortsPage() {
                         </p>
                     )}
                 </Panel>
+                <NewSeriesDialog
+                    open={creatingSeries}
+                    rootObject="Account"
+                    onClose={() => setCreatingSeries(false)}
+                    onCreated={(firstId) => navigate(`/kohorten/${firstId}`)}
+                />
                 <NewCohortDialog
                     open={creating}
                     rootObject="Account"

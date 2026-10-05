@@ -1,4 +1,5 @@
 import { mkdir } from 'node:fs/promises';
+import { MAX_COHORT_SIZE } from '@studio/shared';
 import path from 'node:path';
 import type {
     AvailableOrgsResponse,
@@ -22,6 +23,10 @@ import type {
     CohortListResponse,
     CohortPreview,
     CreateCohortRequest,
+    CreateSeriesRequest,
+    CreateSeriesResponse,
+    SeriesPreview,
+    SeriesPreviewRequest,
     DescribeResponse,
     ExcludeRequest,
     LoginRequest,
@@ -66,6 +71,10 @@ import {
     cohortId,
     cohortPreview,
     cohortRecordsSoql,
+    countSeriesRecords,
+    resolveSeriesIds,
+    seriesCohorts,
+    blockCount,
     linksFor,
     resolveCohortIds
 } from './cohorts';
@@ -261,6 +270,57 @@ export class Studio {
         };
         await this.cohorts.save(cohort);
         return cohort;
+    }
+
+    // Wie viele Datensätze und Blöcke eine Serie ergäbe (lesend, ohne etwas anzulegen).
+    async seriesPreview(req: SeriesPreviewRequest): Promise<SeriesPreview> {
+        const size = req.blockSize ?? MAX_COHORT_SIZE;
+        const total = req.ids
+            ? new Set(req.ids).size
+            : await countSeriesRecords({
+                  rootObject: ROOT_OBJECT,
+                  filters: req.filters ?? [],
+                  sourceAlias: this.requireOrgs().source.alias,
+                  run: sfQuery
+              });
+        return {
+            total,
+            blocks: blockCount(total, size),
+            lastBlock: total % size || Math.min(size, total)
+        };
+    }
+
+    // Legt aus allen Root-Datensätzen (nach Erstelldatum) feste Blöcke als Kohorten an.
+    async createSeries(req: CreateSeriesRequest): Promise<CreateSeriesResponse> {
+        const ids = await resolveSeriesIds({
+            rootObject: ROOT_OBJECT,
+            filters: req.filters ?? [],
+            ids: req.ids,
+            sourceAlias: this.requireOrgs().source.alias,
+            run: sfQuery
+        });
+        const cohorts = seriesCohorts({
+            name: req.name,
+            rootObject: ROOT_OBJECT,
+            ids,
+            blockSize: req.blockSize ?? MAX_COHORT_SIZE,
+            filters: req.filters ?? [],
+            seriesId: cohortId(req.name)
+        });
+        for (const c of cohorts) await this.cohorts.save(c);
+        return {
+            seriesId: cohorts[0]!.series!.id,
+            blocks: cohorts.length,
+            total: ids.length,
+            firstCohortId: cohorts[0]!.id
+        };
+    }
+
+    async deleteSeries(seriesId: string): Promise<number> {
+        const members = (await this.cohorts.list()).filter((c) => c.series?.id === seriesId);
+        if (!members.length) throw notFound('Unbekannte Serie.');
+        for (const c of members) await this.cohorts.delete(c.id);
+        return members.length;
     }
 
     async deleteCohort(id: string): Promise<void> {

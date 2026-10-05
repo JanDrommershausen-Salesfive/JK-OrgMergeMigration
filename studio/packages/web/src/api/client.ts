@@ -11,6 +11,10 @@ import {
     ProposalSchema,
     QuickQueryResultSchema,
     CohortListResponseSchema,
+    CreateSeriesResponseSchema,
+    SeriesPreviewSchema,
+    type CreateSeriesRequest,
+    type SeriesPreviewRequest,
     ImportTodosResponseSchema,
     TodoItemSchema,
     TodoListResponseSchema,
@@ -172,6 +176,22 @@ export const api = {
     createCohort: (req: CreateCohortRequest) => request('/api/cohorts', CohortSchema, req),
     deleteCohort: async (id: string) => {
         const res = await fetch('/api/cohorts/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        if (!res.ok)
+            throw new Error(
+                ((await res.json().catch(() => null)) as { error?: string } | null)?.error ??
+                    `HTTP ${res.status}`
+            );
+    },
+    seriesPreview: (req: SeriesPreviewRequest) =>
+        request('/api/cohorts/series/preview', SeriesPreviewSchema, req),
+    createSeries: (req: CreateSeriesRequest) =>
+        request('/api/cohorts/series', CreateSeriesResponseSchema, req),
+    deleteSeries: async (id: string) => {
+        const res = await fetch('/api/cohorts/series/delete', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id })

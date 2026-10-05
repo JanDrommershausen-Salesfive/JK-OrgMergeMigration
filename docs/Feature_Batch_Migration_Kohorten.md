@@ -66,6 +66,12 @@ Jeder Batch ist ein Eintrag in der Lauf-Historie ([Feature_Lauf_Historie.md](Fea
 - **Objekte, die der Kohorte nicht folgen** (Stammdaten wie Product2, Pricebook2, PricebookEntry, und Objekte ohne Account-Eintrag in der Konfiguration wie OrderItem, Task, Event, ContentVersion) starten mit einer Kohorte nicht und laufen ohne Kohorte vollständig.
 - Geprüft per Simulation: Contact auf die Kohorte Test 20 liefert 7 Contacts, passend zur Vorschau.
 
+### Kohorten-Serie (Stand 2026-10-05)
+
+Für die ganze Org (18.831 Accounts) in Stücken: **Serie …** auf der Kohorten-Seite schneidet alle Accounts der Quelle nach `CreatedDate, Id` (älteste zuerst, Id als eindeutiger Zweitschlüssel) in feste Blöcke zu höchstens 500. Jeder Block ist eine Kohorte (`Alle Accounts 01/38` …), jede Id steckt in genau einem Block. Optional mit Filter oder mit eigener Id-Liste (Reihenfolge bleibt erhalten, Existenz wird in der Quelle geprüft). Vorschau zeigt vorher "18.831 Accounts → 38 Kohorten". Die Liste links fasst eine Serie zu einem Eintrag zusammen, "Ganze Serie löschen" entfernt alle Blöcke.
+
+Warum 500: Gemessen mit `sf data query` gegen die Quelle gehen Id-Listen bis mindestens 650 Ids, ab 700 antwortet Salesforce mit einer HTML-Fehlerseite (die Abfrage steckt in der Adresse, die etwa 16 KB lang sein darf). 500 lässt Puffer.
+
 ### Noch offen
 
 - Objekte ohne Account-Eintrag (OrderItem über Order, Task/Event über `WhatId`, ContentVersion) brauchen entweder Parent-Einträge in der Konfiguration oder eine automatisch erzeugte Kette.

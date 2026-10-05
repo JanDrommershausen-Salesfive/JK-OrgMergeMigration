@@ -148,6 +148,24 @@ export function useCreateCohort() {
     });
 }
 
+export const useSeriesPreview = () => useMutation({ mutationFn: api.seriesPreview });
+
+export function useCreateSeries() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.createSeries,
+        onSuccess: () => void client.invalidateQueries({ queryKey: ['cohorts'] })
+    });
+}
+
+export function useDeleteSeries() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.deleteSeries,
+        onSuccess: () => void client.invalidateQueries({ queryKey: ['cohorts'] })
+    });
+}
+
 export function useDeleteCohort() {
     const client = useQueryClient();
     return useMutation({

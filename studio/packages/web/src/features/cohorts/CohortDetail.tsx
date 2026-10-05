@@ -1,6 +1,11 @@
 import type { Cohort } from '@studio/shared';
 import { useState } from 'react';
-import { useCohortPreview, useCohortRecords, useDeleteCohort } from '../../api/queries';
+import {
+    useCohortPreview,
+    useCohortRecords,
+    useDeleteCohort,
+    useDeleteSeries
+} from '../../api/queries';
 import { Button } from '../../components/ui';
 import { CohortRecords } from './CohortRecords';
 import { CompositionCard, ContentsCard } from './CohortSummary';
@@ -14,6 +19,8 @@ export function CohortDetail({ cohort, onDeleted }: { cohort: Cohort; onDeleted:
     const preview = useCohortPreview(cohort.id, wanted);
     const records = useCohortRecords(cohort.id, true); // eine Abfrage, deshalb gleich beim Öffnen
     const del = useDeleteCohort();
+    const delSeries = useDeleteSeries();
+    const [confirmSeries, setConfirmSeries] = useState(false);
     const rows = preview.data?.rows ?? [];
     const total = rows.reduce((sum, r) => sum + (r.count ?? 0), 0);
 
@@ -132,6 +139,39 @@ export function CohortDetail({ cohort, onDeleted }: { cohort: Cohort; onDeleted:
                 >
                     Kohorte löschen
                 </Button>
+                {cohort.series &&
+                    (confirmSeries ? (
+                        <span className="ml-3 text-[13px]">
+                            Alle {cohort.series.total} Kohorten der Serie löschen?{' '}
+                            <Button
+                                variant="danger"
+                                small
+                                disabled={delSeries.isPending}
+                                onClick={() =>
+                                    delSeries.mutate(cohort.series!.id, { onSuccess: onDeleted })
+                                }
+                            >
+                                Ja, Serie löschen
+                            </Button>{' '}
+                            <Button variant="ghost" small onClick={() => setConfirmSeries(false)}>
+                                Abbrechen
+                            </Button>
+                        </span>
+                    ) : (
+                        <Button
+                            variant="ghost"
+                            small
+                            className="ml-3"
+                            onClick={() => setConfirmSeries(true)}
+                        >
+                            Ganze Serie löschen
+                        </Button>
+                    ))}
+                {delSeries.isError && (
+                    <span role="alert" className="ml-3 text-[13px] text-bad">
+                        {delSeries.error.message}
+                    </span>
+                )}
                 {del.isError && (
                     <span role="alert" className="ml-3 text-[13px] text-bad">
                         {del.error.message}

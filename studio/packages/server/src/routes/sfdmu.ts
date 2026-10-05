@@ -1,5 +1,7 @@
 import {
     CleanPlanRequestSchema,
+    CreateSeriesRequestSchema,
+    SeriesPreviewRequestSchema,
     QuickQueryRequestSchema,
     ImportTodosRequestSchema,
     UpdateTodoRequestSchema,
@@ -146,6 +148,16 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
 
     app.get('/cohorts', () => studio.listCohorts());
     app.post('/cohorts', (req) => studio.createCohort(CreateCohortRequestSchema.parse(req.body)));
+    app.post('/cohorts/series/preview', (req) =>
+        studio.seriesPreview(SeriesPreviewRequestSchema.parse(req.body))
+    );
+    app.post('/cohorts/series', (req) =>
+        studio.createSeries(CreateSeriesRequestSchema.parse(req.body))
+    );
+    app.post('/cohorts/series/delete', async (req, reply) => {
+        await studio.deleteSeries(IdBody.parse(req.body).id);
+        return reply.code(204).send();
+    });
     app.post('/cohorts/delete', async (req, reply) => {
         await studio.deleteCohort(IdBody.parse(req.body).id);
         return reply.code(204).send();

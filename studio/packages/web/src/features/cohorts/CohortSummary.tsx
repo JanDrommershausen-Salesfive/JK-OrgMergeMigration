@@ -10,7 +10,32 @@ export function CompositionCard({ cohort }: { cohort: Cohort }) {
     return (
         <section aria-label="Zusammensetzung" className={card}>
             <h3 className="mb-2 text-xs font-bold text-digital-blue">ZUSAMMENSETZUNG</h3>
-            {rule.kind === 'sample' ? (
+            {cohort.series ? (
+                <>
+                    <p className="m-0 text-base font-bold">
+                        Block {cohort.series.index} von {cohort.series.total} der Serie „
+                        {cohort.series.name}“
+                    </p>
+                    <p className="mt-2 mb-1 text-[13px] text-grey-500">
+                        Alle {cohort.rootObject}s der Quelle nach Erstelldatum sortiert (älteste
+                        zuerst) und in feste Blöcke geschnitten. Jede Id steckt in genau einem
+                        Block.
+                        {cohort.series.filters.length > 0 && ' Eingegrenzt auf:'}
+                    </p>
+                    {cohort.series.filters.length > 0 && (
+                        <ul className="m-0 list-none space-y-1 p-0">
+                            {cohort.series.filters.map((n, i) => (
+                                <li
+                                    key={i}
+                                    className="rounded-lg bg-grey-100 px-3 py-1 font-mono text-[13px]"
+                                >
+                                    {nodeText(n)}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </>
+            ) : rule.kind === 'sample' ? (
                 <>
                     <p className="m-0 text-base font-bold">
                         Zufällige Stichprobe: {rule.size} {cohort.rootObject}

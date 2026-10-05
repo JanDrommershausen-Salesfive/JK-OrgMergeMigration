@@ -22,6 +22,16 @@ export const CohortRuleSchema = z.discriminatedUnion('kind', [
 ]);
 export type CohortRule = z.infer<typeof CohortRuleSchema>;
 
+// Gehört eine Kohorte zu einer Serie: ein Block von höchstens 500 Datensätzen aus allen, sortiert nach Erstelldatum.
+export const CohortSeriesSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    index: z.number().int().min(1), // Nummer des Blocks, ab 1
+    total: z.number().int().min(1), // Zahl der Blöcke der Serie
+    filters: z.array(FilterNodeSchema).default([]) // womit die Serie eingegrenzt wurde
+});
+export type CohortSeries = z.infer<typeof CohortSeriesSchema>;
+
 // Eine Kohorte ist eine feste Menge von Root-Datensätzen (Account) der Quelle. Alle abhängigen Objekte folgen ihr.
 export const CohortSchema = z.object({
     id: z.string(),
@@ -30,7 +40,8 @@ export const CohortSchema = z.object({
     rootObject: z.string(),
     rule: CohortRuleSchema,
     ids: z.array(z.string()),
-    count: z.number()
+    count: z.number(),
+    series: CohortSeriesSchema.optional()
 });
 export type Cohort = z.infer<typeof CohortSchema>;
 
@@ -56,3 +67,38 @@ export type CohortPreviewRow = z.infer<typeof CohortPreviewRowSchema>;
 
 export const CohortPreviewSchema = z.object({ rows: z.array(CohortPreviewRowSchema) });
 export type CohortPreview = z.infer<typeof CohortPreviewSchema>;
+
+// Serie: alle Datensätze (oder die gefilterten) nach Erstelldatum sortiert in feste Blöcke geschnitten.
+const SeriesSourceSchema = z.object({
+    blockSize: z.number().int().min(1).max(MAX_COHORT_SIZE).default(MAX_COHORT_SIZE),
+    filters: z.array(FilterNodeSchema).max(20).default([]),
+    // Statt aus der Quelle: eigene Id-Liste, die Reihenfolge bleibt erhalten
+    ids: z
+        .array(z.string().regex(/^[a-zA-Z0-9]{15,18}$/, 'Ungültige Id'))
+        .min(1)
+        .max(60000)
+        .optional()
+});
+
+export const SeriesPreviewRequestSchema = SeriesSourceSchema;
+export type SeriesPreviewRequest = z.input<typeof SeriesPreviewRequestSchema>;
+
+export const SeriesPreviewSchema = z.object({
+    total: z.number(),
+    blocks: z.number(),
+    lastBlock: z.number()
+});
+export type SeriesPreview = z.infer<typeof SeriesPreviewSchema>;
+
+export const CreateSeriesRequestSchema = SeriesSourceSchema.extend({
+    name: z.string().trim().min(1).max(50)
+});
+export type CreateSeriesRequest = z.input<typeof CreateSeriesRequestSchema>;
+
+export const CreateSeriesResponseSchema = z.object({
+    seriesId: z.string(),
+    blocks: z.number(),
+    total: z.number(),
+    firstCohortId: z.string()
+});
+export type CreateSeriesResponse = z.infer<typeof CreateSeriesResponseSchema>;
