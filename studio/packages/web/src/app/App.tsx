@@ -1,6 +1,8 @@
 import { Route, Routes } from 'react-router';
 import { ConfigPage } from '../pages/ConfigPage';
 import { CohortsPage } from '../pages/CohortsPage';
+import { OrgCleanerPage } from '../pages/OrgCleanerPage';
+import { ToolsPage } from '../pages/ToolsPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { RunsPage } from '../pages/RunsPage';
 import { AppLayout } from './AppLayout';
@@ -16,6 +18,8 @@ export function App() {
                 <Route path="konfiguration/:folder/:tab" element={<ConfigPage />} />
                 <Route path="kohorten" element={<CohortsPage />} />
                 <Route path="kohorten/:id" element={<CohortsPage />} />
+                <Route path="tools" element={<ToolsPage />} />
+                <Route path="tools/org-cleaner" element={<OrgCleanerPage />} />
                 <Route path="laeufe" element={<RunsPage />} />
                 <Route path="laeufe/:folder/:id" element={<RunsPage />} />
                 <Route path="*" element={<OverviewPage />} />

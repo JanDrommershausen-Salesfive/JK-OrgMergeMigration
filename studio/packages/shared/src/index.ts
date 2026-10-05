@@ -6,3 +6,4 @@ export * from './project';
 export * from './runs';
 export * from './results';
 export * from './query';
+export * from './cleaner';

@@ -286,3 +286,45 @@ describe('Kohorten-Routen', () => {
         expect(del.statusCode).toBe(404);
     });
 });
+
+describe('Cleaner-Routen', () => {
+    it('lehnt Pläne ohne gewählte Objekte ab und braucht ausgewählte Orgs', async () => {
+        const empty = await app.inject({
+            method: 'POST',
+            url: '/api/tools/cleaner/plan',
+            headers,
+            payload: { objects: [], scope: { creator: 'me' } }
+        });
+        expect(empty.statusCode).toBe(400);
+        const bad = await app.inject({
+            method: 'POST',
+            url: '/api/tools/cleaner/plan',
+            headers,
+            payload: { objects: ['Account; DROP'], scope: { creator: 'me' } }
+        });
+        expect(bad.statusCode).toBe(400);
+        const badDate = await app.inject({
+            method: 'POST',
+            url: '/api/tools/cleaner/plan',
+            headers,
+            payload: { objects: ['Account'], scope: { creator: 'me', since: 'gestern' } }
+        });
+        expect(badDate.statusCode).toBe(400);
+    });
+
+    it('meldet den Status und verlangt beim Start die Bestätigung', async () => {
+        const status = await app.inject({
+            method: 'GET',
+            url: '/api/tools/cleaner/status',
+            headers
+        });
+        expect(status.json()).toEqual({ running: false });
+        const noConfirm = await app.inject({
+            method: 'POST',
+            url: '/api/tools/cleaner/start',
+            headers,
+            payload: { objects: ['Account'], scope: { creator: 'me' } }
+        });
+        expect(noConfirm.statusCode).toBe(400); // confirm fehlt
+    });
+});

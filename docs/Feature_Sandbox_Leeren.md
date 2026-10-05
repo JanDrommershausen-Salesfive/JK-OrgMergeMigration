@@ -1,47 +1,63 @@
-# Feature: Sandbox jederzeit leeren
+# Feature: Org Cleaner (Sandbox leeren)
 
-Stand: 2026-10-02 · Status: Konzept, noch nicht gebaut
+Stand: 2026-10-05 · Status: umgesetzt (Tools → Org Cleaner). Plan und Zählen sind gegen CDEV5 geprüft, das eigentliche Löschen nur mit einem simulierten Ziel getestet.
 
 ## Ziel
 
-Die Ziel-Sandbox soll per Knopfdruck (und mit Absicherung) von migrierten Daten befreit werden, damit ein Testlauf schnell neu starten kann, ohne die Sandbox neu zu erstellen.
+Die Ziel-Sandbox hat wenig Speicher. Für Testzyklen (laden, prüfen, löschen, laden) soll sie sich schnell und gefahrlos von den migrierten Daten befreien lassen, auch wenn Abhängigkeiten das Löschen blockieren (zum Beispiel Cases, Orders und Entitlements am Account).
 
-## Ansätze im Vergleich
+## Was Salesforce dazu sagt (Dokumentation)
 
-| Ansatz | Vorteile | Nachteile |
-|---|---|---|
-| **Löschen per SFDMU** (Operation Delete, umgekehrte Reihenfolge) | Nutzt vorhandene Konfiguration und Org-Prüfungen | Pro Objekt ein Lauf, Konfiguration pro Objekt nötig |
-| **Löschen per Bulk-API** (`sf data delete bulk` oder Hard Delete) | Schnell, einfach pro Objekt | Eigene Reihenfolge- und Fehlerlogik nötig |
-| **Sandbox neu erstellen/refreshen** | Sauberster Zustand, auch Metadaten | Langsam, Refresh-Intervalle, setzt Metadaten zurück |
+- **Papierkorb:** Gelöschte Datensätze liegen 15 Tage im Papierkorb und **zählen nicht zum Datenspeicher**. Sie bremsen aber die Datenbank bei großen Mengen. Das Bulk API 2.0 kennt deshalb einen **Hard Delete**, der den Papierkorb umgeht (Berechtigung "Bulk API Hard Delete"). Eine frühere Fassung dieses Dokuments behauptete das Gegenteil und war falsch.
+- **Account löschen:** Kontakte, Opportunities, Contracts (nicht aktiviert), Aktivitäten, Notizen und Anhänge werden mitgelöscht. Es verhindern das Löschen unter anderem: zugehörige **Cases**, Opportunities anderer Besitzer, aktive Contracts, Portal-Kontakte und Kontakte, die einer Order als Bill-To-Contact dienen.
+- **Orders:** Nur Orders im Status Draft lassen sich löschen. Aktivierte Orders müssen vorher auf Draft gesetzt werden, Positionen aktivierter Orders lassen sich nicht löschen.
+- **Hinweis zu `restrictedDelete`:** Das Describe eines Objekts nennt seine Kind-Beziehungen und markiert die, die das Löschen verhindern. Für Account in CDEV5 sind das Case, Contract, Order, Entitlement, ServiceContract, ServiceResource, RecordAlert, GoalAssignment und zwei Einwilligungsobjekte.
 
-**Empfehlung:** Löschen über Bulk-API mit Hard Delete, gesteuert von der GUI in umgekehrter Abhängigkeitsreihenfolge (Kinder zuerst). Refresh nur, wenn auch Metadaten zurückgesetzt werden sollen.
+## So arbeitet der Cleaner
 
-## Wichtige Punkte
+1. **Umfang wählen:** Standard ist **nur von mir angelegte Datensätze** (Ersteller = Benutzer des Ziel-Alias), optional ab einem Datum. Das schützt Daten, die mit der Sandbox kamen. In CDEV5 liegen zum Beispiel 96 Accounts von fünf Erstellern, 2.022 Cases, 18.164 Produkte und 56.101 Preiseinträge. "Alle Datensätze" ist möglich, aber deutlich gekennzeichnet.
+2. **Objekte wählen:** die Migrationsobjekte aus den Objektordnern.
+3. **Plan berechnen** (liest nur): Reihenfolge Kinder vor Eltern (Migrationsreihenfolge rückwärts), je Objekt die Zahl der Datensätze im Umfang. Dazu **Blocker**: Objekte, die laut Describe das Löschen eines Objekts im Plan verhindern und im Umfang Datensätze haben, kommen automatisch davor. Beispiel aus CDEV5: 50 Entitlements blockieren das Löschen der Accounts. Die Berechnung dauert etwa eine Minute (viele Zählabfragen, fünf gleichzeitig).
+4. **Löschen:** Der Alias der Ziel-Org muss eingetippt werden. Der Plan wird dabei frisch berechnet. Ausgeführt wird pro Schritt: Ids abfragen, per Bulk API 2.0 löschen (Hard Delete, bei fehlender Berechtigung normal), Rest zählen. Bis zu **drei Durchläufe**: Was beim ersten Mal an einer Abhängigkeit scheiterte, wird erneut versucht, sobald andere Schritte Datensätze entfernt haben. Fortschritt und Protokoll erscheinen live, der Auftrag lässt sich anhalten.
 
-- **Reihenfolge:** Kinder vor Eltern (aus `dependsOn`, siehe [Feature_Zentrale_Konfiguration_und_Orchestrierung.md](Feature_Zentrale_Konfiguration_und_Orchestrierung.md)). Sonst scheitert das Löschen an Referenzen.
-- **Papierkorb:** Gelöschte Datensätze belegen weiter Speicher, bis der Papierkorb geleert ist. Daher Hard Delete oder Papierkorb leeren, sonst bringt das Leeren bei Speicherlimits nichts.
-- **Nur eigene Daten löschen:** Standardmäßig nur Datensätze, die aus der Migration stammen (zum Beispiel über ein Marker-Feld oder die Id-Liste aus dem Lauf, siehe [Feature_Lauf_Historie.md](Feature_Lauf_Historie.md)). Alles löschen nur als bewusste zweite Option, weil die Sandbox auch Testdaten anderer enthalten kann.
-- **Systemobjekte und Automatisierung:** Trigger, Flows und Validierungsregeln feuern auch beim Löschen. Prüfen, ob sie das Löschen blockieren oder Nebenwirkungen haben.
-- **Aufbewahrte Beziehungen:** Dateien (ContentDocument), Anhänge und Verlaufsdaten extra berücksichtigen.
+### Sonderfälle
 
-## Sicherheitsrahmen (strikt)
+- **ContentVersion:** wird über ContentDocument gelöscht (löscht alle Versionen).
+- **Pricebook2:** das Standard-Preisbuch bleibt (nicht löschbar).
+- **Order:** aktivierte Orders werden zuerst auf Draft gesetzt.
 
-- Nur gegen die gepinnte Ziel-Org. Org-ID wird vor dem Lauf mit der gepinnten ID verglichen.
-- **Nie** gegen eine Produktivorg (`IsSandbox = false` blockiert hart). Siehe [Feature_Org_Auswahl_und_Projektunabhaengigkeit.md](Feature_Org_Auswahl_und_Projektunabhaengigkeit.md).
-- Bestätigung durch Eintippen des Ziel-Alias, zusätzlich Anzeige der Anzahl der zu löschenden Datensätze je Objekt.
-- Standardmäßig Vorschau (Zählung ohne Löschen), Löschen nur nach ausdrücklicher Bestätigung.
-- Protokoll in der Historie.
+## Projektregeln: cleaner.config.json
 
-## Ablauf in der GUI
+Projektspezifisches, das Salesforce nicht meldet, steht in `cleaner.config.json` im Projektordner (versioniert):
 
-1. Button "Sandbox leeren" im Bereich Ziel-Org.
-2. Vorschau: Anzahl je Objekt, geschätzter freigegebener Speicher.
-3. Bestätigung durch Eintippen des Aliases.
-4. Löschen in Reihenfolge mit Live-Log, Abbruch bei Fehler.
-5. Ergebnis (gelöscht, übrig, Fehler) und Hinweis auf den Papierkorb.
+```json
+{
+  "exclude": [],
+  "blockers": [
+    { "object": "Entitlement", "field": "AccountId", "blocks": "Account", "anyCreator": true,
+      "note": "wird beim Anlegen eines Accounts automatisch erzeugt" }
+  ]
+}
+```
 
-## Zu klären
+- **blockers:** Objekte, die das Löschen eines anderen verhindern und immer in den Plan gehören. `anyCreator: true` löscht sie unabhängig vom Ersteller, sinnvoll für Datensätze, die Automatisierung beim Anlegen erzeugt (zum Beispiel das Entitlement mit dem Namen des Accounts). Die Regel gilt nur für Datensätze, die an Accounts im Umfang hängen.
+- **exclude:** Objekte, die der Cleaner nie anfasst, zum Beispiel Stammdaten, die bleiben sollen.
+- **defaultScope** (optional): Voreinstellung für den Umfang.
+- Die Regeln erscheinen im Formular unter "Projektregeln".
 
-- Typ und Berechtigungen der Sandbox: Darf die Integration `Hard Delete` nutzen (Berechtigung "Bulk API Hard Delete")?
-- Gibt es in CDEV5 Daten, die nicht gelöscht werden dürfen (Basisdaten, Testdaten anderer)? Davon hängt "nur Migrationsdaten" oder "alles" ab.
-- Marker für Migrationsdaten: eigenes Feld (Metadatenänderung in der Ziel-Org nötig) oder Id-Listen aus den Läufen?
+Weitere Blocker dieses Projekts (zum Beispiel durch Trigger oder Validierungsregeln, die das Löschen verhindern) trägst du hier ein, sobald sie auffallen. Die Fehlermeldung beim Löschen nennt meist das blockierende Objekt.
+
+## Sicherheit
+
+- Gelöscht wird **nur in der gepinnten Ziel-Org**, nie in der Quelle. Die Org kommt nicht aus der Anfrage, sondern aus `migration.project.json`.
+- Das Ziel muss eine **Sandbox** sein und darf nicht als geschützt gelten; die gepinnte Org-ID muss zum Alias passen (dieselben Prüfungen wie beim Live-Lauf).
+- **Alias eintippen** zur Bestätigung, serverseitig geprüft. Der Plan wird beim Start neu berechnet, nicht aus der Anfrage übernommen.
+- Während eines Migrationslaufs läuft kein Löschauftrag und umgekehrt.
+- Protokoll und Ergebnis jedes Auftrags liegen lokal unter `runs/.cleaner/<Zeitstempel>/`.
+
+## Noch offen
+
+- **Echter Löschlauf** noch nicht gegen CDEV5 ausgeführt. Erster Test sinnvoll mit kleinem Umfang (ein Objekt, ab heutigem Datum).
+- Blocker über mehr als eine Stufe (Blocker des Blockers) und Fehler durch Trigger, Flows oder Validierungsregeln beim Löschen.
+- Löschen als Schritt eines Testzyklus (Kohorte laden → prüfen → löschen) an einer Stelle.
+- Speicheranzeige der Ziel-Sandbox vor und nach dem Löschen.

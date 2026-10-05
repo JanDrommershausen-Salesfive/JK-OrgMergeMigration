@@ -1,0 +1,12 @@
+{
+  "exclude": [],
+  "blockers": [
+    {
+      "object": "Entitlement",
+      "field": "AccountId",
+      "blocks": "Account",
+      "anyCreator": true,
+      "note": "wird beim Anlegen eines Accounts automatisch erzeugt"
+    }
+  ]
+}

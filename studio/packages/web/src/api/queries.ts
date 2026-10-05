@@ -164,3 +164,10 @@ export const useCohortPreview = (id: string | null, enabled: boolean) =>
         enabled: enabled && id !== null,
         staleTime: 5 * 60 * 1000
     });
+
+export const useCleanerRules = () =>
+    useQuery({ queryKey: ['cleanerRules'], queryFn: api.cleanerRules });
+export const useCleanerStatus = () =>
+    useQuery({ queryKey: ['cleanerStatus'], queryFn: api.cleanerStatus });
+// Der Plan zählt in der Ziel-Org (dauert eine Minute) und wird deshalb nur auf Knopfdruck berechnet.
+export const useCleanerPlan = () => useMutation({ mutationFn: api.cleanerPlan });

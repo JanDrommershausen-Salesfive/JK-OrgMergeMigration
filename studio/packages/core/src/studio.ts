@@ -2,6 +2,10 @@ import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import type {
     AvailableOrgsResponse,
+    CleanEvent,
+    CleanPlan,
+    CleanPlanRequest,
+    StartCleanRequest,
     Cohort,
     CohortListResponse,
     CohortPreview,
@@ -50,7 +54,16 @@ import {
     linksFor,
     resolveCohortIds
 } from './cohorts';
+import {
+    CleanerManager,
+    buildPlan,
+    executePlan,
+    loadCleanerRules,
+    type ChildRelation
+} from './cleaner';
+import { sf } from './orgs/sf';
 import { checkQuery, sfQuery } from './query/check';
+import { objectOf, targetObject } from './sfdmu/exportConfig';
 import { listFolders, readExport } from './sfdmu/exportConfig';
 import { writeFileAtomic } from './util/fs';
 import { changeFields, queryModel, saveFilters, setParentMode } from './query/model';
@@ -68,12 +81,14 @@ export class Studio {
     private runs: RunManager;
     private readonly results: ResultStore;
     private readonly cohorts: CohortStore;
+    private readonly cleaner: CleanerManager;
     private loginInProgress = false;
 
     private constructor(private config: RunConfig) {
         this.lastRuns = new LastRunStore(config.projectDir);
         this.results = new ResultStore(config.projectDir);
         this.cohorts = new CohortStore(config.projectDir);
+        this.cleaner = new CleanerManager(config.projectDir);
         this.runs = new RunManager(config.sfdmuDir, this.lastRuns, async (end) => {
             const c = this.config;
             const { object } = await this.object(end.folder);
@@ -308,6 +323,123 @@ export class Studio {
         });
     }
 
+    // --- Org Cleaner (löscht Daten in der Ziel-Sandbox) ---
+
+    // Löschen ist nur in der gepinnten Ziel-Org erlaubt, und nur wenn sie eine Sandbox ist und nicht als geschützt gilt.
+    private async assertCleanAllowed(): Promise<{ alias: string; username: string }> {
+        const { source, target } = await this.orgs();
+        if (!source.connected || !target.connected)
+            throw conflict('Quelle und Ziel müssen verbunden sein.');
+        const pins = this.requireOrgs();
+        for (const p of [
+            checkPinnedOrg(pins.source.orgId, source.orgId),
+            checkPinnedOrg(pins.target.orgId, target.orgId)
+        ]) {
+            if (!p.ok) throw conflict(p.reason);
+        }
+        const safety = checkTargetAllowed({
+            source: { alias: source.alias, orgId: source.orgId, isSandbox: source.isSandbox },
+            target: { alias: target.alias, orgId: target.orgId, isSandbox: target.isSandbox },
+            protectedOrgIds: this.config.protectedOrgIds
+        });
+        if (!safety.ok) throw conflict(`Löschen blockiert: ${safety.reason}`);
+        return { alias: target.alias, username: target.username ?? '' };
+    }
+
+    private async migrationObjects(): Promise<string[]> {
+        const out: string[] = [];
+        for (const f of listFolders(this.config.sfdmuDir)) {
+            out.push(objectOf(targetObject(await readExport(this.config.sfdmuDir, f))));
+        }
+        return out;
+    }
+
+    private async buildCleanPlan(req: CleanPlanRequest): Promise<CleanPlan> {
+        const { alias, username } = await this.assertCleanAllowed();
+        const userRows = await sfQuery(
+            alias,
+            `SELECT Id FROM User WHERE Username = '${username.replace(/'/g, "\\'")}'`
+        );
+        const userId = String(userRows.records[0]?.Id ?? '');
+        if (!userId) throw conflict(`Benutzer ${username} in ${alias} nicht gefunden.`);
+
+        const childCache = new Map<string, ChildRelation[]>();
+        return buildPlan({
+            request: req,
+            migrationObjects: await this.migrationObjects(),
+            rules: await loadCleanerRules(this.config.projectDir),
+            alias,
+            username,
+            userId,
+            deps: {
+                count: async (soql) => (await sfQuery(alias, soql)).totalSize,
+                children: async (object) => {
+                    const hit = childCache.get(object);
+                    if (hit) return hit;
+                    const r = await sf(['sobject', 'describe', '-s', object, '-o', alias], 120_000);
+                    if (r.status !== 0) throw new Error(r.message ?? 'Describe fehlgeschlagen');
+                    const rels: ChildRelation[] = (r.result?.childRelationships ?? []).map(
+                        (c: ChildRelation) => ({
+                            childSObject: c.childSObject,
+                            field: c.field,
+                            restrictedDelete: !!c.restrictedDelete,
+                            cascadeDelete: !!c.cascadeDelete
+                        })
+                    );
+                    childCache.set(object, rels);
+                    return rels;
+                },
+                activatedOrderStatuses: async () =>
+                    (
+                        await sfQuery(
+                            alias,
+                            "SELECT ApiName FROM OrderStatus WHERE StatusCode = 'Activated'"
+                        ).catch(() => ({ records: [] }))
+                    ).records.map((x) => String(x.ApiName))
+            }
+        });
+    }
+
+    async cleanerRules() {
+        return loadCleanerRules(this.config.projectDir);
+    }
+
+    async cleanerPlan(req: CleanPlanRequest): Promise<CleanPlan> {
+        return this.buildCleanPlan(req);
+    }
+
+    cleanerRunning(): boolean {
+        return this.cleaner.running;
+    }
+
+    // Startet das Löschen. Der Plan wird frisch berechnet (nicht aus der Anfrage übernommen), der Alias muss eingetippt sein.
+    async startCleaner(req: StartCleanRequest): Promise<void> {
+        this.assertIdle();
+        const { alias } = await this.assertCleanAllowed();
+        if (req.confirm !== alias) throw conflict(`Zur Bestätigung den Alias ${alias} eingeben.`);
+        const plan = await this.buildCleanPlan(req);
+        this.cleaner.start((ctx) =>
+            executePlan({
+                plan,
+                alias,
+                hardDelete: req.hardDelete,
+                run: sfQuery,
+                sf,
+                workDir: ctx.workDir,
+                emit: ctx.emit,
+                isStopped: ctx.isStopped
+            })
+        );
+    }
+
+    stopCleaner(): void {
+        this.cleaner.stop();
+    }
+
+    subscribeCleaner(listener: (e: CleanEvent) => void): () => void {
+        return this.cleaner.subscribe(listener);
+    }
+
     async runResults(folder: string): Promise<RunListResponse> {
         await this.object(folder); // unbekannter Ordner → 404
         return { runs: await this.results.list(folder) };
@@ -412,8 +544,8 @@ export class Studio {
     }
 
     private assertIdle(): void {
-        if (this.runs.status().running) {
-            throw conflict('Während eines Laufs ist das nicht möglich.');
+        if (this.runs.status().running || this.cleaner.running) {
+            throw conflict('Während eines Laufs oder Löschauftrags ist das nicht möglich.');
         }
     }
 

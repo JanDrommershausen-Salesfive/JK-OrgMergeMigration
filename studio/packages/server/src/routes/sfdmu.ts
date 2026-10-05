@@ -1,4 +1,5 @@
 import {
+    CleanPlanRequestSchema,
     CreateCohortRequestSchema,
     ExcludeRequestSchema,
     LoginRequestSchema,
@@ -7,6 +8,7 @@ import {
     SaveFiltersRequestSchema,
     SetFieldsRequestSchema,
     SelectOrgsRequestSchema,
+    StartCleanRequestSchema,
     StartRunRequestSchema,
     ValueMappingRequestSchema
 } from '@studio/shared';
@@ -76,6 +78,34 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
             .header('Content-Type', 'text/csv; charset=utf-8')
             .header('Content-Disposition', `attachment; filename="${file.filename}"`)
             .send(file.text);
+    });
+
+    app.post('/tools/cleaner/plan', (req) =>
+        studio.cleanerPlan(CleanPlanRequestSchema.parse(req.body))
+    );
+    app.post('/tools/cleaner/start', async (req, reply) => {
+        await studio.startCleaner(StartCleanRequestSchema.parse(req.body));
+        return reply.code(202).send({ running: true });
+    });
+    app.post('/tools/cleaner/stop', async (_req, reply) => {
+        studio.stopCleaner();
+        return reply.code(204).send();
+    });
+    app.get('/tools/cleaner/rules', () => studio.cleanerRules());
+    app.get('/tools/cleaner/status', () => ({ running: studio.cleanerRunning() }));
+    app.get('/tools/cleaner/events', (req, reply) => {
+        reply.hijack();
+        const res = reply.raw;
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream; charset=utf-8',
+            'Cache-Control': 'no-cache',
+            Connection: 'keep-alive'
+        });
+        const unsubscribe = studio.subscribeCleaner((event) => {
+            res.write(`data: ${JSON.stringify(event)}\n\n`);
+            if (event.type === 'end') res.end();
+        });
+        req.raw.on('close', unsubscribe);
     });
 
     app.get('/cohorts', () => studio.listCohorts());

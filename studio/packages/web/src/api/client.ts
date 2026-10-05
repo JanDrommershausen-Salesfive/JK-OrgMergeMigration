@@ -1,5 +1,8 @@
 import {
     AvailableOrgsResponseSchema,
+    CleanPlanSchema,
+    CleanStatusSchema,
+    CleanerRulesSchema,
     CohortListResponseSchema,
     CohortPreviewSchema,
     CohortSchema,
@@ -13,7 +16,9 @@ import {
     RunListResponseSchema,
     RunLogResponseSchema,
     RunStatusSchema,
+    type CleanPlanRequest,
     type CreateCohortRequest,
+    type StartCleanRequest,
     type ExcludeRequest,
     type ParentModeRequest,
     type SaveFiltersRequest,
@@ -81,6 +86,15 @@ export const api = {
     runStatus: () => request('/api/run', RunStatusSchema),
     startRun: (folder: string, mode: RunMode, cohortId?: string, keepFilters?: boolean) =>
         request('/api/run', RunStatusSchema, { folder, mode, cohortId, keepFilters }),
+    cleanerRules: () => request('/api/tools/cleaner/rules', CleanerRulesSchema),
+    cleanerStatus: () => request('/api/tools/cleaner/status', CleanStatusSchema),
+    cleanerPlan: (req: CleanPlanRequest) =>
+        request('/api/tools/cleaner/plan', CleanPlanSchema, req),
+    cleanerStart: (req: StartCleanRequest) =>
+        request('/api/tools/cleaner/start', CleanStatusSchema, req),
+    cleanerStop: async () => {
+        await fetch('/api/tools/cleaner/stop', { method: 'POST' });
+    },
     cohorts: () => request('/api/cohorts', CohortListResponseSchema),
     createCohort: (req: CreateCohortRequest) => request('/api/cohorts', CohortSchema, req),
     deleteCohort: async (id: string) => {
