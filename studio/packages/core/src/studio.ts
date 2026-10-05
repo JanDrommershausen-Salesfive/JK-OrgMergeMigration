@@ -30,6 +30,8 @@ import type {
     ObjectListResponse,
     ParentModeRequest,
     QueryCheck,
+    QuickQueryRequest,
+    QuickQueryResult,
     QueryModel,
     ProjectConfig,
     OrgsResponse,
@@ -80,6 +82,7 @@ import { checkQuery, sfQuery } from './query/check';
 import { objectOf, targetObject } from './sfdmu/exportConfig';
 import { listFolders, readExport } from './sfdmu/exportConfig';
 import { writeFileAtomic } from './util/fs';
+import { runQuickQuery } from './query/quick';
 import { changeFields, queryModel, saveFilters, setParentMode } from './query/model';
 import { RunManager } from './runs/runManager';
 import { archiveRun } from './results/archive';
@@ -331,6 +334,12 @@ export class Studio {
         return this.queryModel(req.folder);
     }
 
+    // Freie, lesende SOQL-Abfrage gegen die Quelle oder das Ziel dieses Projekts (Tools → Query-Editor).
+    async quickQuery(req: QuickQueryRequest): Promise<QuickQueryResult> {
+        const orgs = this.requireOrgs();
+        return runQuickQuery((req.org === 'source' ? orgs.source : orgs.target).alias, req.soql);
+    }
+
     // Lesende Prüfung gegen Quelle und Ziel: Treffer, Beispielzeilen, fehlende Parents.
     async checkQuery(folder: string): Promise<QueryCheck> {
         const model = await this.queryModel(folder);
@@ -351,6 +360,13 @@ export class Studio {
 
     async savePreset(req: SavePresetRequest): Promise<PresetInfo> {
         return this.presets.save(req.folder, { name: req.name, note: req.note });
+    }
+
+    // Sichert den aktuellen Stand als Backup, außer er entspricht schon einer gespeicherten Version.
+    // Rückgabe: Name des neuen Backups oder null.
+    async backupIfUnsaved(folder: string, name: string, note: string): Promise<string | null> {
+        if ((await this.presets.list(folder)).some((p) => p.matchesCurrent)) return null;
+        return (await this.presets.save(folder, { name, note, source: 'backup' })).name;
     }
 
     // Was würde sich ändern, wenn dieser Stand geladen wird?

@@ -229,3 +229,5 @@ const useTodoMutation = <V, R>(fn: (v: V) => Promise<R>) => {
 export const useImportTodos = () => useTodoMutation(api.importTodos);
 export const useUpdateTodo = () => useTodoMutation(api.updateTodo);
 export const useDeleteTodo = () => useTodoMutation(api.deleteTodo);
+
+export const useQuickQuery = () => useMutation({ mutationFn: api.quickQuery });

@@ -1,5 +1,6 @@
 import {
     CleanPlanRequestSchema,
+    QuickQueryRequestSchema,
     ImportTodosRequestSchema,
     UpdateTodoRequestSchema,
     DeletePresetRequestSchema,
@@ -98,6 +99,7 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
         await studio.deletePreset(DeletePresetRequestSchema.parse(req.body));
         return reply.code(204).send();
     });
+    app.post('/tools/query', (req) => studio.quickQuery(QuickQueryRequestSchema.parse(req.body)));
     app.get('/tools/limits', () => studio.orgLimits());
 
     app.post('/tools/cleaner/plan', (req) =>

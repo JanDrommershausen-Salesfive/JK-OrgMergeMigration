@@ -3,6 +3,7 @@ import { ConfigPage } from '../pages/ConfigPage';
 import { CohortsPage } from '../pages/CohortsPage';
 import { LimitsPage } from '../pages/LimitsPage';
 import { OrgCleanerPage } from '../pages/OrgCleanerPage';
+import { QuickQueryPage } from '../pages/QuickQueryPage';
 import { TodosPage } from '../pages/TodosPage';
 import { ToolsPage } from '../pages/ToolsPage';
 import { OverviewPage } from '../pages/OverviewPage';
@@ -23,6 +24,7 @@ export function App() {
                 <Route path="tools" element={<ToolsPage />} />
                 <Route path="tools/org-cleaner" element={<OrgCleanerPage />} />
                 <Route path="tools/limits" element={<LimitsPage />} />
+                <Route path="tools/query" element={<QuickQueryPage />} />
                 <Route path="tools/todos" element={<TodosPage />} />
                 <Route path="laeufe" element={<RunsPage />} />
                 <Route path="laeufe/:folder/:id" element={<RunsPage />} />

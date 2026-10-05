@@ -18,6 +18,11 @@ const TOOLS: Tool[] = [
         to: '/tools/limits'
     },
     {
+        title: 'Query-Editor',
+        text: 'Lesende Abfrage gegen Quelle oder Ziel: Feldwerte ziehen, deduplizieren und als Wertemapping übernehmen.',
+        to: '/tools/query'
+    },
+    {
         title: 'Migration To-Do',
         text: 'Fehler aus den Läufen, nach Ursache zusammengefasst, mit Lösungsvorschlag und Status.',
         to: '/tools/todos'

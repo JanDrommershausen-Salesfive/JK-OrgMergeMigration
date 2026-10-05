@@ -59,3 +59,4 @@ migration.project.json
 
 # Migration To-Do (lokal, enthält Kundennamen)
 /todos/
+/chat/

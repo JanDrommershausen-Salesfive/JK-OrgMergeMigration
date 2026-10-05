@@ -7,6 +7,8 @@ import { OrgHeader } from '../features/orgs/OrgHeader';
 import { OrgPicker } from '../features/orgs/OrgPicker';
 import { RunNotice } from '../features/run/RunNotice';
 import { RunProvider, useRunContext } from '../features/run/RunContext';
+import { ChatDrawer } from '../features/chat/ChatDrawer';
+import { useChat } from '../features/chat/useChat';
 import { Terminal } from '../features/run/Terminal';
 
 function Shell() {
@@ -14,6 +16,8 @@ function Shell() {
     const run = useRunContext();
     const [pickerOpen, setPickerOpen] = useState(false);
     const [terminalOpen, setTerminalOpen] = useState(false);
+    const [chatOpen, setChatOpen] = useState(false);
+    const chat = useChat();
     const configured = objects.data?.configured ?? false;
 
     if (objects.error) {
@@ -39,19 +43,34 @@ function Shell() {
             />
             <MainNav
                 trailing={
-                    <button
-                        type="button"
-                        onClick={() => setTerminalOpen(true)}
-                        className="flex cursor-pointer items-center gap-2 rounded-full border border-grey-line px-3 py-1 text-[13px] font-bold text-ink hover:border-ink"
-                    >
-                        {run.running && (
-                            <span
-                                aria-hidden="true"
-                                className="size-2 animate-pulse rounded-full bg-ok"
-                            />
-                        )}
-                        Terminal
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setChatOpen(true)}
+                            className="flex cursor-pointer items-center gap-2 rounded-full border border-grey-line px-3 py-1 text-[13px] font-bold text-ink hover:border-ink"
+                        >
+                            {chat.running && (
+                                <span
+                                    aria-hidden="true"
+                                    className="size-2 animate-pulse rounded-full bg-digital-blue"
+                                />
+                            )}
+                            Claude
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setTerminalOpen(true)}
+                            className="flex cursor-pointer items-center gap-2 rounded-full border border-grey-line px-3 py-1 text-[13px] font-bold text-ink hover:border-ink"
+                        >
+                            {run.running && (
+                                <span
+                                    aria-hidden="true"
+                                    className="size-2 animate-pulse rounded-full bg-ok"
+                                />
+                            )}
+                            Terminal
+                        </button>
+                    </div>
                 }
             />
             <main className="mx-auto max-w-[1600px] px-8 pt-6 pb-12 max-sm:px-4">
@@ -67,6 +86,7 @@ function Shell() {
                     <Outlet />
                 )}
             </main>
+            <ChatDrawer open={chatOpen} onClose={() => setChatOpen(false)} chat={chat} />
             <Terminal
                 open={terminalOpen}
                 log={run.log}

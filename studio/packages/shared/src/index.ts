@@ -10,3 +10,5 @@ export * from './cleaner';
 export * from './presets';
 export * from './limits';
 export * from './todos';
+export * from './chat';
+export * from './quickQuery';

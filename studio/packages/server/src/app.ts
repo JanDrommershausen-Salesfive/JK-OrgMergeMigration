@@ -2,8 +2,11 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import fastifyStatic from '@fastify/static';
 import Fastify from 'fastify';
-import { StudioError, Studio } from '@studio/core';
+import { ChatManager, ChatProposals, StudioError, Studio } from '@studio/core';
 import { ZodError } from 'zod';
+import { createRequire } from 'node:module';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { chatRoutes } from './routes/chat';
 import { healthRoutes } from './routes/health';
 import { sfdmuRoutes } from './routes/sfdmu';
 
@@ -37,7 +40,12 @@ export async function buildApp({ projectDir, webDist, port }: AppOptions) {
         console.warn(`Projekt nicht geladen: ${err.message}`);
         return null;
     });
-    if (studio) await app.register(sfdmuRoutes, { prefix: '/api', studio });
+    if (studio) {
+        await app.register(sfdmuRoutes, { prefix: '/api', studio });
+        const chat = chatManager(projectDir, port);
+        const proposals = new ChatProposals(studio, (e) => void chat.publish(e));
+        await app.register(chatRoutes, { prefix: '/api', chat, proposals });
+    }
 
     if (webDist && existsSync(webDist)) {
         await app.register(fastifyStatic, { root: path.resolve(webDist) });
@@ -55,4 +63,23 @@ export async function buildApp({ projectDir, webDist, port }: AppOptions) {
 // Vite-Entwicklungsserver (nur lokal) darf die API über seinen Proxy erreichen.
 function isViteDev(origin: string): boolean {
     return /^http:\/\/(127\.0\.0\.1|localhost):5173$/.test(origin);
+}
+
+// Der Chat startet die Claude-CLI, die den Studio-MCP-Server per stdio nutzt (TypeScript über tsx).
+function chatManager(projectDir: string, port: number): ChatManager {
+    const mcpEntry = fileURLToPath(new URL('../../mcp/src/index.ts', import.meta.url));
+    return new ChatManager({
+        projectDir,
+        studioUrl: `http://127.0.0.1:${port}`,
+        mcpCommand: {
+            command: process.execPath,
+            args: ['--import', tsxLoader(), mcpEntry]
+        }
+    });
+}
+
+// Lader, mit dem Node TypeScript-Dateien startet (aus dem installierten tsx).
+function tsxLoader(): string {
+    const pkg = createRequire(import.meta.url).resolve('tsx/package.json');
+    return pathToFileURL(path.join(path.dirname(pkg), 'dist', 'loader.mjs')).href;
 }

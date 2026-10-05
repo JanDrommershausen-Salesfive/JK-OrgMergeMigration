@@ -7,11 +7,16 @@ import {
     CleanPlanSchema,
     CleanStatusSchema,
     CleanerRulesSchema,
+    ChatStatusSchema,
+    ProposalSchema,
+    QuickQueryResultSchema,
     CohortListResponseSchema,
     ImportTodosResponseSchema,
     TodoItemSchema,
     TodoListResponseSchema,
     type ImportTodosRequest,
+    type QuickQueryRequest,
+    type SendChatRequest,
     type UpdateTodoRequest,
     CohortPreviewSchema,
     CohortSchema,
@@ -133,6 +138,23 @@ export const api = {
     },
     cleanerStop: async () => {
         await fetch('/api/tools/cleaner/stop', { method: 'POST' });
+    },
+    quickQuery: (req: QuickQueryRequest) =>
+        request('/api/tools/query', QuickQueryResultSchema, req),
+    chatStatus: () => request('/api/chat', ChatStatusSchema),
+    chatSend: (req: SendChatRequest) => request('/api/chat/send', ChatStatusSchema, req),
+    applyProposal: (id: string) => request('/api/chat/proposals/apply', ProposalSchema, { id }),
+    rejectProposal: (id: string) => request('/api/chat/proposals/reject', ProposalSchema, { id }),
+    chatStop: async () => {
+        await fetch('/api/chat/stop', { method: 'POST' });
+    },
+    chatReset: async () => {
+        const res = await fetch('/api/chat/reset', { method: 'POST' });
+        if (!res.ok)
+            throw new Error(
+                ((await res.json().catch(() => null)) as { error?: string } | null)?.error ??
+                    `HTTP ${res.status}`
+            );
     },
     todos: () => request('/api/todos', TodoListResponseSchema),
     importTodos: (req: ImportTodosRequest) =>
