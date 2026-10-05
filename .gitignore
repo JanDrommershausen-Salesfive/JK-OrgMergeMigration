@@ -49,3 +49,14 @@ $RECYCLE.BIN/
 
 # Test folder
 /test/
+
+# Migration Studio
+studio/packages/web/dist/
+/runs/
+# Lokale Org-Auswahl von Migration Studio (pro Person, nicht im Git)
+migration.project.json
+/cohorts/
+
+# Migration To-Do (lokal, enthält Kundennamen)
+/todos/
+/chat/

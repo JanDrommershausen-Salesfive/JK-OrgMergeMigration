@@ -13,6 +13,8 @@
     "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "sfdmu:gui": "node sfdmu/gui/server.js",
+    "studio": "npm --prefix studio run start",
+    "studio:dev": "npm --prefix studio run dev",
     "prepare": "husky || true",
     "precommit": "lint-staged"
   },
@@ -39,7 +41,7 @@
       "eslint"
     ],
     "**/lwc/**": [
-        "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
+      "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
     ]
   }
 }

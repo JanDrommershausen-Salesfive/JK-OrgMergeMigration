@@ -1,0 +1,194 @@
+import {
+    CleanPlanRequestSchema,
+    CreateSeriesRequestSchema,
+    SeriesPreviewRequestSchema,
+    QuickQueryRequestSchema,
+    ImportTodosRequestSchema,
+    UpdateTodoRequestSchema,
+    DeletePresetRequestSchema,
+    RestorePresetRequestSchema,
+    SavePresetRequestSchema,
+    CreateCohortRequestSchema,
+    ExcludeRequestSchema,
+    LoginRequestSchema,
+    MappingRequestSchema,
+    ParentModeRequestSchema,
+    SaveFiltersRequestSchema,
+    SetFieldsRequestSchema,
+    SelectOrgsRequestSchema,
+    StartCleanRequestSchema,
+    StartRunRequestSchema,
+    ValueMappingRequestSchema
+} from '@studio/shared';
+import type { FastifyPluginAsync } from 'fastify';
+import { z } from 'zod';
+import type { Studio } from '@studio/core';
+
+const FolderQuery = z.object({ folder: z.string() });
+const ObjectQuery = z.object({ object: z.string() });
+const IdBody = z.object({ id: z.string() });
+const ParentQuery = FolderQuery.extend({ parent: z.coerce.number().int().min(0).optional() });
+const RunQuery = FolderQuery.extend({ id: z.string() });
+const ExportQuery = RunQuery.extend({ kind: z.enum(['errors', 'missing-parents']) });
+const DescribeQuery = FolderQuery.extend({ refresh: z.enum(['0', '1']).optional() });
+
+// Objekte, Felder, Mappings und Orgs. Die Routen validieren nur und rufen Studio auf.
+export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, { studio }) => {
+    app.get('/objects', () => studio.objects());
+    app.get('/object', (req) => {
+        const q = ParentQuery.parse(req.query);
+        return studio.object(q.folder, q.parent);
+    });
+    app.get('/describe', (req) => {
+        const q = DescribeQuery.parse(req.query);
+        return studio.describe(q.folder, q.refresh === '1');
+    });
+    app.get('/query', (req) => studio.queryModel(FolderQuery.parse(req.query).folder));
+    app.post('/query/filters', (req) =>
+        studio.saveFilters(SaveFiltersRequestSchema.parse(req.body))
+    );
+    app.post('/query/fields', (req) =>
+        studio.changeQueryFields(SetFieldsRequestSchema.parse(req.body))
+    );
+    app.post('/query/parent', (req) =>
+        studio.setParentMode(ParentModeRequestSchema.parse(req.body))
+    );
+    app.post('/query/check', (req) => studio.checkQuery(FolderQuery.parse(req.body).folder));
+
+    app.get('/describe/object', (req) =>
+        studio.describeObject(ObjectQuery.parse(req.query).object)
+    );
+    app.get('/orgs', () => studio.orgs());
+    app.get('/orgs/available', () => studio.availableOrgs());
+    app.post('/orgs/login', (req) => studio.login(LoginRequestSchema.parse(req.body)));
+    app.post('/orgs/select', (req) => studio.selectOrgs(SelectOrgsRequestSchema.parse(req.body)));
+
+    app.post('/mapping', (req) => studio.setMapping(MappingRequestSchema.parse(req.body)));
+    app.post('/exclude', (req) => studio.setExcluded(ExcludeRequestSchema.parse(req.body)));
+    app.post('/valuemapping', (req) =>
+        studio.setValueMapping(ValueMappingRequestSchema.parse(req.body))
+    );
+
+    app.get('/results/all', () => studio.allRuns());
+    app.get('/results', (req) => studio.runResults(FolderQuery.parse(req.query).folder));
+    app.get('/results/run', (req) => {
+        const q = RunQuery.parse(req.query);
+        return studio.runDetail(q.folder, q.id);
+    });
+    app.get('/results/log', async (req) => {
+        const q = RunQuery.parse(req.query);
+        return { log: await studio.runLog(q.folder, q.id) };
+    });
+    app.get('/results/export', async (req, reply) => {
+        const q = ExportQuery.parse(req.query);
+        const file = await studio.exportRun(q.folder, q.id, q.kind);
+        return reply
+            .header('Content-Type', 'text/csv; charset=utf-8')
+            .header('Content-Disposition', `attachment; filename="${file.filename}"`)
+            .send(file.text);
+    });
+
+    app.get('/presets', (req) => studio.listPresets(FolderQuery.parse(req.query).folder));
+    app.post('/presets', (req) => studio.savePreset(SavePresetRequestSchema.parse(req.body)));
+    app.get('/presets/diff', (req) => {
+        const q = RunQuery.parse(req.query);
+        return studio.presetDiff(q.folder, q.id);
+    });
+    app.post('/presets/restore', (req) =>
+        studio.restorePreset(RestorePresetRequestSchema.parse(req.body))
+    );
+    app.post('/presets/delete', async (req, reply) => {
+        await studio.deletePreset(DeletePresetRequestSchema.parse(req.body));
+        return reply.code(204).send();
+    });
+    app.post('/tools/query', (req) => studio.quickQuery(QuickQueryRequestSchema.parse(req.body)));
+    app.get('/tools/limits', () => studio.orgLimits());
+
+    app.post('/tools/cleaner/plan', (req) =>
+        studio.cleanerPlan(CleanPlanRequestSchema.parse(req.body))
+    );
+    app.post('/tools/cleaner/start', async (req, reply) => {
+        await studio.startCleaner(StartCleanRequestSchema.parse(req.body));
+        return reply.code(202).send({ running: true });
+    });
+    app.post('/tools/cleaner/reset', async (_req, reply) => {
+        studio.resetCleaner();
+        return reply.code(204).send();
+    });
+    app.post('/tools/cleaner/stop', async (_req, reply) => {
+        studio.stopCleaner();
+        return reply.code(204).send();
+    });
+    app.get('/tools/cleaner/rules', () => studio.cleanerRules());
+    app.get('/tools/cleaner/status', () => ({ running: studio.cleanerRunning() }));
+    app.get('/tools/cleaner/events', (req, reply) => {
+        reply.hijack();
+        const res = reply.raw;
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream; charset=utf-8',
+            'Cache-Control': 'no-cache',
+            Connection: 'keep-alive'
+        });
+        const unsubscribe = studio.subscribeCleaner((event) => {
+            res.write(`data: ${JSON.stringify(event)}\n\n`);
+            if (event.type === 'end') res.end();
+        });
+        req.raw.on('close', unsubscribe);
+    });
+
+    app.get('/todos', () => studio.listTodos());
+    app.post('/todos/import', (req) =>
+        studio.importRunToTodos(ImportTodosRequestSchema.parse(req.body))
+    );
+    app.post('/todos/update', (req) => studio.updateTodo(UpdateTodoRequestSchema.parse(req.body)));
+    app.post('/todos/delete', async (req, reply) => {
+        await studio.deleteTodo(IdBody.parse(req.body).id);
+        return reply.code(204).send();
+    });
+
+    app.get('/cohorts', () => studio.listCohorts());
+    app.post('/cohorts', (req) => studio.createCohort(CreateCohortRequestSchema.parse(req.body)));
+    app.post('/cohorts/series/preview', (req) =>
+        studio.seriesPreview(SeriesPreviewRequestSchema.parse(req.body))
+    );
+    app.post('/cohorts/series', (req) =>
+        studio.createSeries(CreateSeriesRequestSchema.parse(req.body))
+    );
+    app.post('/cohorts/series/delete', async (req, reply) => {
+        await studio.deleteSeries(IdBody.parse(req.body).id);
+        return reply.code(204).send();
+    });
+    app.post('/cohorts/delete', async (req, reply) => {
+        await studio.deleteCohort(IdBody.parse(req.body).id);
+        return reply.code(204).send();
+    });
+    app.get('/cohorts/records', (req) => studio.cohortRecords(IdBody.parse(req.query).id));
+    app.get('/cohorts/preview', (req) => studio.cohortPreview(IdBody.parse(req.query).id));
+
+    app.get('/run', () => studio.runStatus());
+    app.post('/run', async (req, reply) => {
+        const { folder, mode, cohortId, keepFilters } = StartRunRequestSchema.parse(req.body);
+        await studio.startRun(folder, mode, cohortId, keepFilters);
+        return reply.code(202).send(studio.runStatus());
+    });
+    app.post('/stop', async (_req, reply) => {
+        studio.stopRun();
+        return reply.code(204).send();
+    });
+
+    // Server-Sent Events: erst das bisherige Log, dann Live-Ereignisse bis zum Ende des Laufs.
+    app.get('/run/events', (req, reply) => {
+        reply.hijack();
+        const res = reply.raw;
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream; charset=utf-8',
+            'Cache-Control': 'no-cache',
+            Connection: 'keep-alive'
+        });
+        const unsubscribe = studio.subscribeRun((event) => {
+            res.write(`data: ${JSON.stringify(event)}\n\n`);
+            if (event.type === 'end') res.end();
+        });
+        req.raw.on('close', unsubscribe);
+    });
+};

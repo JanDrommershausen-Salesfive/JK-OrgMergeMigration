@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SC_Department__c</fullName>
+    <description>JKGROUP-97</description>
+    <label>Department</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>0001</fullName>
+                <default>false</default>
+                <label>0001 Geschäftsführung</label>
+            </value>
+            <value>
+                <fullName>0002</fullName>
+                <default>false</default>
+                <label>0002 Einkauf</label>
+            </value>
+            <value>
+                <fullName>0003</fullName>
+                <default>false</default>
+                <label>0003 Verkauf</label>
+            </value>
+            <value>
+                <fullName>0004</fullName>
+                <default>false</default>
+                <label>0004 Organisation</label>
+            </value>
+            <value>
+                <fullName>0005</fullName>
+                <default>false</default>
+                <label>0005 Verwaltung</label>
+            </value>
+            <value>
+                <fullName>0006</fullName>
+                <default>false</default>
+                <label>0006 Fertigung</label>
+            </value>
+            <value>
+                <fullName>0007</fullName>
+                <default>false</default>
+                <label>0007 Qualitätssicherung</label>
+            </value>
+            <value>
+                <fullName>0008</fullName>
+                <default>false</default>
+                <label>0008 Sekretariat</label>
+            </value>
+            <value>
+                <fullName>0009</fullName>
+                <default>false</default>
+                <label>0009 Finanzabteilung</label>
+            </value>
+            <value>
+                <fullName>0010</fullName>
+                <default>false</default>
+                <label>0010 Rechtsabteilung</label>
+            </value>
+            <value>
+                <fullName>Accounting</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Accounting</label>
+            </value>
+            <value>
+                <fullName>Service</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Service</label>
+            </value>
+            <value>
+                <fullName>Z001</fullName>
+                <default>false</default>
+                <label>Z001 Innendienst</label>
+            </value>
+            <value>
+                <fullName>Z002</fullName>
+                <default>false</default>
+                <label>Z002 Logistik</label>
+            </value>
+            <value>
+                <fullName>Z003</fullName>
+                <default>false</default>
+                <label>Z003 Aussendienst</label>
+            </value>
+            <value>
+                <fullName>Z004</fullName>
+                <default>false</default>
+                <label>Z004 Marketing</label>
+            </value>
+            <value>
+                <fullName>Z005</fullName>
+                <default>false</default>
+                <label>Z005 Entwicklung</label>
+            </value>
+            <value>
+                <fullName>Z006</fullName>
+                <default>false</default>
+                <label>Z006 Service</label>
+            </value>
+            <value>
+                <fullName>Z007</fullName>
+                <default>false</default>
+                <label>Z007 Gelangensbestätigung</label>
+            </value>
+            <value>
+                <fullName>Z008</fullName>
+                <default>false</default>
+                <label>Z008 JK-Shop</label>
+            </value>
+            <value>
+                <fullName>Z009</fullName>
+                <default>false</default>
+                <label>Z009 Unit Sales</label>
+            </value>
+            <value>
+                <fullName>Z010</fullName>
+                <default>false</default>
+                <label>Z010 Parts</label>
+            </value>
+            <value>
+                <fullName>Z011</fullName>
+                <default>false</default>
+                <label>Z011 Sunlync</label>
+            </value>
+            <value>
+                <fullName>Z012</fullName>
+                <default>false</default>
+                <label>Z012 Service</label>
+            </value>
+            <value>
+                <fullName>Z013</fullName>
+                <default>false</default>
+                <label>Z013 Accounting</label>
+            </value>
+            <value>
+                <fullName>Z014</fullName>
+                <default>false</default>
+                <label>Z014 Melumé</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
