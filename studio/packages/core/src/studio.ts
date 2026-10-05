@@ -65,6 +65,7 @@ import {
     applyCohort,
     cohortId,
     cohortPreview,
+    cohortRecordsSoql,
     linksFor,
     resolveCohortIds
 } from './cohorts';
@@ -281,6 +282,12 @@ export class Studio {
             run: sfQuery,
             sourceAlias: this.requireOrgs().source.alias
         });
+    }
+
+    // Die Datensätze einer Kohorte, live aus der Quelle (lesend).
+    async cohortRecords(id: string): Promise<QuickQueryResult> {
+        const cohort = await this.cohorts.get(id);
+        return runQuickQuery(this.requireOrgs().source.alias, cohortRecordsSoql(cohort));
     }
 
     stopRun(): void {

@@ -182,6 +182,8 @@ export const api = {
                     `HTTP ${res.status}`
             );
     },
+    cohortRecords: (id: string) =>
+        request(`/api/cohorts/records?id=${enc(id)}`, QuickQueryResultSchema),
     cohortPreview: (id: string) =>
         request(`/api/cohorts/preview?id=${enc(id)}`, CohortPreviewSchema),
     stopRun: async () => {

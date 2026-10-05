@@ -25,8 +25,8 @@ export function Tag({ tone = 'plain', children }: { tone?: Tone; children: React
 type Variant = 'primary' | 'danger' | 'ghost' | 'onDark';
 
 const VARIANTS: Record<Variant, string> = {
-    primary: 'bg-digital-blue text-white hover:enabled:bg-deep',
-    danger: 'bg-bad text-white hover:enabled:opacity-90',
+    primary: 'border-transparent bg-digital-blue text-white hover:enabled:bg-deep',
+    danger: 'border-transparent bg-bad text-white hover:enabled:opacity-90',
     ghost: 'border-grey-line bg-transparent text-ink hover:enabled:border-ink',
     onDark: 'border-white/40 bg-transparent text-white hover:enabled:border-white'
 };
@@ -41,7 +41,7 @@ export function Button({ variant = 'primary', small, className = '', ...props }:
     return (
         <button
             {...props}
-            className={`cursor-pointer rounded-full border border-transparent font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${size} ${VARIANTS[variant]} ${className}`}
+            className={`cursor-pointer rounded-full border font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${size} ${VARIANTS[variant]} ${className}`}
         />
     );
 }

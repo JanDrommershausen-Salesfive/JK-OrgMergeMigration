@@ -1,9 +1,32 @@
-import type { Cohort } from '@studio/shared';
+import type { Cohort, Filter, FilterNode, FilterValue } from '@studio/shared';
 
 export const ruleText = (c: Cohort): string =>
     c.rule.kind === 'sample'
-        ? `Stichprobe von ${c.rule.size}${c.rule.filters.length ? ' mit Filter' : ''}`
-        : 'Feste Liste';
+        ? c.rule.filters.length
+            ? `Zufällig ${c.rule.size}, ${c.rule.filters.length} Filter`
+            : `Zufällig ${c.rule.size}, ohne Filter`
+        : `${c.rule.ids.length} feste Ids`;
+
+const valueText = (v: FilterValue): string => {
+    switch (v.kind) {
+        case 'string':
+            return `„${v.value}“`;
+        case 'null':
+            return 'leer';
+        case 'boolean':
+            return v.value ? 'wahr' : 'falsch';
+        case 'list':
+            return `(${v.values.map(valueText).join(', ')})`;
+        default:
+            return v.value;
+    }
+};
+
+const filterText = (f: Filter) => `${f.field} ${f.op} ${valueText(f.value)}`;
+
+// Eine Filterbedingung (oder ODER-Gruppe) als lesbarer Text.
+export const nodeText = (n: FilterNode): string =>
+    'or' in n ? n.or.map(filterText).join(' ODER ') : filterText(n);
 
 // Ids aus einem eingefügten Text: Leerzeichen, Zeilenumbrüche, Kommas und Semikolons trennen.
 export const parseIds = (text: string): string[] => [

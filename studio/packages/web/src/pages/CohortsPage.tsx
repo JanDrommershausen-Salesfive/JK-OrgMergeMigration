@@ -49,6 +49,9 @@ export function CohortsPage() {
                                     <span className="block truncate text-xs opacity-70">
                                         {c.count} {c.rootObject} · {ruleText(c)}
                                     </span>
+                                    <span className="block truncate text-xs opacity-70">
+                                        angelegt {new Date(c.createdAt).toLocaleDateString('de-DE')}
+                                    </span>
                                 </NavLink>
                             </li>
                         ))}

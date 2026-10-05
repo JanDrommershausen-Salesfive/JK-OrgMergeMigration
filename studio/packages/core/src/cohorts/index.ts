@@ -1,6 +1,7 @@
 export * from './links';
 export * from './path';
 export * from './preview';
+export * from './records';
 export * from './resolve';
 export * from './scope';
 export * from './store';

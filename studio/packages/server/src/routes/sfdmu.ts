@@ -150,6 +150,7 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
         await studio.deleteCohort(IdBody.parse(req.body).id);
         return reply.code(204).send();
     });
+    app.get('/cohorts/records', (req) => studio.cohortRecords(IdBody.parse(req.query).id));
     app.get('/cohorts/preview', (req) => studio.cohortPreview(IdBody.parse(req.query).id));
 
     app.get('/run', () => studio.runStatus());

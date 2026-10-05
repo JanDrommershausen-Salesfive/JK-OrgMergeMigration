@@ -165,6 +165,15 @@ export const useCohortPreview = (id: string | null, enabled: boolean) =>
         staleTime: 5 * 60 * 1000
     });
 
+// Datensätze der Kohorte liest die Quelle; deshalb erst auf Knopfdruck (enabled).
+export const useCohortRecords = (id: string, enabled: boolean) =>
+    useQuery({
+        queryKey: ['cohortRecords', id],
+        queryFn: () => api.cohortRecords(id),
+        enabled,
+        staleTime: 5 * 60 * 1000
+    });
+
 export const useCleanerRules = () =>
     useQuery({ queryKey: ['cleanerRules'], queryFn: api.cleanerRules });
 export const useCleanerStatus = () =>
