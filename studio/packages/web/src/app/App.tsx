@@ -1,7 +1,9 @@
 import { Route, Routes } from 'react-router';
 import { ConfigPage } from '../pages/ConfigPage';
 import { CohortsPage } from '../pages/CohortsPage';
+import { LimitsPage } from '../pages/LimitsPage';
 import { OrgCleanerPage } from '../pages/OrgCleanerPage';
+import { TodosPage } from '../pages/TodosPage';
 import { ToolsPage } from '../pages/ToolsPage';
 import { OverviewPage } from '../pages/OverviewPage';
 import { RunsPage } from '../pages/RunsPage';
@@ -20,6 +22,8 @@ export function App() {
                 <Route path="kohorten/:id" element={<CohortsPage />} />
                 <Route path="tools" element={<ToolsPage />} />
                 <Route path="tools/org-cleaner" element={<OrgCleanerPage />} />
+                <Route path="tools/limits" element={<LimitsPage />} />
+                <Route path="tools/todos" element={<TodosPage />} />
                 <Route path="laeufe" element={<RunsPage />} />
                 <Route path="laeufe/:folder/:id" element={<RunsPage />} />
                 <Route path="*" element={<OverviewPage />} />

@@ -47,15 +47,57 @@ function Filter({
     );
 }
 
-export function ErrorsTable({ rows, total }: { rows: ErrorRow[]; total: number }) {
-    const { query, setQuery, filtered, shown } = useFiltered(rows);
+interface Selection {
+    selected: ReadonlySet<number>; // Positionen in der Fehlerliste des Laufs
+    onChange: (next: Set<number>) => void;
+}
+
+// Fehlerliste mit Auswahl je Zeile (für die Übernahme in die To-Do-Liste). Die Position bleibt beim Filtern erhalten.
+export function ErrorsTable({
+    rows,
+    total,
+    selection
+}: {
+    rows: ErrorRow[];
+    total: number;
+    selection?: Selection;
+}) {
+    const indexed = useMemo(() => rows.map((r, index) => ({ ...r, index })), [rows]);
+    const { query, setQuery, filtered, shown } = useFiltered(indexed);
     if (!total) return <p className="py-4 text-grey-500">Keine Fehler in den Ergebnisdateien.</p>;
+    const sel = selection?.selected;
+    const allShown = shown.length > 0 && shown.every((r) => sel?.has(r.index));
+    const toggle = (index: number) => {
+        if (!selection) return;
+        const next = new Set(selection.selected);
+        if (!next.delete(index)) next.add(index);
+        selection.onChange(next);
+    };
+    const toggleAll = () => {
+        if (!selection) return;
+        const next = new Set(selection.selected);
+        for (const r of shown) {
+            if (allShown) next.delete(r.index);
+            else next.add(r.index);
+        }
+        selection.onChange(next);
+    };
     return (
         <>
             <Filter query={query} onChange={setQuery} count={filtered.length} total={total} />
             <table className="w-full border-collapse">
                 <thead>
                     <tr>
+                        {selection && (
+                            <th className={th}>
+                                <input
+                                    type="checkbox"
+                                    aria-label="Alle angezeigten Fehler wählen"
+                                    checked={allShown}
+                                    onChange={toggleAll}
+                                />
+                            </th>
+                        )}
                         <th className={th}>Datei</th>
                         <th className={th}>Bezeichnung</th>
                         <th className={th}>Id</th>
@@ -63,8 +105,18 @@ export function ErrorsTable({ rows, total }: { rows: ErrorRow[]; total: number }
                     </tr>
                 </thead>
                 <tbody>
-                    {shown.map((r, i) => (
-                        <tr key={i}>
+                    {shown.map((r) => (
+                        <tr key={r.index} className={sel?.has(r.index) ? 'bg-grey-100' : ''}>
+                            {selection && (
+                                <td className={td}>
+                                    <input
+                                        type="checkbox"
+                                        aria-label={`Fehler von ${r.label || r.oldId || r.id} wählen`}
+                                        checked={sel?.has(r.index) ?? false}
+                                        onChange={() => toggle(r.index)}
+                                    />
+                                </td>
+                            )}
                             <td className={td}>{r.file}</td>
                             <td className={td}>{r.label}</td>
                             <td className={`${td} font-mono text-[13px]`}>{r.oldId || r.id}</td>

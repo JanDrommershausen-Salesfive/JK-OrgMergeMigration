@@ -2,6 +2,18 @@ import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import type {
     AvailableOrgsResponse,
+    ImportTodosRequest,
+    ImportTodosResponse,
+    TodoItem,
+    TodoListResponse,
+    UpdateTodoRequest,
+    DeletePresetRequest,
+    LimitsResponse,
+    PresetDiff,
+    PresetInfo,
+    PresetListResponse,
+    RestorePresetRequest,
+    SavePresetRequest,
     CleanEvent,
     CleanPlan,
     CleanPlanRequest,
@@ -30,7 +42,7 @@ import type {
     SelectOrgsRequest,
     ValueMappingRequest
 } from '@studio/shared';
-import { badRequest, conflict } from './errors';
+import { badRequest, conflict, notFound } from './errors';
 import { DescribeCache } from './orgs/describe';
 import { listAvailableOrgs } from './orgs/available';
 import { loginOrg } from './orgs/login';
@@ -61,7 +73,9 @@ import {
     loadCleanerRules,
     type ChildRelation
 } from './cleaner';
+import { readOrgLimits } from './limits';
 import { sf } from './orgs/sf';
+import { PresetStore, diffConfigs } from './presets';
 import { checkQuery, sfQuery } from './query/check';
 import { objectOf, targetObject } from './sfdmu/exportConfig';
 import { listFolders, readExport } from './sfdmu/exportConfig';
@@ -69,6 +83,7 @@ import { writeFileAtomic } from './util/fs';
 import { changeFields, queryModel, saveFilters, setParentMode } from './query/model';
 import { RunManager } from './runs/runManager';
 import { archiveRun } from './results/archive';
+import { TodoStore, draftsFromRun, mergeTodos } from './todos';
 import { ResultStore } from './results/store';
 import { toCsv } from './sfdmu/csv';
 import { listObjects, objectDetail } from './sfdmu/objects';
@@ -82,6 +97,9 @@ export class Studio {
     private readonly results: ResultStore;
     private readonly cohorts: CohortStore;
     private readonly cleaner: CleanerManager;
+    private readonly presets: PresetStore;
+    private readonly todos: TodoStore;
+    private todoQueue: Promise<unknown> = Promise.resolve(); // Änderungen der Liste nacheinander
     private loginInProgress = false;
 
     private constructor(private config: RunConfig) {
@@ -89,6 +107,8 @@ export class Studio {
         this.results = new ResultStore(config.projectDir);
         this.cohorts = new CohortStore(config.projectDir);
         this.cleaner = new CleanerManager(config.projectDir);
+        this.presets = new PresetStore(config.sfdmuDir);
+        this.todos = new TodoStore(config.projectDir);
         this.runs = new RunManager(config.sfdmuDir, this.lastRuns, async (end) => {
             const c = this.config;
             const { object } = await this.object(end.folder);
@@ -323,6 +343,56 @@ export class Studio {
         });
     }
 
+    // --- Versionen (Presets) der Konfiguration eines Objekts ---
+
+    async listPresets(folder: string): Promise<PresetListResponse> {
+        return { presets: await this.presets.list(folder) };
+    }
+
+    async savePreset(req: SavePresetRequest): Promise<PresetInfo> {
+        return this.presets.save(req.folder, { name: req.name, note: req.note });
+    }
+
+    // Was würde sich ändern, wenn dieser Stand geladen wird?
+    async presetDiff(folder: string, id: string): Promise<PresetDiff> {
+        return {
+            changes: diffConfigs(
+                await this.presets.current(folder),
+                await this.presets.get(folder, id)
+            )
+        };
+    }
+
+    // Lädt einen Stand in den Objektordner. Auf Wunsch wird der aktuelle Stand vorher als Backup-Preset gesichert.
+    async restorePreset(req: RestorePresetRequest): Promise<{ backup: PresetInfo | null }> {
+        this.assertIdle();
+        await this.presets.get(req.folder, req.id); // unbekannter Stand → 404, bevor etwas gesichert wird
+        const backup = req.backupName
+            ? await this.presets.save(req.folder, {
+                  name: req.backupName,
+                  note: 'Automatisch vor dem Laden eines anderen Stands',
+                  source: 'backup'
+              })
+            : null;
+        await this.presets.restore(req.folder, req.id);
+        return { backup };
+    }
+
+    async deletePreset(req: DeletePresetRequest): Promise<void> {
+        await this.presets.delete(req.folder, req.id);
+    }
+
+    // --- Org-Limits ---
+
+    async orgLimits(): Promise<LimitsResponse> {
+        const { source, target } = this.requireOrgs();
+        const orgs = await Promise.all([
+            readOrgLimits('source', source.alias),
+            readOrgLimits('target', target.alias)
+        ]);
+        return { orgs, checkedAt: new Date().toISOString() };
+    }
+
     // --- Org Cleaner (löscht Daten in der Ziel-Sandbox) ---
 
     // Löschen ist nur in der gepinnten Ziel-Org erlaubt, und nur wenn sie eine Sandbox ist und nicht als geschützt gilt.
@@ -442,6 +512,61 @@ export class Studio {
 
     subscribeCleaner(listener: (e: CleanEvent) => void): () => void {
         return this.cleaner.subscribe(listener);
+    }
+
+    async listTodos(): Promise<TodoListResponse> {
+        const items = await this.todos.load();
+        return { items: items.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)) };
+    }
+
+    // Übernimmt Fehler und fehlende Parents eines Laufs als To-Do-Einträge (gleiche Fehler zusammengefasst).
+    importRunToTodos({
+        folder,
+        id,
+        errorIndexes,
+        includeMissingParents = true
+    }: ImportTodosRequest): Promise<ImportTodosResponse> {
+        return this.changeTodos(async (items) => {
+            const meta = await this.results.meta(folder, id);
+            const { errors, missing } = await this.results.tables(folder, id);
+            const picked = errorIndexes
+                ? errorIndexes.flatMap((i) => (errors[i] ? [errors[i]] : []))
+                : errors;
+            return mergeTodos(
+                items,
+                draftsFromRun(meta, picked, includeMissingParents ? missing.rows : []),
+                meta,
+                new Date().toISOString()
+            );
+        });
+    }
+
+    updateTodo({ id, status, note }: UpdateTodoRequest): Promise<TodoItem> {
+        return this.changeTodos(async (items) => {
+            const item = items.find((t) => t.id === id);
+            if (!item) throw notFound('Unbekannter To-Do-Eintrag.');
+            if (status) item.status = status;
+            if (note !== undefined) item.note = note;
+            item.updatedAt = new Date().toISOString();
+            return { items, result: item };
+        });
+    }
+
+    deleteTodo(id: string): Promise<void> {
+        return this.changeTodos(async (items) => {
+            if (!items.some((t) => t.id === id)) throw notFound('Unbekannter To-Do-Eintrag.');
+            return { items: items.filter((t) => t.id !== id), result: undefined };
+        });
+    }
+
+    private changeTodos<T>(fn: (items: TodoItem[]) => Promise<{ items: TodoItem[]; result: T }>) {
+        const run = this.todoQueue.then(async () => {
+            const { items, result } = await fn(await this.todos.load());
+            await this.todos.save(items);
+            return result;
+        });
+        this.todoQueue = run.catch(() => undefined);
+        return run;
     }
 
     async runResults(folder: string): Promise<RunListResponse> {

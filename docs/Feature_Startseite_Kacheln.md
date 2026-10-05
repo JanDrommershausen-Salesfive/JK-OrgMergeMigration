@@ -28,7 +28,7 @@ Oben eine Reihe Kennzahlen, darunter Kacheln je Bereich. Jede Kachel zeigt eine 
 | **Konfiguration / Mapping** | Fortschritt: wie viele Objekte haben eine Query, ein Mapping, offene Pflichtfelder im Ziel | `/konfiguration` |
 | **Läufe** | die letzten drei Läufe mit Status, Zahl der Fehler; Link auf alle | `/laeufe` |
 | **Kohorten** | aktive Kohorte, Größe, geschätzter Speicher; Schnellzugriff "Neue Kohorte" | `/kohorten` |
-| **Tools** | Sammelplatz für Werkzeuge: Sandbox leeren, Query-Prüfung, Export von Mapping-Dokumentation, Log-Suche | eigene Unterseite |
+| **Tools** | Sammelplatz für Werkzeuge: Org Cleaner (gebaut), Org-Limits (gebaut), Export von Mapping-Dokumentation, Log-Suche | `/tools` |
 | **Klärungsliste** | offene Punkte aus der Klärungsliste in `docs/` | zeigt die Datei |
 | **Chat** (später) | Frage an Claude zur Migration | [GUI_Chat_mit_Claude_Code.md](GUI_Chat_mit_Claude_Code.md) |
 | **Einstellungen** (später) | Projektname, Ordner, geschützte Orgs, Umgebungsprofile | eigene Seite |

@@ -24,6 +24,12 @@ export function ObjectList({ objects }: { objects: ObjectSummary[] }) {
                             </span>
                             <span className="min-w-0 flex-1">
                                 <span className="block truncate text-sm">{rest.join('_')}</span>
+                                <span className="block truncate text-xs text-grey-500 group-aria-[current=page]:text-white/80">
+                                    {o.fieldCount} Felder
+                                    {o.valueMappingCount
+                                        ? ` · ${o.valueMappingCount} Wertemappings`
+                                        : ''}
+                                </span>
                                 {run && (
                                     <span
                                         className={`block truncate text-xs ${run.ok ? 'text-ok' : 'text-bad'} group-aria-[current=page]:text-white/80`}

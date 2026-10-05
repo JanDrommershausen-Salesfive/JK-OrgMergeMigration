@@ -1,8 +1,30 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from './App';
+
+const run = { folder: '020_Contact', id: '1', at: '2026-10-05T10:00:00Z' };
+const todo = (object: string, status: string) => ({
+    id: `${object}${status}`,
+    object,
+    folder: '020_Contact',
+    category: 'required',
+    field: 'LastName',
+    apiField: 'LastName',
+    message: 'Pflichtfeld',
+    suggestion: `Vorschlag ${object}`,
+    step: 'mapping',
+    status,
+    note: '',
+    count: 2,
+    examples: [],
+    firstRun: run,
+    lastRun: run,
+    createdAt: run.at,
+    updatedAt: run.at
+});
 
 class FakeEventSource {
     onmessage: ((e: MessageEvent) => void) | null = null;
@@ -10,6 +32,12 @@ class FakeEventSource {
 }
 
 afterEach(() => vi.unstubAllGlobals());
+
+const step = async (name: RegExp) =>
+    within(await screen.findByRole('navigation', { name: 'Konfigurationsschritte' })).getByRole(
+        'link',
+        { name }
+    );
 
 const lastRun = {
     at: '2026-10-02T16:29:44.338Z',
@@ -83,6 +111,10 @@ const routes: Record<string, unknown> = {
         missingParentsTotal: 0,
         missingParentGroups: []
     },
+    '/api/presets': { presets: [] },
+    '/api/todos': {
+        items: [todo('Contact', 'open'), todo('Contact', 'done'), todo('Account', 'open')]
+    },
     '/api/describe': { source: { ok: false, error: 'x' }, target: { ok: false, error: 'x' } }
 };
 
@@ -121,27 +153,58 @@ describe('App', () => {
         expect(screen.getByRole('button', { name: 'Starten' })).toBeInTheDocument();
     });
 
-    it('zeigt die Konfiguration unter /konfiguration/…', async () => {
+    it('zeigt die Konfiguration unter /konfiguration/… mit Lauf-Leiste und Versionsknopf', async () => {
         renderAt('/konfiguration/020_Contact/mapping');
         expect(await screen.findByRole('heading', { name: 'Contact' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Lauf starten' })).toBeInTheDocument();
-        expect(screen.getByRole('tab', { name: /Wertemapping/ })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Contact-Lauf starten' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Version:/ })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Wertemapping/ })).toBeInTheDocument();
     });
 
-    it('öffnet die Konfiguration im Reiter Query und leitet alte Adressen um', async () => {
+    it('öffnet ein Objekt auf der Übersicht und leitet alte Adressen um', async () => {
         renderAt('/konfiguration/020_Contact');
-        expect(await screen.findByRole('tab', { name: /Query/ })).toHaveAttribute(
-            'aria-current',
-            'page'
+        expect(await step(/Übersicht/)).toHaveAttribute('aria-current', 'page');
+        expect(
+            screen.getByRole('region', { name: 'Konfiguration auf einen Blick' })
+        ).toBeInTheDocument();
+    });
+
+    it('leitet die alten Adressen /felder und /versionen um', async () => {
+        renderAt('/konfiguration/020_Contact/felder');
+        expect(await step(/Mapping/)).toHaveAttribute('aria-current', 'page');
+    });
+
+    it('öffnet die Versionen in der Seitenleiste', async () => {
+        renderAt('/konfiguration/020_Contact/uebersicht');
+        await userEvent.click(await screen.findByRole('button', { name: /Version:/ }));
+        expect(await screen.findByRole('dialog', { name: 'Versionen' })).toHaveAttribute(
+            'aria-hidden',
+            'false'
         );
     });
 
-    it('leitet die alte Adresse /felder auf Mapping um', async () => {
-        renderAt('/konfiguration/020_Contact/felder');
-        expect(await screen.findByRole('tab', { name: /^Mapping$/ })).toHaveAttribute(
-            'aria-current',
-            'page'
-        );
+    it('zeigt die offenen To-Dos des Objekts am Knopf und in der Seitenleiste', async () => {
+        renderAt('/konfiguration/020_Contact/uebersicht');
+        await userEvent.click(await screen.findByRole('button', { name: 'To-Dos (1)' }));
+        const drawer = await screen.findByRole('dialog', { name: 'To-Dos' });
+        expect(within(drawer).getAllByRole('listitem')).toHaveLength(1); // nur offen, nur Contact
+        await userEvent.click(within(drawer).getByRole('checkbox', { name: /auch erledigte/ }));
+        expect(within(drawer).getAllByRole('listitem')).toHaveLength(2);
+    });
+
+    it('öffnet das Terminal aus der Navigation in einer Seitenleiste', async () => {
+        renderAt('/laeufe');
+        const drawer = await screen.findByLabelText('Terminal', { selector: 'aside' });
+        expect(drawer).toHaveAttribute('aria-hidden', 'true');
+        await userEvent.click(screen.getByRole('button', { name: 'Terminal' }));
+        expect(drawer).toHaveAttribute('aria-hidden', 'false');
+        expect(within(drawer).getByText('Noch kein Lauf gestartet.')).toBeInTheDocument();
+    });
+
+    it('führt per Weiter durch die Schritte', async () => {
+        renderAt('/konfiguration/020_Contact/uebersicht');
+        await userEvent.click(await screen.findByRole('button', { name: 'Setup starten' }));
+        expect(await step(/Query/)).toHaveAttribute('aria-current', 'page');
     });
 
     it('zeigt unter /laeufe den Lauf mit klickbaren Kacheln', async () => {

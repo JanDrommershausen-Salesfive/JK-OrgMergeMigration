@@ -335,3 +335,93 @@ describe('Cleaner zurücksetzen', () => {
         expect(res.statusCode).toBe(204);
     });
 });
+
+describe('Versionen-Routen', () => {
+    it('speichert einen Stand, vergleicht, lädt mit Backup und löscht', async () => {
+        const save = await app.inject({
+            method: 'POST',
+            url: '/api/presets',
+            headers,
+            payload: { folder: '020_Contact', name: 'Erster Stand', note: 'läuft' }
+        });
+        expect(save.statusCode).toBe(200);
+        const first = save.json();
+        expect(first).toMatchObject({
+            name: 'Erster Stand',
+            source: 'manual',
+            matchesCurrent: true
+        });
+
+        // Konfiguration ändern, dann den ersten Stand vergleichen und laden
+        await app.inject({
+            method: 'POST',
+            url: '/api/exclude',
+            headers,
+            payload: { folder: '020_Contact', field: 'Phone', excluded: true }
+        });
+        const diff = await app.inject({
+            method: 'GET',
+            url: `/api/presets/diff?folder=020_Contact&id=${first.id}`,
+            headers
+        });
+        expect(diff.json().changes.map((c: { text: string }) => c.text)).toContain(
+            'Contact (Hauptobjekt): wieder aufgenommen: Phone'
+        );
+
+        const restore = await app.inject({
+            method: 'POST',
+            url: '/api/presets/restore',
+            headers,
+            payload: { folder: '020_Contact', id: first.id, backupName: 'Vor dem Laden' }
+        });
+        expect(restore.statusCode).toBe(200);
+        expect(restore.json().backup).toMatchObject({ name: 'Vor dem Laden', source: 'backup' });
+
+        const list = await app.inject({
+            method: 'GET',
+            url: '/api/presets?folder=020_Contact',
+            headers
+        });
+        const presets = list.json().presets as {
+            id: string;
+            matchesCurrent: boolean;
+            source: string;
+        }[];
+        expect(presets).toHaveLength(2);
+        expect(presets.find((p) => p.id === first.id)?.matchesCurrent).toBe(true);
+
+        for (const p of presets) {
+            const del = await app.inject({
+                method: 'POST',
+                url: '/api/presets/delete',
+                headers,
+                payload: { folder: '020_Contact', id: p.id }
+            });
+            expect(del.statusCode).toBe(204);
+        }
+    });
+
+    it('lehnt unbekannte Stände, fehlenden Namen und Pfadtricks ab', async () => {
+        const noName = await app.inject({
+            method: 'POST',
+            url: '/api/presets',
+            headers,
+            payload: { folder: '020_Contact', name: '  ' }
+        });
+        expect(noName.statusCode).toBe(400);
+        const unknown = await app.inject({
+            method: 'POST',
+            url: '/api/presets/restore',
+            headers,
+            payload: { folder: '020_Contact', id: 'gibt-es-nicht' }
+        });
+        expect(unknown.statusCode).toBe(404);
+        const evil = await app.inject({
+            method: 'POST',
+            url: '/api/presets/delete',
+            headers,
+            payload: { folder: '020_Contact', id: '..' }
+        });
+        expect(evil.statusCode).toBe(404);
+    });
+});

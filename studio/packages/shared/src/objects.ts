@@ -23,6 +23,8 @@ export const ObjectSummarySchema = z.object({
     operation: z.string(),
     externalId: z.string().nullable(),
     readonlyParents: z.array(z.string()),
+    fieldCount: z.number().default(0), // Felder der Query
+    valueMappingCount: z.number().default(0), // Wertemapping-Zeilen des Objekts
     lastRun: LastRunSchema.nullable()
 });
 export type ObjectSummary = z.infer<typeof ObjectSummarySchema>;

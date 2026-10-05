@@ -33,12 +33,17 @@ export async function listObjects(sfdmuDir: string, lastRuns: LastRuns): Promise
         listFolders(sfdmuDir).map(async (folder) => {
             const objects = (await readExport(sfdmuDir, folder)).objects;
             const target = targetObject({ objects });
+            const object = objectOf(target);
+            const select = target.query.match(/SELECT\s+([\s\S]+?)\s+FROM\s/i)?.[1] ?? '';
+            const [, ...rows] = parseCsv(await readValueMappingCsv(sfdmuDir, folder));
             return {
                 folder,
-                object: objectOf(target),
+                object,
                 operation: target.operation,
                 externalId: target.externalId || null,
                 readonlyParents: objects.slice(0, -1).map(objectOf),
+                fieldCount: select.split(',').filter((f) => f.trim()).length,
+                valueMappingCount: rows.filter((r) => r[0] === object).length,
                 lastRun: lastRuns[folder] ?? null
             };
         })

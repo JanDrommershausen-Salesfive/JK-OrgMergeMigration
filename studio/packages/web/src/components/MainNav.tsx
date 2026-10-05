@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { NavLink } from 'react-router';
 
 const ITEMS = [
@@ -8,7 +9,7 @@ const ITEMS = [
     { to: '/tools', label: 'Tools', end: false }
 ];
 
-export function MainNav() {
+export function MainNav({ trailing }: { trailing?: ReactNode }) {
     return (
         <nav aria-label="Hauptnavigation" className="border-b border-grey-line bg-white">
             <ul className="mx-auto flex max-w-[1600px] list-none gap-1 px-8 max-sm:px-4">
@@ -25,6 +26,7 @@ export function MainNav() {
                         </NavLink>
                     </li>
                 ))}
+                {trailing && <li className="ml-auto flex items-center">{trailing}</li>}
             </ul>
         </nav>
     );

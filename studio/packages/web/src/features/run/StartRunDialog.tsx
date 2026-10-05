@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useCohorts, useObjects, useOrgs } from '../../api/queries';
 import { Dialog } from '../../components/Dialog';
 import { Button } from '../../components/ui';
+import { useCurrentVersion } from '../presets/useCurrentVersion';
 import { useRunContext } from './RunContext';
 
 const orgOk = (o: OrgsResponse['source']) => o.connected && o.idMatches;
@@ -28,6 +29,7 @@ export function StartRunDialog({ folder, onClose }: Props) {
     const [mode, setMode] = useState<RunMode>('simulation');
     const [cohortId, setCohortId] = useState('');
     const [keepFilters, setKeepFilters] = useState(false);
+    const version = useCurrentVersion(folder ?? '');
     const live = mode === 'live';
     const target = objects.data?.targetAlias ?? '';
     const problem = blocker(run.running, orgs.data);
@@ -64,6 +66,20 @@ export function StartRunDialog({ folder, onClose }: Props) {
                     `Schreibt Datensätze nach ${target}. Nicht rückgängig zu machen.`
                 )}
             </div>
+            {folder && version.saved !== null && (
+                <p className="mt-4 text-[13px] text-grey-500">
+                    Konfiguration:{' '}
+                    {version.saved ? (
+                        <>
+                            Version <b>{version.name}</b>
+                        </>
+                    ) : (
+                        <span className="text-warn">
+                            aktueller Stand, nicht als Version gespeichert
+                        </span>
+                    )}
+                </p>
+            )}
             <label className="mt-4 block text-sm">
                 <span className="mb-1 block font-bold">Umfang</span>
                 <select

@@ -3,7 +3,7 @@ import { useObjects } from '../../api/queries';
 import { useRunContext } from './RunContext';
 
 // Hinweis nach Laufende mit Link zum Ergebnis; ersetzt das automatische Umschalten.
-export function RunNotice() {
+export function RunNotice({ onOpenTerminal }: { onOpenTerminal: () => void }) {
     const run = useRunContext();
     const objects = useObjects();
     const folder = run.running ? run.runningFolder : run.finished;
@@ -15,7 +15,14 @@ export function RunNotice() {
                 role="status"
                 className="mb-4 rounded-xl border border-digital-blue bg-white px-4 py-2 text-sm"
             >
-                Lauf läuft: <b>{folder}</b> (Details im Terminal unten)
+                Lauf läuft: <b>{folder}</b>{' '}
+                <button
+                    type="button"
+                    className="cursor-pointer font-bold text-digital-blue underline"
+                    onClick={onOpenTerminal}
+                >
+                    Terminal öffnen
+                </button>
             </div>
         );
     }

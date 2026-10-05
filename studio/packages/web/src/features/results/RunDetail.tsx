@@ -1,7 +1,8 @@
 import type { RunMeta } from '@studio/shared';
+import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { api } from '../../api/client';
-import { useRunDetail, useRunLog } from '../../api/queries';
+import { useImportTodos, useRunDetail, useRunLog } from '../../api/queries';
 import { Tag } from '../../components/ui';
 import { formatWhen, modeLabel } from './format';
 import { ErrorsTable, MissingParentsTable } from './Tables';
@@ -118,6 +119,8 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
           ? defaultSection(d.meta)
           : 'zusammenfassung';
     const log = useRunLog(folder, id, section === 'log');
+    const toTodos = useImportTodos();
+    const [picked, setPicked] = useState<Set<number>>(new Set());
     const select = (s: Section) => setParams({ ansicht: s }, { replace: true });
 
     if (detail.error)
@@ -145,10 +148,59 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                     {formatWhen(m.startedAt)} · {m.sourceAlias} → {m.targetAlias}
                 </span>
                 <span className="flex-1" />
+                {picked.size > 0 && (
+                    <button
+                        type="button"
+                        className="cursor-pointer rounded-full bg-digital-blue px-4 py-1.5 text-sm font-bold text-white hover:bg-deep"
+                        disabled={toTodos.isPending}
+                        onClick={() =>
+                            toTodos.mutate(
+                                {
+                                    folder,
+                                    id,
+                                    errorIndexes: [...picked],
+                                    includeMissingParents: false
+                                },
+                                { onSuccess: () => setPicked(new Set()) }
+                            )
+                        }
+                    >
+                        Auswahl in To-Do übernehmen ({picked.size})
+                    </button>
+                )}
+                {(m.counts.errors > 0 || m.counts.missingParents > 0) && (
+                    <button
+                        type="button"
+                        className={`${EXPORT_LINK} cursor-pointer`}
+                        disabled={toTodos.isPending}
+                        onClick={() => toTodos.mutate({ folder, id })}
+                    >
+                        Alle in To-Do übernehmen
+                    </button>
+                )}
                 <Link className={EXPORT_LINK} to={`/konfiguration/${folder}`}>
                     Konfiguration öffnen
                 </Link>
             </div>
+            {toTodos.data && (
+                <p
+                    role="status"
+                    className="mb-3 rounded-lg bg-ok-soft px-3 py-2 text-[13px] text-ok"
+                >
+                    Übernommen: {toTodos.data.added} neu, {toTodos.data.updated} aktualisiert
+                    {toTodos.data.reopened
+                        ? `, ${toTodos.data.reopened} wieder geöffnet`
+                        : ''}.{' '}
+                    <Link className="font-bold underline" to="/tools/todos">
+                        Zur To-Do-Liste
+                    </Link>
+                </p>
+            )}
+            {toTodos.error && (
+                <p role="alert" className="mb-3 text-[13px] text-bad">
+                    {toTodos.error.message}
+                </p>
+            )}
             <Banner meta={m} />
             <Tiles meta={m} active={section} onSelect={select} />
 
@@ -189,7 +241,13 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                     </a>
                 )}
             </div>
-            {section === 'fehler' && <ErrorsTable rows={d.errors} total={d.errorsTotal} />}
+            {section === 'fehler' && (
+                <ErrorsTable
+                    rows={d.errors}
+                    total={d.errorsTotal}
+                    selection={{ selected: picked, onChange: setPicked }}
+                />
+            )}
             {section === 'parents' && (
                 <MissingParentsTable
                     groups={d.missingParentGroups}

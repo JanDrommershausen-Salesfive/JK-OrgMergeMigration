@@ -13,6 +13,7 @@ function Shell() {
     const objects = useObjects();
     const run = useRunContext();
     const [pickerOpen, setPickerOpen] = useState(false);
+    const [terminalOpen, setTerminalOpen] = useState(false);
     const configured = objects.data?.configured ?? false;
 
     if (objects.error) {
@@ -36,9 +37,25 @@ function Shell() {
                     target: objects.data?.targetAlias ?? ''
                 }}
             />
-            <MainNav />
+            <MainNav
+                trailing={
+                    <button
+                        type="button"
+                        onClick={() => setTerminalOpen(true)}
+                        className="flex cursor-pointer items-center gap-2 rounded-full border border-grey-line px-3 py-1 text-[13px] font-bold text-ink hover:border-ink"
+                    >
+                        {run.running && (
+                            <span
+                                aria-hidden="true"
+                                className="size-2 animate-pulse rounded-full bg-ok"
+                            />
+                        )}
+                        Terminal
+                    </button>
+                }
+            />
             <main className="mx-auto max-w-[1600px] px-8 pt-6 pb-12 max-sm:px-4">
-                <RunNotice />
+                <RunNotice onOpenTerminal={() => setTerminalOpen(true)} />
                 {objects.data && !configured ? (
                     <div className="rounded-xl border border-grey-line bg-white p-8 text-center">
                         <p className="mb-4 text-grey-500">
@@ -49,10 +66,14 @@ function Shell() {
                 ) : (
                     <Outlet />
                 )}
-                <div className="mt-6">
-                    <Terminal log={run.log} running={run.running} onClear={run.clearLog} />
-                </div>
             </main>
+            <Terminal
+                open={terminalOpen}
+                log={run.log}
+                running={run.running}
+                onClear={run.clearLog}
+                onClose={() => setTerminalOpen(false)}
+            />
         </div>
     );
 }

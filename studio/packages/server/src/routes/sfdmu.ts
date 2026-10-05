@@ -1,5 +1,10 @@
 import {
     CleanPlanRequestSchema,
+    ImportTodosRequestSchema,
+    UpdateTodoRequestSchema,
+    DeletePresetRequestSchema,
+    RestorePresetRequestSchema,
+    SavePresetRequestSchema,
     CreateCohortRequestSchema,
     ExcludeRequestSchema,
     LoginRequestSchema,
@@ -80,6 +85,21 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
             .send(file.text);
     });
 
+    app.get('/presets', (req) => studio.listPresets(FolderQuery.parse(req.query).folder));
+    app.post('/presets', (req) => studio.savePreset(SavePresetRequestSchema.parse(req.body)));
+    app.get('/presets/diff', (req) => {
+        const q = RunQuery.parse(req.query);
+        return studio.presetDiff(q.folder, q.id);
+    });
+    app.post('/presets/restore', (req) =>
+        studio.restorePreset(RestorePresetRequestSchema.parse(req.body))
+    );
+    app.post('/presets/delete', async (req, reply) => {
+        await studio.deletePreset(DeletePresetRequestSchema.parse(req.body));
+        return reply.code(204).send();
+    });
+    app.get('/tools/limits', () => studio.orgLimits());
+
     app.post('/tools/cleaner/plan', (req) =>
         studio.cleanerPlan(CleanPlanRequestSchema.parse(req.body))
     );
@@ -110,6 +130,16 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
             if (event.type === 'end') res.end();
         });
         req.raw.on('close', unsubscribe);
+    });
+
+    app.get('/todos', () => studio.listTodos());
+    app.post('/todos/import', (req) =>
+        studio.importRunToTodos(ImportTodosRequestSchema.parse(req.body))
+    );
+    app.post('/todos/update', (req) => studio.updateTodo(UpdateTodoRequestSchema.parse(req.body)));
+    app.post('/todos/delete', async (req, reply) => {
+        await studio.deleteTodo(IdBody.parse(req.body).id);
+        return reply.code(204).send();
     });
 
     app.get('/cohorts', () => studio.listCohorts());

@@ -177,6 +177,10 @@ describe('ToolsPage', () => {
             'href',
             '/tools/org-cleaner'
         );
+        expect(screen.getByRole('link', { name: /Org-Limits/ })).toHaveAttribute(
+            'href',
+            '/tools/limits'
+        );
         expect(screen.getAllByText('bald').length).toBeGreaterThan(0);
     });
 });

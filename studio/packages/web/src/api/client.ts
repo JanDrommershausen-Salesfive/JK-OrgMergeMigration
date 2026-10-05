@@ -1,9 +1,18 @@
 import {
     AvailableOrgsResponseSchema,
+    LimitsResponseSchema,
+    PresetDiffSchema,
+    PresetInfoSchema,
+    PresetListResponseSchema,
     CleanPlanSchema,
     CleanStatusSchema,
     CleanerRulesSchema,
     CohortListResponseSchema,
+    ImportTodosResponseSchema,
+    TodoItemSchema,
+    TodoListResponseSchema,
+    type ImportTodosRequest,
+    type UpdateTodoRequest,
     CohortPreviewSchema,
     CohortSchema,
     QueryCheckSchema,
@@ -18,6 +27,8 @@ import {
     RunStatusSchema,
     type CleanPlanRequest,
     type CreateCohortRequest,
+    type RestorePresetRequest,
+    type SavePresetRequest,
     type StartCleanRequest,
     type ExcludeRequest,
     type ParentModeRequest,
@@ -29,7 +40,7 @@ import {
     type SelectOrgsRequest,
     type ValueMappingRequest
 } from '@studio/shared';
-import type { ZodType, ZodTypeDef } from 'zod';
+import { z, type ZodType, type ZodTypeDef } from 'zod';
 
 // Alle Antworten werden gegen das gemeinsame Schema geprüft, Fehlermeldungen kommen vom Server.
 async function request<T>(
@@ -86,6 +97,26 @@ export const api = {
     runStatus: () => request('/api/run', RunStatusSchema),
     startRun: (folder: string, mode: RunMode, cohortId?: string, keepFilters?: boolean) =>
         request('/api/run', RunStatusSchema, { folder, mode, cohortId, keepFilters }),
+    presets: (folder: string) =>
+        request(`/api/presets?folder=${enc(folder)}`, PresetListResponseSchema),
+    savePreset: (req: SavePresetRequest) => request('/api/presets', PresetInfoSchema, req),
+    presetDiff: (folder: string, id: string) =>
+        request(`/api/presets/diff?folder=${enc(folder)}&id=${enc(id)}`, PresetDiffSchema),
+    restorePreset: (req: RestorePresetRequest) =>
+        request('/api/presets/restore', z.object({ backup: PresetInfoSchema.nullable() }), req),
+    deletePreset: async (folder: string, id: string) => {
+        const res = await fetch('/api/presets/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ folder, id })
+        });
+        if (!res.ok)
+            throw new Error(
+                ((await res.json().catch(() => null)) as { error?: string } | null)?.error ??
+                    `HTTP ${res.status}`
+            );
+    },
+    orgLimits: () => request('/api/tools/limits', LimitsResponseSchema),
     cleanerRules: () => request('/api/tools/cleaner/rules', CleanerRulesSchema),
     cleanerStatus: () => request('/api/tools/cleaner/status', CleanStatusSchema),
     cleanerPlan: (req: CleanPlanRequest) =>
@@ -102,6 +133,18 @@ export const api = {
     },
     cleanerStop: async () => {
         await fetch('/api/tools/cleaner/stop', { method: 'POST' });
+    },
+    todos: () => request('/api/todos', TodoListResponseSchema),
+    importTodos: (req: ImportTodosRequest) =>
+        request('/api/todos/import', ImportTodosResponseSchema, req),
+    updateTodo: (req: UpdateTodoRequest) => request('/api/todos/update', TodoItemSchema, req),
+    deleteTodo: async (id: string) => {
+        const res = await fetch('/api/todos/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
     },
     cohorts: () => request('/api/cohorts', CohortListResponseSchema),
     createCohort: (req: CreateCohortRequest) => request('/api/cohorts', CohortSchema, req),

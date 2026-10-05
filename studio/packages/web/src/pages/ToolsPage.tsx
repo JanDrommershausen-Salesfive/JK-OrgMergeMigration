@@ -13,8 +13,14 @@ const TOOLS: Tool[] = [
         to: '/tools/org-cleaner'
     },
     {
-        title: 'Sandbox-Speicher',
-        text: 'Verbrauch der Ziel-Sandbox gegen das Limit, vor einem Lauf.'
+        title: 'Org-Limits',
+        text: 'API-Aufrufe, Bulk-Batches, Daten- und Dateispeicher von Quelle und Ziel, vor einem Lauf oder Löschen.',
+        to: '/tools/limits'
+    },
+    {
+        title: 'Migration To-Do',
+        text: 'Fehler aus den Läufen, nach Ursache zusammengefasst, mit Lösungsvorschlag und Status.',
+        to: '/tools/todos'
     },
     {
         title: 'Mapping-Export',

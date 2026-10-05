@@ -171,3 +171,61 @@ export const useCleanerStatus = () =>
     useQuery({ queryKey: ['cleanerStatus'], queryFn: api.cleanerStatus });
 // Der Plan zählt in der Ziel-Org (dauert eine Minute) und wird deshalb nur auf Knopfdruck berechnet.
 export const useCleanerPlan = () => useMutation({ mutationFn: api.cleanerPlan });
+
+export const usePresets = (folder: string) =>
+    useQuery({ queryKey: ['presets', folder], queryFn: () => api.presets(folder) });
+
+export const usePresetDiff = (folder: string, id: string | null) =>
+    useQuery({
+        queryKey: ['presetDiff', folder, id],
+        queryFn: () => api.presetDiff(folder, id as string),
+        enabled: id !== null,
+        staleTime: 0
+    });
+
+export function useSavePreset(folder: string) {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.savePreset,
+        onSuccess: () => void client.invalidateQueries({ queryKey: ['presets', folder] })
+    });
+}
+
+export function useDeletePreset(folder: string) {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => api.deletePreset(folder, id),
+        onSuccess: () => void client.invalidateQueries({ queryKey: ['presets', folder] })
+    });
+}
+
+// Nach dem Laden eines Stands ist alles veraltet, was aus export.json und ValueMapping.csv gelesen wird.
+export function useRestorePreset(folder: string) {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.restorePreset,
+        onSuccess: () => {
+            for (const key of ['presets', 'object', 'query', 'objects', 'describe', 'presetDiff']) {
+                void client.invalidateQueries({ queryKey: [key] });
+            }
+            void folder;
+        }
+    });
+}
+
+// Org-Limits kosten einen API-Aufruf je Org; deshalb nur auf Anforderung und mit Zwischenspeicher.
+export const useOrgLimits = () =>
+    useQuery({ queryKey: ['orgLimits'], queryFn: api.orgLimits, staleTime: 60_000 });
+
+export const useTodos = () => useQuery({ queryKey: ['todos'], queryFn: api.todos });
+
+const useTodoMutation = <V, R>(fn: (v: V) => Promise<R>) => {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: fn,
+        onSuccess: () => void client.invalidateQueries({ queryKey: ['todos'] })
+    });
+};
+export const useImportTodos = () => useTodoMutation(api.importTodos);
+export const useUpdateTodo = () => useTodoMutation(api.updateTodo);
+export const useDeleteTodo = () => useTodoMutation(api.deleteTodo);

@@ -56,3 +56,6 @@ studio/packages/web/dist/
 # Lokale Org-Auswahl von Migration Studio (pro Person, nicht im Git)
 migration.project.json
 /cohorts/
+
+# Migration To-Do (lokal, enthält Kundennamen)
+/todos/
