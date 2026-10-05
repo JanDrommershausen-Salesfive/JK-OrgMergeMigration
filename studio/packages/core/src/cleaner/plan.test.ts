@@ -273,3 +273,53 @@ describe('Projektregeln', () => {
         expect(plan.steps.map((s) => s.label)).toEqual(['Account']);
     });
 });
+
+describe('eingebaute Blocker', () => {
+    it('nimmt Opportunities vor den Account, auch wenn sie nicht ausgewählt sind (Closed Won verhindert das Löschen)', async () => {
+        const d = deps({ Opportunity: 5 });
+        const plan = await buildPlan({
+            request: request({ objects: ['Contact', 'Account'] }),
+            migrationObjects: migration,
+            alias: 'a',
+            username: 'u',
+            userId: USER,
+            deps: d
+        });
+        expect(plan.steps.map((s) => `${s.reason}:${s.label}`)).toEqual([
+            'migration:Contact',
+            'blocker:Opportunity',
+            'migration:Account'
+        ]);
+        expect(plan.steps[1]).toMatchObject({ count: 5, blocks: 'Account' });
+        expect(plan.steps[1]!.note).toContain('Closed Won');
+        expect(plan.steps[1]!.where).toBe(
+            `AccountId IN (SELECT Id FROM Account WHERE CreatedById = '${USER}')`
+        );
+    });
+
+    it('doppelt sich nicht, wenn Opportunity ohnehin im Plan steht', async () => {
+        const mig = ['Account', 'Opportunity'];
+        const plan = await buildPlan({
+            request: request({ objects: ['Account', 'Opportunity'] }),
+            migrationObjects: mig,
+            alias: 'a',
+            username: 'u',
+            userId: USER,
+            deps: deps({ Opportunity: 5 })
+        });
+        expect(plan.steps.map((s) => s.label)).toEqual(['Opportunity', 'Account']);
+    });
+
+    it('lässt sich per exclude abschalten', async () => {
+        const plan = await buildPlan({
+            request: request({ objects: ['Account'] }),
+            migrationObjects: migration,
+            alias: 'a',
+            username: 'u',
+            userId: USER,
+            deps: deps({ Opportunity: 5 }),
+            rules: CleanerRulesSchema.parse({ exclude: ['Opportunity'] })
+        });
+        expect(plan.steps.map((s) => s.label)).toEqual(['Account']);
+    });
+});

@@ -12,9 +12,19 @@ import {
 import { Button, Panel } from '../components/ui';
 import { CleanerForm, type CleanerFormState } from '../features/cleaner/CleanerForm';
 import { ConfirmCleanDialog } from '../features/cleaner/ConfirmCleanDialog';
+import { LiveSteps } from '../features/cleaner/LiveSteps';
 import { PlanTable } from '../features/cleaner/PlanTable';
+import { Path, stageGuidance, type Phase } from '../features/cleaner/Stepper';
 import { useCleanerStream } from '../features/cleaner/useCleaner';
 import { useRunContext } from '../features/run/RunContext';
+
+const EMPTY: CleanerFormState = {
+    creator: 'me',
+    since: '',
+    includeBlockers: true,
+    blockersAnyCreator: false,
+    objects: []
+};
 
 const toRequest = (f: CleanerFormState): CleanPlanRequest => ({
     objects: f.objects,
@@ -24,6 +34,8 @@ const toRequest = (f: CleanerFormState): CleanPlanRequest => ({
 });
 
 // Org Cleaner: leert die Ziel-Sandbox für den nächsten Testlauf (laden, löschen, laden, löschen).
+// Ein Löschlauf ist ein Ablauf mit festen Schritten: Umfang → Plan → Löschen. Während und nach dem Löschen
+// ist nur der Lauf zu sehen; "Neuer Löschlauf" setzt zurück und öffnet wieder den Umfang.
 export function OrgCleanerPage() {
     const objects = useObjects();
     const configured = objects.data?.configured ?? false;
@@ -34,17 +46,14 @@ export function OrgCleanerPage() {
     const stream = useCleanerStream();
     const planner = useCleanerPlan();
 
-    const [form, setForm] = useState<CleanerFormState>({
-        creator: 'me',
-        since: '',
-        includeBlockers: true,
-        blockersAnyCreator: false,
-        objects: []
-    });
+    const [form, setForm] = useState<CleanerFormState>(EMPTY);
     const [planKey, setPlanKey] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [startError, setStartError] = useState<string | null>(null);
     const [starting, setStarting] = useState(false);
+    const [started, setStarted] = useState<string | null>(null); // Kurzbeschreibung des gestarteten Laufs
+    const [resetError, setResetError] = useState<string | null>(null);
+    const [editing, setEditing] = useState(false); // im Plan-Schritt zurück zur Konfiguration gegangen
     const initialised = useRef(false);
 
     const list = objects.data?.objects ?? [];
@@ -52,25 +61,38 @@ export function OrgCleanerPage() {
     const alias = objects.data?.targetAlias ?? '';
     const sandbox = target?.connected ? target.isSandbox : null;
     const cleanerRunning = status.data?.running ?? false;
-    const busy = cleanerRunning || run.running;
+    const migrationRunning = run.running;
+
+    const defaults = (): CleanerFormState => {
+        const excluded = new Set(rules.data?.exclude ?? []);
+        return {
+            creator: rules.data?.defaultScope?.creator ?? 'me',
+            since: rules.data?.defaultScope?.since ?? '',
+            includeBlockers: true,
+            blockersAnyCreator: false,
+            objects: list.map((o) => o.object).filter((o) => !excluded.has(o))
+        };
+    };
 
     // Voreinstellung einmal aus den Objekten und den Projektregeln.
     useEffect(() => {
         if (initialised.current || !objects.data || !rules.data) return;
         initialised.current = true;
-        const excluded = new Set(rules.data.exclude);
-        setForm((f) => ({
-            ...f,
-            creator: rules.data.defaultScope?.creator ?? 'me',
-            since: rules.data.defaultScope?.since ?? '',
-            objects: objects.data.objects.map((o) => o.object).filter((o) => !excluded.has(o))
-        }));
+        setForm(defaults());
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- nur einmal, wenn die Daten da sind
     }, [objects.data, rules.data]);
 
     const request = toRequest(form);
     const current = JSON.stringify(request);
     const plan = planner.data && planKey === current ? planner.data : null;
-    const hasEnded = stream.end !== null;
+    const hasRun = stream.end !== null || Object.keys(stream.steps).length > 0 || stream.log !== '';
+    const phase: Phase = cleanerRunning
+        ? 'running'
+        : hasRun
+          ? 'finished'
+          : plan && !editing
+            ? 'planned'
+            : 'setup';
 
     if (objects.isPending) return <p className="text-grey-500">Lade …</p>;
     if (!configured) {
@@ -88,6 +110,9 @@ export function OrgCleanerPage() {
         setStartError(null);
         api.cleanerStart({ ...request, confirm: alias, hardDelete })
             .then(() => {
+                setStarted(
+                    `${form.creator === 'me' ? 'Von mir angelegte Datensätze' : 'Alle Datensätze'}${form.since ? ` seit ${form.since}` : ''}, ${form.objects.length} Objekte, ${plan?.total ?? 0} Datensätze laut Plan`
+                );
                 setConfirmOpen(false);
                 stream.reconnect();
                 void status.refetch();
@@ -95,6 +120,23 @@ export function OrgCleanerPage() {
             .catch((e: Error) => setStartError(e.message))
             .finally(() => setStarting(false));
     };
+
+    // Ergebnisse (auch serverseitig) verwerfen und zurück zum Umfang; die Auswahl bleibt für den nächsten Lauf erhalten.
+    const newRun = () => {
+        setResetError(null);
+        api.cleanerReset()
+            .then(() => {
+                planner.reset();
+                setPlanKey('');
+                setEditing(false);
+                setStarted(null);
+                stream.reconnect();
+                void status.refetch();
+            })
+            .catch((e: Error) => setResetError(e.message));
+    };
+
+    const blocked = migrationRunning || sandbox === false;
 
     return (
         <>
@@ -119,73 +161,103 @@ export function OrgCleanerPage() {
                     gesperrt.
                 </p>
             )}
-            {busy && (
+            {migrationRunning && phase !== 'running' && (
                 <p
                     role="status"
                     className="mb-4 rounded-xl border border-digital-blue bg-white px-4 py-3 text-sm"
                 >
-                    {cleanerRunning
-                        ? 'Ein Löschauftrag läuft.'
-                        : 'Ein Migrationslauf läuft, solange kann nicht gelöscht werden.'}
+                    Ein Migrationslauf läuft, solange kann nicht gelöscht werden.
                 </p>
             )}
 
-            <div className="space-y-6">
-                <Panel label="Umfang">
-                    <div className="p-5">
-                        <h3 className="mb-3 text-sm font-bold text-digital-blue">1 · UMFANG</h3>
-                        <CleanerForm
-                            state={form}
-                            onChange={setForm}
-                            objects={list.map((o) => ({ folder: o.folder, object: o.object }))}
-                            rules={rules.data}
-                            username={target?.connected ? (target.username ?? '') : ''}
-                            alias={alias}
-                            disabled={busy || sandbox === false}
-                            planning={planner.isPending}
-                            onPlan={() =>
-                                planner.mutate(request, { onSuccess: () => setPlanKey(current) })
-                            }
-                        />
-                        {planner.error && (
-                            <p role="alert" className="mt-3 text-[13px] text-bad">
-                                {planner.error.message}
-                            </p>
-                        )}
-                    </div>
-                </Panel>
+            <Panel label="Löschlauf">
+                <div className="px-5 pt-5">
+                    <Path phase={phase} onBackToConfig={() => setEditing(true)} />
+                    <p className="mt-4 mb-0 border-b border-grey-line pb-4 text-[13px] text-grey-500">
+                        {stageGuidance(phase)}
+                    </p>
+                </div>
+                <div className="p-5">
+                    {phase === 'setup' && (
+                        <>
+                            <div className="mb-3 flex items-center gap-3">
+                                <h3 className="text-sm font-bold text-digital-blue">
+                                    KONFIGURATION
+                                </h3>
+                                <button
+                                    type="button"
+                                    className="cursor-pointer text-[13px] text-digital-blue underline"
+                                    onClick={() => {
+                                        setForm(defaults());
+                                        planner.reset();
+                                        setPlanKey('');
+                                        setEditing(false);
+                                    }}
+                                >
+                                    Zurücksetzen
+                                </button>
+                            </div>
+                            <CleanerForm
+                                state={form}
+                                onChange={setForm}
+                                objects={list.map((o) => ({ folder: o.folder, object: o.object }))}
+                                rules={rules.data}
+                                username={target?.connected ? (target.username ?? '') : ''}
+                                alias={alias}
+                                disabled={blocked}
+                                planning={planner.isPending}
+                                onPlan={() =>
+                                    planner.mutate(request, {
+                                        onSuccess: () => {
+                                            setPlanKey(current);
+                                            setEditing(false);
+                                        }
+                                    })
+                                }
+                            />
+                            {planner.error && (
+                                <p role="alert" className="mt-3 text-[13px] text-bad">
+                                    {planner.error.message}
+                                </p>
+                            )}
+                        </>
+                    )}
 
-                {plan && (
-                    <Panel label="Plan">
-                        <div className="p-5">
-                            <h3 className="mb-3 text-sm font-bold text-digital-blue">2 · PLAN</h3>
-                            <PlanTable plan={plan} live={stream.steps} />
-                            <div className="mt-4">
+                    {phase === 'planned' && plan && (
+                        <>
+                            <h3 className="mb-3 text-sm font-bold text-digital-blue">PLAN</h3>
+                            <PlanTable plan={plan} />
+                            <div className="mt-4 flex flex-wrap items-center gap-3">
                                 <Button
                                     variant="danger"
-                                    disabled={busy || sandbox === false || plan.total === 0}
+                                    disabled={blocked || plan.total === 0}
                                     onClick={() => setConfirmOpen(true)}
                                 >
                                     Löschen starten …
                                 </Button>
+                                <Button variant="ghost" onClick={() => setEditing(true)}>
+                                    Konfiguration ändern
+                                </Button>
                                 {plan.total === 0 && (
-                                    <span className="ml-3 text-[13px] text-grey-500">
+                                    <span className="text-[13px] text-grey-500">
                                         Nichts zu löschen.
                                     </span>
                                 )}
                             </div>
-                        </div>
-                    </Panel>
-                )}
+                        </>
+                    )}
 
-                {(cleanerRunning || hasEnded || stream.log) && (
-                    <Panel label="Fortschritt">
-                        <div className="p-5">
-                            <div className="mb-3 flex items-center gap-3">
+                    {(phase === 'running' || phase === 'finished') && (
+                        <>
+                            <div className="mb-3 flex flex-wrap items-center gap-3">
                                 <h3 className="text-sm font-bold text-digital-blue">
-                                    3 · FORTSCHRITT
+                                    {phase === 'running' ? 'LÖSCHEN' : 'ERGEBNIS'}
                                 </h3>
-                                {cleanerRunning && (
+                                {started && (
+                                    <span className="text-[13px] text-grey-500">{started}</span>
+                                )}
+                                <span className="flex-1" />
+                                {phase === 'running' ? (
                                     <Button
                                         variant="ghost"
                                         small
@@ -193,8 +265,15 @@ export function OrgCleanerPage() {
                                     >
                                         Anhalten
                                     </Button>
+                                ) : (
+                                    <Button onClick={newRun}>Neuer Löschlauf</Button>
                                 )}
                             </div>
+                            {resetError && (
+                                <p role="alert" className="mb-3 text-[13px] text-bad">
+                                    {resetError}
+                                </p>
+                            )}
                             {stream.end && (
                                 <p
                                     role="status"
@@ -212,13 +291,14 @@ export function OrgCleanerPage() {
                                     .
                                 </p>
                             )}
-                            <pre className="m-0 max-h-80 overflow-auto rounded-xl bg-[#0b0f19] p-4 font-mono text-[12.5px] whitespace-pre-wrap text-[#d5dde8]">
+                            <LiveSteps steps={stream.steps} />
+                            <pre className="m-0 mt-4 max-h-80 overflow-auto rounded-xl bg-[#0b0f19] p-4 font-mono text-[12.5px] whitespace-pre-wrap text-[#d5dde8]">
                                 {stream.log || 'Warte auf Ausgabe …'}
                             </pre>
-                        </div>
-                    </Panel>
-                )}
-            </div>
+                        </>
+                    )}
+                </div>
+            </Panel>
 
             <ConfirmCleanDialog
                 open={confirmOpen}

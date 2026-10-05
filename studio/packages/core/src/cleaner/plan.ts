@@ -40,6 +40,20 @@ function specialCase(object: string, scope: string) {
     }
 }
 
+// Regeln, die Salesforce selbst vorgibt, aber im Describe nicht als restrictedDelete markiert: Ein Account mit
+// Closed-Won-Opportunities des Löschenden lässt sich nicht löschen, die Opportunities müssen mit weg
+// (Doku "Guidelines for Deleting Accounts"). Opportunities anderer Besitzer blockieren ebenfalls.
+// Der Account selbst nimmt sie sonst per Kaskade mit, deshalb gilt "anyCreator".
+export const BUILT_IN_BLOCKERS: CleanerRules['blockers'] = [
+    {
+        object: 'Opportunity',
+        field: 'AccountId',
+        blocks: 'Account',
+        anyCreator: true,
+        note: 'geschlossene Opportunities (Closed Won) verhindern das Löschen des Accounts'
+    }
+];
+
 // Wie viele Abfragen gleichzeitig laufen (jede ist ein sf-Aufruf).
 const CONCURRENCY = 5;
 
@@ -115,7 +129,7 @@ export async function buildPlan(opts: {
                     anyCreator: false
                 });
             }
-            for (const rule of rules.blockers.filter(
+            for (const rule of [...BUILT_IN_BLOCKERS, ...rules.blockers].filter(
                 (r) => r.blocks === object || r.blocks === special.object
             )) {
                 candidates.set(`${rule.object}.${rule.field}`, {

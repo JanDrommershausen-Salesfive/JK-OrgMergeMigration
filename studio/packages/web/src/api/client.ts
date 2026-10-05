@@ -92,6 +92,14 @@ export const api = {
         request('/api/tools/cleaner/plan', CleanPlanSchema, req),
     cleanerStart: (req: StartCleanRequest) =>
         request('/api/tools/cleaner/start', CleanStatusSchema, req),
+    cleanerReset: async () => {
+        const res = await fetch('/api/tools/cleaner/reset', { method: 'POST' });
+        if (!res.ok)
+            throw new Error(
+                ((await res.json().catch(() => null)) as { error?: string } | null)?.error ??
+                    `HTTP ${res.status}`
+            );
+    },
     cleanerStop: async () => {
         await fetch('/api/tools/cleaner/stop', { method: 'POST' });
     },

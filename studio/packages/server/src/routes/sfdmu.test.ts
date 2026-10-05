@@ -328,3 +328,10 @@ describe('Cleaner-Routen', () => {
         expect(noConfirm.statusCode).toBe(400); // confirm fehlt
     });
 });
+
+describe('Cleaner zurücksetzen', () => {
+    it('setzt ohne laufenden Auftrag zurück', async () => {
+        const res = await app.inject({ method: 'POST', url: '/api/tools/cleaner/reset', headers });
+        expect(res.statusCode).toBe(204);
+    });
+});

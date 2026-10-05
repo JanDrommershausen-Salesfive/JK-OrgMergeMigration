@@ -59,6 +59,13 @@ export class CleanerManager {
             });
     }
 
+    // Verwirft Protokoll und Ergebnis des letzten Auftrags ("Neuer Löschlauf"). Läuft einer, geht das nicht.
+    reset(): void {
+        if (this.active) throw conflict('Es läuft ein Löschauftrag.');
+        this.events = [];
+        this.ended = null;
+    }
+
     stop(): void {
         this.stopped = true;
     }

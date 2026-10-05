@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -7,12 +7,27 @@ import { RunProvider } from '../features/run/RunContext';
 import { OrgCleanerPage } from './OrgCleanerPage';
 import { ToolsPage } from './ToolsPage';
 
+// Der Test kann Ereignisse des Servers nachstellen (Fortschritt, Ende).
 class FakeEventSource {
+    static instances: FakeEventSource[] = [];
     onmessage: ((e: MessageEvent) => void) | null = null;
+    constructor(readonly url: string) {
+        FakeEventSource.instances.push(this);
+    }
     close() {}
 }
+const serverSends = (...events: unknown[]) =>
+    act(() => {
+        const es = FakeEventSource.instances
+            .filter((i) => i.url.includes('/tools/cleaner/'))
+            .at(-1);
+        for (const e of events) es?.onmessage?.({ data: JSON.stringify(e) } as MessageEvent);
+    });
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+    vi.unstubAllGlobals();
+    FakeEventSource.instances = [];
+});
 
 const objects = {
     objects: [
@@ -128,6 +143,7 @@ function setup(sandbox = true) {
                 ['/api/tools/cleaner/status', { running: false }],
                 ['/api/tools/cleaner/plan', plan],
                 ['/api/tools/cleaner/start', { running: true }],
+                ['/api/tools/cleaner/reset', {}],
                 ['/api/run', { running: false, folder: null, mode: null }]
             ];
             const hit = routes.find(([prefix]) => url.startsWith(prefix));
@@ -214,10 +230,123 @@ describe('OrgCleanerPage', () => {
         setup();
         await user.click(await screen.findByRole('button', { name: 'Plan berechnen' }));
         expect(await screen.findByText('Blocker')).toBeInTheDocument();
+        // Der Plan-Schritt zeigt kein Formular; für Änderungen geht es zurück zur Konfiguration
+        await user.click(screen.getByRole('button', { name: 'Konfiguration ändern' }));
         await user.click(
-            screen.getByRole('radio', { name: /Alle Datensätze der gewählten Objekte/ })
+            await screen.findByRole('radio', { name: /Alle Datensätze der gewählten Objekte/ })
         );
         expect(screen.queryByText('Blocker')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Plan berechnen' })).toBeInTheDocument();
+    });
+
+    async function runToFinished(user: ReturnType<typeof userEvent.setup>) {
+        await user.click(await screen.findByRole('button', { name: 'Plan berechnen' }));
+        await user.click(await screen.findByRole('button', { name: 'Löschen starten …' }));
+        await user.type(await screen.findByLabelText('Alias bestätigen'), 'CDEV5');
+        await user.click(screen.getByRole('button', { name: 'Jetzt in CDEV5 löschen' }));
+        await waitFor(() =>
+            expect(
+                FakeEventSource.instances.filter((i) => i.url.includes('/tools/cleaner/')).length
+            ).toBeGreaterThan(1)
+        ); // Stream wird neu verbunden
+        await serverSends(
+            { type: 'log', text: 'Contact: 129 Datensätze\n' },
+            {
+                type: 'step',
+                order: 1,
+                object: 'Contact',
+                state: 'done',
+                deleted: 129,
+                failed: 0,
+                remaining: 0
+            },
+            { type: 'end', ok: true, deleted: 129, failed: 0, stopped: false }
+        );
+    }
+
+    it('zeigt nach dem Löschen nur noch den Lauf und verlangt "Neuer Löschlauf" für den nächsten', async () => {
+        const user = userEvent.setup();
+        setup();
+        await runToFinished(user);
+        expect(await screen.findByRole('button', { name: 'Neuer Löschlauf' })).toBeInTheDocument();
+        expect(screen.getByText(/129 gelöscht/)).toBeInTheDocument();
+        // Formular und Plan sind weg, damit sich nichts vermischt
+        expect(screen.queryByRole('button', { name: 'Plan berechnen' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Löschen starten …' })).not.toBeInTheDocument();
+        expect(screen.getByRole('listitem', { current: 'step' })).toHaveTextContent('Fertig');
+    });
+
+    it('"Neuer Löschlauf" setzt serverseitig zurück, öffnet den Umfang und behält die Auswahl', async () => {
+        const user = userEvent.setup();
+        const calls = setup();
+        await user.click(await screen.findByRole('checkbox', { name: /Contact/ })); // Contact abwählen
+        await runToFinished(user);
+        await user.click(await screen.findByRole('button', { name: 'Neuer Löschlauf' }));
+        expect(calls.some((c) => c.url === '/api/tools/cleaner/reset')).toBe(true);
+        expect(await screen.findByRole('button', { name: 'Plan berechnen' })).toBeInTheDocument();
+        expect(screen.queryByText(/129 gelöscht/)).not.toBeInTheDocument();
+        expect(screen.getByRole('checkbox', { name: /Contact/ })).not.toBeChecked();
+        expect(screen.getByRole('listitem', { current: 'step' })).toHaveTextContent(
+            'Konfiguration'
+        );
+    });
+
+    it('zeigt nach einem Neuladen den letzten Lauf aus dem Puffer des Servers', async () => {
+        setup();
+        await screen.findByRole('button', { name: 'Plan berechnen' });
+        await serverSends(
+            {
+                type: 'step',
+                order: 2,
+                object: 'Account',
+                state: 'partial',
+                deleted: 49,
+                failed: 1,
+                remaining: 1
+            },
+            { type: 'end', ok: false, deleted: 49, failed: 1, stopped: false }
+        );
+        expect(await screen.findByText(/Mit Resten beendet/)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Neuer Löschlauf' })).toBeInTheDocument();
+        expect(screen.getByText('Account')).toBeInTheDocument();
+    });
+
+    it('"Zurücksetzen" stellt die Voreinstellung wieder her und verwirft den Plan', async () => {
+        const user = userEvent.setup();
+        setup();
+        await user.click(await screen.findByRole('button', { name: 'Plan berechnen' }));
+        expect(await screen.findByText('Blocker')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Konfiguration ändern' }));
+        await user.click(await screen.findByRole('checkbox', { name: /Contact/ }));
+        expect(screen.getByRole('checkbox', { name: /Contact/ })).not.toBeChecked();
+        await user.click(screen.getByRole('button', { name: 'Zurücksetzen' }));
+        expect(screen.getByRole('checkbox', { name: /Contact/ })).toBeChecked();
+        expect(screen.queryByText('Blocker')).not.toBeInTheDocument();
+    });
+
+    it('zeigt den Ablauf als Path mit vier Stufen und hebt die aktuelle hervor', async () => {
+        const user = userEvent.setup();
+        setup();
+        const path = await screen.findByRole('list', { name: 'Ablauf' });
+        const labels = () =>
+            within(path)
+                .getAllByRole('listitem')
+                .map((li) => li.textContent);
+        expect(labels()).toEqual(['Konfiguration', 'Plan', 'Löschen', 'Fertig']);
+        expect(screen.getByRole('listitem', { current: 'step' })).toHaveTextContent(
+            'Konfiguration'
+        );
+        // jede Stufe hat eine kurze Hilfe wie beim Salesforce-Path
+        expect(screen.getByText(/Lege fest, was gelöscht werden soll/)).toBeInTheDocument();
+
+        await user.click(await screen.findByRole('button', { name: 'Plan berechnen' }));
+        await screen.findByText('Blocker');
+        expect(screen.getByRole('listitem', { current: 'step' })).toHaveTextContent('Plan');
+        expect(labels()[0]).toBe('✓ Konfiguration');
+        expect(screen.getByText(/Prüfe die Reihenfolge und die Zahlen/)).toBeInTheDocument();
+        // Klick auf die abgeschlossene erste Stufe führt zurück zur Konfiguration
+        await user.click(screen.getByRole('button', { name: '✓ Konfiguration' }));
+        expect(await screen.findByRole('button', { name: 'Plan berechnen' })).toBeInTheDocument();
     });
 
     it('sperrt alles, wenn das Ziel keine Sandbox ist', async () => {

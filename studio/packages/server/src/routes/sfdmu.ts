@@ -87,6 +87,10 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
         await studio.startCleaner(StartCleanRequestSchema.parse(req.body));
         return reply.code(202).send({ running: true });
     });
+    app.post('/tools/cleaner/reset', async (_req, reply) => {
+        studio.resetCleaner();
+        return reply.code(204).send();
+    });
     app.post('/tools/cleaner/stop', async (_req, reply) => {
         studio.stopCleaner();
         return reply.code(204).send();

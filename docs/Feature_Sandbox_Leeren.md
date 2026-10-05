@@ -1,6 +1,6 @@
 # Feature: Org Cleaner (Sandbox leeren)
 
-Stand: 2026-10-05 · Status: umgesetzt (Tools → Org Cleaner). Plan und Zählen sind gegen CDEV5 geprüft, das eigentliche Löschen nur mit einem simulierten Ziel getestet.
+Stand: 2026-10-05 · Status: umgesetzt (Tools → Org Cleaner). Erster echter Löschlauf in CDEV5 durchgeführt: 54 Cases, 50 Entitlements und 49 von 50 Accounts gelöscht, ein Account blieb wegen Closed-Won-Opportunities stehen (jetzt als eingebaute Regel abgedeckt).
 
 ## Ziel
 
@@ -10,6 +10,7 @@ Die Ziel-Sandbox hat wenig Speicher. Für Testzyklen (laden, prüfen, löschen, 
 
 - **Papierkorb:** Gelöschte Datensätze liegen 15 Tage im Papierkorb und **zählen nicht zum Datenspeicher**. Sie bremsen aber die Datenbank bei großen Mengen. Das Bulk API 2.0 kennt deshalb einen **Hard Delete**, der den Papierkorb umgeht (Berechtigung "Bulk API Hard Delete"). Eine frühere Fassung dieses Dokuments behauptete das Gegenteil und war falsch.
 - **Account löschen:** Kontakte, Opportunities, Contracts (nicht aktiviert), Aktivitäten, Notizen und Anhänge werden mitgelöscht. Es verhindern das Löschen unter anderem: zugehörige **Cases**, Opportunities anderer Besitzer, aktive Contracts, Portal-Kontakte und Kontakte, die einer Order als Bill-To-Contact dienen.
+- **Closed-Won-Opportunities:** Ein Account, dessen Closed-Won-Opportunities dem Löschenden gehören, lässt sich nicht löschen; die Opportunities müssen mit weg. Opportunities anderer Besitzer blockieren ebenfalls. Das ist Standardverhalten, kein Flow, und steht im Describe nicht als `restrictedDelete`. Meldung im UI: "… because some opportunities in that account were closed won".
 - **Orders:** Nur Orders im Status Draft lassen sich löschen. Aktivierte Orders müssen vorher auf Draft gesetzt werden, Positionen aktivierter Orders lassen sich nicht löschen.
 - **Hinweis zu `restrictedDelete`:** Das Describe eines Objekts nennt seine Kind-Beziehungen und markiert die, die das Löschen verhindern. Für Account in CDEV5 sind das Case, Contract, Order, Entitlement, ServiceContract, ServiceResource, RecordAlert, GoalAssignment und zwei Einwilligungsobjekte.
 
@@ -25,6 +26,10 @@ Die Ziel-Sandbox hat wenig Speicher. Für Testzyklen (laden, prüfen, löschen, 
 - **ContentVersion:** wird über ContentDocument gelöscht (löscht alle Versionen).
 - **Pricebook2:** das Standard-Preisbuch bleibt (nicht löschbar).
 - **Order:** aktivierte Orders werden zuerst auf Draft gesetzt.
+
+### Eingebaute Regeln
+
+Zusätzlich zu `restrictedDelete` kennt der Cleaner Regeln, die Salesforce vorgibt, aber nicht im Describe meldet. Heute: **Opportunity.AccountId blockiert Account** (Closed Won), unabhängig vom Ersteller. Die Opportunities kommen automatisch vor den Account in den Plan, auch wenn sie nicht als Objekt gewählt sind. Per `exclude` in der Projektdatei lässt sich das abschalten.
 
 ## Projektregeln: cleaner.config.json
 

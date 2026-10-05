@@ -432,6 +432,10 @@ export class Studio {
         );
     }
 
+    resetCleaner(): void {
+        this.cleaner.reset();
+    }
+
     stopCleaner(): void {
         this.cleaner.stop();
     }
