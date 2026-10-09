@@ -21,7 +21,6 @@ export const sfQuery: QueryRunner = async (alias, soql) => {
 
 const UNQUERYABLE = new Set(['address', 'location']);
 const SAMPLE_ROWS = 5;
-const SAMPLE_COLUMNS = 8;
 const GROUP_LIMIT = 2000;
 const IN_CHUNK = 100;
 
@@ -74,7 +73,7 @@ export async function checkQuery(opts: {
             (!sourceDescribe.ok ||
                 (!!sourceDescribe.fields[f] &&
                     !UNQUERYABLE.has(sourceDescribe.fields[f]?.baseType ?? '')));
-        const columns = model.fields.filter(readable).slice(0, SAMPLE_COLUMNS);
+        const columns = model.fields.filter(readable);
         const sample = await run(
             sourceAlias,
             `SELECT ${columns.join(', ')} FROM ${model.object}${clause(where)} LIMIT ${SAMPLE_ROWS}`
