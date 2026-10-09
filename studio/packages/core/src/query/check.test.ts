@@ -67,10 +67,13 @@ describe('checkQuery', () => {
             sourceAlias: 'src',
             targetAlias: 'tgt',
             sourceDescribe: describeOk,
+            recordBaseUrl: 'https://us.my.salesforce.com/',
             run
         });
 
         expect(r.count).toBe(46);
+        expect(r.idColumns).toEqual(['Id', 'AccountId']);
+        expect(r.recordBaseUrl).toBe('https://us.my.salesforce.com');
         expect(r.columns).toEqual(['Id', 'Email', 'AccountId']);
         expect(r.rows).toEqual([['003', 'x@y.de', '001']]);
         expect(r.parents[0]).toMatchObject({

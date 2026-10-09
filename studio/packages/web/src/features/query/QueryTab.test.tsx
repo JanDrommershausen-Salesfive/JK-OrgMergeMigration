@@ -75,8 +75,10 @@ function setup() {
                   ? {
                         count: 46,
                         error: null,
-                        columns: ['Id'],
-                        rows: [['003']],
+                        columns: ['Id', 'Email'],
+                        rows: [['003000000000001AAA', 'x@y.de']],
+                        idColumns: ['Id'],
+                        recordBaseUrl: 'https://us.my.salesforce.com',
                         parents: [
                             {
                                 object: 'Account',
@@ -195,5 +197,15 @@ describe('QueryTab', () => {
         expect((await screen.findAllByText(/33/)).length).toBeGreaterThan(0);
         expect(screen.getByText(/fehlen im Ziel/)).toBeInTheDocument();
         expect(screen.getByText(/Datensätze in der Quelle/)).toBeInTheDocument();
+    });
+
+    it('verlinkt Salesforce-IDs im Prüfergebnis auf den Datensatz in der Quell-Org', async () => {
+        const user = userEvent.setup();
+        setup();
+        await user.click(await screen.findByRole('button', { name: 'Treffer und Parents prüfen' }));
+        const link = await screen.findByRole('link', { name: '003000000000001AAA' });
+        expect(link).toHaveAttribute('href', 'https://us.my.salesforce.com/003000000000001AAA');
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(screen.queryByRole('link', { name: 'x@y.de' })).not.toBeInTheDocument();
     });
 });
