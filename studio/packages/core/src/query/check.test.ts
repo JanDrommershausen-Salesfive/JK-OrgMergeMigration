@@ -153,4 +153,37 @@ describe('checkQuery', () => {
         });
         expect(r.parents[0]?.note).toMatch(/Mehrteilige/);
     });
+
+    it('liest alle Felder der Query, nicht nur die ersten acht', async () => {
+        const fields = Array.from({ length: 12 }, (_, i) => `Feld${i}__c`);
+        const wide: QueryModel = { ...model, fields, parents: [] };
+        const describe = {
+            ok: true as const,
+            fields: Object.fromEntries(
+                fields.map((f) => [
+                    f,
+                    {
+                        type: 'string',
+                        baseType: 'string',
+                        label: f,
+                        createable: true,
+                        updateable: true
+                    }
+                ])
+            )
+        };
+        const run: QueryRunner = async (_alias, soql) =>
+            soql.startsWith('SELECT COUNT()')
+                ? { records: [], totalSize: 1 }
+                : { records: [Object.fromEntries(fields.map((f) => [f, 'x']))], totalSize: 1 };
+        const r = await checkQuery({
+            model: wide,
+            sourceAlias: 'src',
+            targetAlias: 'tgt',
+            sourceDescribe: describe,
+            run
+        });
+        expect(r.columns).toEqual(fields);
+        expect(r.rows[0]).toHaveLength(12);
+    });
 });
