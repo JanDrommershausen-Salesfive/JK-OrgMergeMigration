@@ -111,6 +111,9 @@ export const QueryCheckSchema = z.object({
     error: z.string().nullable(),
     columns: z.array(z.string()),
     rows: z.array(z.array(z.string())),
+    // Spalten mit Salesforce-IDs (Id, Lookups) und Instanz-URL der Quelle, damit die UI Datensätze verlinken kann.
+    idColumns: z.array(z.string()).default([]),
+    recordBaseUrl: z.string().nullable().default(null),
     parents: z.array(ParentCheckSchema)
 });
 export type QueryCheck = z.infer<typeof QueryCheckSchema>;

@@ -407,12 +407,19 @@ export class Studio {
         return runQuickQuery((req.org === 'source' ? orgs.source : orgs.target).alias, req.soql);
     }
 
+    // Basis-URL der Org für Links auf Datensätze; null, wenn sie sich nicht ermitteln lässt.
+    private async instanceUrl(alias: string): Promise<string | null> {
+        const r = await sf(['org', 'display', '-o', alias]);
+        return r.status === 0 ? (r.result?.instanceUrl ?? null) : null;
+    }
+
     // Lesende Prüfung gegen Quelle und Ziel: Treffer, Beispielzeilen, fehlende Parents.
     async checkQuery(folder: string): Promise<QueryCheck> {
         const model = await this.queryModel(folder);
         const { source, target } = this.requireOrgs();
         return checkQuery({
             model,
+            recordBaseUrl: await this.instanceUrl(source.alias),
             sourceAlias: source.alias,
             targetAlias: target.alias,
             sourceDescribe: await this.describeCache.describe(source.alias, model.object)
