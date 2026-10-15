@@ -23,6 +23,14 @@ export interface FieldStatus {
 
 const polymorphic = (f: DescribedField) => /^reference\(\d+ Objekte\)$/.test(f.type);
 
+// Eine Quell-Id (18 Zeichen) in ein Textfeld zu schreiben ist gewollt (External-ID-Feld für die Quell-Id),
+// solange das Zielfeld mindestens 18 Zeichen fasst. Ein kürzeres Textfeld bleibt eine Abweichung.
+const idFitsText = (src: DescribedField, tgt: DescribedField) => {
+    if (src.baseType !== 'id' || tgt.baseType !== 'string') return false;
+    const length = /\((\d+)\)/.exec(tgt.type)?.[1];
+    return Number(length) >= 18;
+};
+
 // Vergleicht ein Query-Feld mit den Describe-Daten aus Quelle und Ziel.
 export function fieldStatus(f: FieldInfo, d: DescribeResponse | undefined): FieldStatus {
     if (f.excluded)
@@ -45,7 +53,11 @@ export function fieldStatus(f: FieldInfo, d: DescribeResponse | undefined): Fiel
     if (!tgt.createable && f.targetField !== 'Id' && tgt.baseType !== 'address') {
         return { key: 'readonly', label: 'im Ziel nicht schreibbar', tone: 'warn', src, tgt };
     }
-    const same = src && (polymorphic(src) && polymorphic(tgt) ? true : src.type === tgt.type);
+    const same =
+        src &&
+        (polymorphic(src) && polymorphic(tgt)
+            ? true
+            : src.type === tgt.type || idFitsText(src, tgt));
     if (src && !same) return { key: 'type', label: 'Typ/Länge weicht ab', tone: 'warn', src, tgt };
     if (f.renamed) return { key: 'mapped', label: '⇄ gemappt', tone: 'ren', src, tgt };
     return { key: 'ok', label: '✓ 1:1', tone: 'ok', src, tgt };
