@@ -196,6 +196,23 @@ describe('Ergebnis-Routen', () => {
         expect(csv.body).toContain('Pflichtfeld fehlt');
     });
 
+    it('liefert alle gesendeten Felder einer Fehlerzeile', async () => {
+        const ok = await app.inject({
+            method: 'GET',
+            url: `/api/results/error-record?folder=020_Contact&id=${id}&index=0`,
+            headers
+        });
+        expect(ok.json()).toEqual({
+            fields: { Id: 'F1', 'Old Id': '003A', Email: 'a@b.de' }
+        });
+        const none = await app.inject({
+            method: 'GET',
+            url: `/api/results/error-record?folder=020_Contact&id=${id}&index=5`,
+            headers
+        });
+        expect(none.statusCode).toBe(404);
+    });
+
     it('antwortet 404 bei unbekanntem Lauf und lehnt Pfadtricks ab', async () => {
         const unknown = await app.inject({
             method: 'GET',

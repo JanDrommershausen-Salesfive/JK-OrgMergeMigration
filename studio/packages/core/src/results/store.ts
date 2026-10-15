@@ -74,19 +74,17 @@ export class ResultStore {
         const files = (await readdir(path.join(dir, 'target')).catch(() => [])).filter((f) =>
             f.endsWith('_target.csv')
         );
-        const errors = (
-            await Promise.all(
-                files.map(
-                    async (f) =>
-                        readTargetTable(f, await readFile(path.join(dir, 'target', f), 'utf8'))
-                            .errors
-                )
+        const tables = await Promise.all(
+            files.map(async (f) =>
+                readTargetTable(f, await readFile(path.join(dir, 'target', f), 'utf8'))
             )
-        ).flat();
+        );
+        const errors = tables.flatMap((t) => t.errors);
+        const errorRecords = tables.flatMap((t) => t.errorRecords);
         const missingText = await readFile(
             path.join(dir, 'reports', 'MissingParentRecordsReport.csv'),
             'utf8'
         ).catch(() => '');
-        return { errors, missing: readMissingParents(missingText) };
+        return { errors, errorRecords, missing: readMissingParents(missingText) };
     }
 }

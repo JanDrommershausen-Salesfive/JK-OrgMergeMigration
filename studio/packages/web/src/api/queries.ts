@@ -101,6 +101,13 @@ export const useRunDetail = (folder: string, id: string | null) =>
         enabled: id !== null
     });
 
+export const useErrorRecord = (folder: string, id: string, index: number, enabled: boolean) =>
+    useQuery({
+        queryKey: ['errorRecord', folder, id, index],
+        queryFn: () => api.errorRecord(folder, id, index),
+        enabled
+    });
+
 export const useRunLog = (folder: string, id: string | null, enabled: boolean) =>
     useQuery({
         queryKey: ['runLog', folder, id],

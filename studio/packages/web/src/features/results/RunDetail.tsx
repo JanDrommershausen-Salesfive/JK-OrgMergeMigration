@@ -246,6 +246,7 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                     rows={d.errors}
                     total={d.errorsTotal}
                     selection={{ selected: picked, onChange: setPicked }}
+                    run={{ folder, id }}
                 />
             )}
             {section === 'parents' && (
