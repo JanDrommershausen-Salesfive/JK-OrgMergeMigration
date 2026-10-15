@@ -1,0 +1,21 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name, BillingStreet, BillingCity, BillingPostalCode, BillingCountry, Phone, Website, BillingAddress, Description, Fax, Industry, Jigsaw, NumberOfEmployees, Ownership, ParentId, Rating, ShippingAddress, Sic, SicDesc, Site, TickerSymbol, Type, BillingState, AccountSource, Accounting_Note__c, Account_Blocked__c, Account_Created_in_SAP__c, Bill_to_Ship_to__c, Business_Status__c, Credit_Limit__c, Customer_First_Account_ID__c, Devoted_5_Stars__c, Devoted_Price_List__c, Equipment_KA__c, Equipment_Price_List__c, Import_ID__c, Inactive_Do_Not_Use__c, JK_Shop_KA__c, JK_Shop_Note__c, JK_Shop_Price_List__c, JK_VIP__c, Key_Account__c, Location_Type__c, MRI_Price_List__c, Number_of_Licenses__c, Number_of_Locations__c, Number_of_Rooms__c, Number_of_Units__c, Payment_Processor__c, Price_List__c, RTI_Notes__c, SAP_Account_Number__c, SAP_Email__c, SAP_Name__c, Service_KA__c, Service_Price_List__c, Shipping_Delivery_Note__c, Sunless_Price_List__c, SunLync_Account_Created_Date__c, SunLync_Account_ID__c, SunLync_Account_Name__c, SunLync_Account_Type__c, SunLync_Billing_Cycle__c, SunLync_Comments__c, SunLync_Contract__c, SunLync_Contract_Expiration_Date__c, SunLync_Database_Hosting__c, SunLync_License_Last_Price_Change__c, SunLync_License_Pricing__c, SunLync_Parent_Account__c, SunLync_Special_Message__c, SunLync_Support_Last_Price_Change__c, SunLync_Support_Pricing__c, Tax_Exempt_Verified__c, Time_Zone__c, Verified_from_SAP__c, X7_Sun_Price_List__c, Search_Term__c FROM Account WHERE Id IN ('001VQ00001FrTPJYA3', '001Dn00000PsP8IIAV', '001VQ00001FrP0jYAF', '001VQ00001FjZQJYA3', '001Dn00000PsNB0IAN', '001VQ00001EdLTzYAN', '001Dn00000PsJkoIAF', '001VQ00001EFo8qYAD', '001VQ00000zSa5TYAS', '001VQ00001Eq6SDYAZ', '001Dn00000PsKxCIAV', '001VQ00001DIxZXYA1', '001Dn00000PsJHZIA3', '001VQ00001CcSK3YAN', '001VQ00001CHrrxYAD', '001Dn00000PsJeIIAV', '001VQ00001CHrrwYAD', '001VQ00001CHrrvYAD', '001VQ00001CHrruYAD', '001Dn00000PsOL9IAN', '001VQ00001CBanJYAT', '001Dn00000PsSeVIAV', '001VQ00001CBanIYAT', '001Dn00000PsIh4IAF', '001VQ00001C4IBwYAN', '001Dn00000PsPnrIAF', '001VQ00001BkmitYAB', '001Dn00000PsJWFIA3', '001VQ00001Bex19YAB', '001VQ0000100rgcYAA', '001VQ00001Bex18YAB', '001Dn00000PsJWqIAN', '001VQ00001Bex17YAB', '001VQ00001BXlGaYAL', '001VQ00001BXlGbYAL', '001VQ00001BKMDnYAP', '001Dn00000PsJeGIAV', '001VQ00001B7THsYAN', '001VQ00001B7THrYAN', '001Dn00000PsJe4IAF', '001VQ00001B7THqYAN', '001VQ00001B7THpYAN', '001VQ00000EWYIbYAP', '001VQ00001B7THoYAN', '001VQ00001B7THnYAN', '001VQ00001B1ZhxYAF', '001VQ00001B1ZhyYAF', '001VQ00001B1ZhwYAF', '001VQ00001B1ZhvYAF', '001Dn00000PsT86IAF', '001VQ00001B1ZhuYAF', '001VQ00001B1ZhtYAF', '001VQ00001AtX70YAF', '001VQ00001AtX6zYAF', '001VQ00001AtX6yYAF', '001Dn00000PsRVNIA3', '001VQ00001AtX6xYAF', '001VQ00000UTcQsYAL', '001VQ00001AnwEHYAZ', '001VQ00001ANEFbYAP', '001Dn00000PsJPOIA3', '001VQ00001ANEFaYAP', '001VQ00001ANEFZYA5', '001VQ00001AGoU5YAL', '001Dn00000PsIoCIAV', '001VQ00001AAHEFYA5', '001Dn00000PsJdoIAF', '001VQ000019lXJ0YAM', '001VQ000019l618YAA', '001VQ000019kQLCYA2', '001VQ00001GXsBEYA1', '001VQ00001GWgiNYAT', '001VQ00001GW8tbYAD', '001VQ00001GWgGvYAL', '001VQ00001GWat4YAD', '001VQ00001GWYo2YAH', '001VQ00001GUu4fYAD', '001VQ00001GUL3kYAH', '001VQ00001GUCA8YAP', '001VQ00001GUCA7YAP', '001VQ00001GOIN4YAP', '001VQ00001GMkbyYAD', '001VQ00001GJ5VKYA1', '001VQ00001GGg1bYAD', '001VQ00001G3wnMYAR', '001VQ00001G3wnLYAR', '001VQ00001G3wnKYAR', '001VQ00001G3E6LYAV', '001VQ00001FycisYAB', '001VQ00001Fy0C6YAJ', '001VQ00001FyYX7YAN', '001VQ00001Fxna2YAB', '001VQ00001Fxna1YAB', '001VQ00001Fxl51YAB', '001VQ00001FxMY3YAN', '001VQ00001FsyivYAB', '001VQ00001FtLtuYAF', '001VQ00001FsqZyYAJ', '001Dn00000PsSLBIA3', '001VQ00001DSGeXYAX')",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useValuesMapping": true,
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AccountCrossOrgTraceID__c"
+        },
+        {
+          "sourceField": "Search_Term__c",
+          "targetField": "SalesC_SearchTerm__c"
+        }
+      ]
+    }
+  ]
+}
