@@ -29,6 +29,7 @@ const ObjectQuery = z.object({ object: z.string() });
 const IdBody = z.object({ id: z.string() });
 const ParentQuery = FolderQuery.extend({ parent: z.coerce.number().int().min(0).optional() });
 const RunQuery = FolderQuery.extend({ id: z.string() });
+const ErrorRecordQuery = RunQuery.extend({ index: z.coerce.number().int().min(0) });
 const ExportQuery = RunQuery.extend({ kind: z.enum(['errors', 'missing-parents']) });
 const DescribeQuery = FolderQuery.extend({ refresh: z.enum(['0', '1']).optional() });
 
@@ -74,6 +75,10 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
     app.get('/results/run', (req) => {
         const q = RunQuery.parse(req.query);
         return studio.runDetail(q.folder, q.id);
+    });
+    app.get('/results/error-record', (req) => {
+        const q = ErrorRecordQuery.parse(req.query);
+        return studio.errorRecord(q.folder, q.id, q.index);
     });
     app.get('/results/log', async (req) => {
         const q = RunQuery.parse(req.query);

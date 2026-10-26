@@ -18,14 +18,18 @@ export const operationOf = (fileName: string) =>
 export interface TargetTables {
     rows: number;
     errors: ErrorRow[];
+    // Alle Spalten der fehlgeschlagenen Zeilen (das, was an die Ziel-Org gesendet wurde), gleiche Reihenfolge wie errors.
+    errorRecords: Record<string, string>[];
 }
 
 // Datensätze, die SFDMU schreibt; Zeilen mit Text in "Errors" gelten als fehlgeschlagen.
 export function readTargetTable(fileName: string, text: string): TargetTables {
     const table = readTable(text);
     const errors: ErrorRow[] = [];
+    const errorRecords: Record<string, string>[] = [];
     for (const row of table) {
         if (isEmpty(row.Errors)) continue;
+        errorRecords.push(row);
         const labelColumn = LABEL_COLUMNS.find((c) => !isEmpty(row[c]));
         errors.push({
             file: operationOf(fileName),
@@ -35,7 +39,7 @@ export function readTargetTable(fileName: string, text: string): TargetTables {
             error: row.Errors ?? ''
         });
     }
-    return { rows: table.length, errors };
+    return { rows: table.length, errors, errorRecords };
 }
 
 // MissingParentRecordsReport.csv: SFDMU wiederholt Zeilen je Durchlauf, hier dedupliziert.

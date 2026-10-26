@@ -100,6 +100,20 @@ describe('CSV-Tabellen', () => {
         ]);
     });
 
+    it('liefert zu jeder Fehlerzeile alle gesendeten Spalten', () => {
+        const t = readTargetTable('Contact_insert_target.csv', INSERT_CSV);
+        expect(t.errorRecords).toEqual([
+            {
+                Id: 'FKB2',
+                'Old Id': '003B',
+                FirstName: 'Max',
+                LastName: 'Muster',
+                Email: 'max@x.de',
+                Errors: 'FIELD_CUSTOM_VALIDATION_EXCEPTION: Land fehlt'
+            }
+        ]);
+    });
+
     it('dedupliziert fehlende Parents und gruppiert nach Wert', () => {
         const { rows, groups } = readMissingParents(REPORT_CSV);
         expect(rows).toHaveLength(3);

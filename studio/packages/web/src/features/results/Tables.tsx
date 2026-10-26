@@ -1,5 +1,6 @@
 import type { ErrorRow, MissingParentGroup, MissingParentRow } from '@studio/shared';
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
+import { useErrorRecord } from '../../api/queries';
 
 const th =
     'sticky top-0 bg-white px-3 py-2 text-left text-xs font-bold whitespace-nowrap text-grey-500 border-b border-grey-line';
@@ -53,15 +54,56 @@ interface Selection {
 }
 
 // Fehlerliste mit Auswahl je Zeile (für die Übernahme in die To-Do-Liste). Die Position bleibt beim Filtern erhalten.
+const isBlank = (v: string) => v === '' || v === '#N/A';
+
+// Alle Felder, die für diese Zeile an die Ziel-Org gesendet wurden (zum Nachvollziehen eines Fehlers).
+function SentFields({ run, index }: { run: RunRef; index: number }) {
+    const record = useErrorRecord(run.folder, run.id, index, true);
+    if (record.isPending) return <p className="m-0 text-[13px] text-grey-500">Lade …</p>;
+    if (record.error)
+        return (
+            <p role="alert" className="m-0 text-[13px] text-bad">
+                {record.error.message}
+            </p>
+        );
+    const entries = Object.entries(record.data.fields);
+    return (
+        <dl className="m-0 grid max-h-80 grid-cols-[minmax(180px,max-content)_1fr] gap-x-4 gap-y-1 overflow-auto font-mono text-[12.5px]">
+            {entries.map(([name, value]) => (
+                <div key={name} className="contents">
+                    <dt className="text-grey-500">{name}</dt>
+                    <dd className={`m-0 break-all ${isBlank(value) ? 'text-grey-300' : ''}`}>
+                        {isBlank(value) ? '—' : value}
+                    </dd>
+                </div>
+            ))}
+        </dl>
+    );
+}
+
+interface RunRef {
+    folder: string;
+    id: string;
+}
+
 export function ErrorsTable({
     rows,
     total,
-    selection
+    selection,
+    run
 }: {
     rows: ErrorRow[];
     total: number;
     selection?: Selection;
+    run?: RunRef; // mit Lauf: Zeilen lassen sich aufklappen und zeigen alle gesendeten Felder
 }) {
+    const [open, setOpen] = useState<ReadonlySet<number>>(new Set());
+    const toggleOpen = (index: number) =>
+        setOpen((cur) => {
+            const next = new Set(cur);
+            if (!next.delete(index)) next.add(index);
+            return next;
+        });
     const indexed = useMemo(() => rows.map((r, index) => ({ ...r, index })), [rows]);
     const { query, setQuery, filtered, shown } = useFiltered(indexed);
     if (!total) return <p className="py-4 text-grey-500">Keine Fehler in den Ergebnisdateien.</p>;
@@ -102,26 +144,51 @@ export function ErrorsTable({
                         <th className={th}>Bezeichnung</th>
                         <th className={th}>Id</th>
                         <th className={th}>Fehler</th>
+                        {run && <th className={th}>Felder</th>}
                     </tr>
                 </thead>
                 <tbody>
                     {shown.map((r) => (
-                        <tr key={r.index} className={sel?.has(r.index) ? 'bg-grey-100' : ''}>
-                            {selection && (
-                                <td className={td}>
-                                    <input
-                                        type="checkbox"
-                                        aria-label={`Fehler von ${r.label || r.oldId || r.id} wählen`}
-                                        checked={sel?.has(r.index) ?? false}
-                                        onChange={() => toggle(r.index)}
-                                    />
-                                </td>
+                        <Fragment key={r.index}>
+                            <tr className={sel?.has(r.index) ? 'bg-grey-100' : ''}>
+                                {selection && (
+                                    <td className={td}>
+                                        <input
+                                            type="checkbox"
+                                            aria-label={`Fehler von ${r.label || r.oldId || r.id} wählen`}
+                                            checked={sel?.has(r.index) ?? false}
+                                            onChange={() => toggle(r.index)}
+                                        />
+                                    </td>
+                                )}
+                                <td className={td}>{r.file}</td>
+                                <td className={td}>{r.label}</td>
+                                <td className={`${td} font-mono text-[13px]`}>{r.oldId || r.id}</td>
+                                <td className={`${td} text-bad`}>{r.error}</td>
+                                {run && (
+                                    <td className={td}>
+                                        <button
+                                            type="button"
+                                            aria-expanded={open.has(r.index)}
+                                            className="cursor-pointer rounded-lg border border-grey-line bg-white px-2 py-1 text-xs font-semibold whitespace-nowrap"
+                                            onClick={() => toggleOpen(r.index)}
+                                        >
+                                            {open.has(r.index) ? 'Ausblenden' : 'Alle Felder'}
+                                        </button>
+                                    </td>
+                                )}
+                            </tr>
+                            {run && open.has(r.index) && (
+                                <tr>
+                                    <td
+                                        className={`${td} bg-grey-100`}
+                                        colSpan={(selection ? 1 : 0) + 5}
+                                    >
+                                        <SentFields run={run} index={r.index} />
+                                    </td>
+                                </tr>
                             )}
-                            <td className={td}>{r.file}</td>
-                            <td className={td}>{r.label}</td>
-                            <td className={`${td} font-mono text-[13px]`}>{r.oldId || r.id}</td>
-                            <td className={`${td} text-bad`}>{r.error}</td>
-                        </tr>
+                        </Fragment>
                     ))}
                 </tbody>
             </table>

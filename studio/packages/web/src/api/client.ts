@@ -33,6 +33,7 @@ import {
     RunDetailSchema,
     RunListResponseSchema,
     RunLogResponseSchema,
+    ErrorRecordResponseSchema,
     RunStatusSchema,
     type CleanPlanRequest,
     type CreateCohortRequest,
@@ -101,6 +102,11 @@ export const api = {
         request(`/api/results/run?folder=${enc(folder)}&id=${enc(id)}`, RunDetailSchema),
     runLog: (folder: string, id: string) =>
         request(`/api/results/log?folder=${enc(folder)}&id=${enc(id)}`, RunLogResponseSchema),
+    errorRecord: (folder: string, id: string, index: number) =>
+        request(
+            `/api/results/error-record?folder=${enc(folder)}&id=${enc(id)}&index=${index}`,
+            ErrorRecordResponseSchema
+        ),
     exportUrl: (folder: string, id: string, kind: 'errors' | 'missing-parents') =>
         `/api/results/export?folder=${enc(folder)}&id=${enc(id)}&kind=${kind}`,
     runStatus: () => request('/api/run', RunStatusSchema),

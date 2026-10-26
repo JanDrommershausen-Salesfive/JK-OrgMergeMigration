@@ -3,6 +3,7 @@ import { MAX_COHORT_SIZE } from '@studio/shared';
 import path from 'node:path';
 import type {
     AvailableOrgsResponse,
+    ErrorRecordResponse,
     ImportTodosRequest,
     ImportTodosResponse,
     TodoItem,
@@ -677,13 +678,35 @@ export class Studio {
     }
 
     // CSV für Excel (UTF-8 mit BOM) mit allen Fehlern bzw. fehlenden Parents eines Laufs.
+    // Alle gesendeten Felder einer Fehlerzeile (Position wie in der Fehlerliste des Laufs).
+    async errorRecord(folder: string, id: string, index: number): Promise<ErrorRecordResponse> {
+        const { errorRecords } = await this.results.tables(folder, id);
+        const record = errorRecords[index];
+        if (!record) throw notFound('Fehlerzeile nicht gefunden.');
+        return {
+            fields: Object.fromEntries(Object.entries(record).filter(([k]) => k !== 'Errors'))
+        };
+    }
+
     async exportRun(folder: string, id: string, kind: 'errors' | 'missing-parents') {
-        const { errors, missing } = await this.results.tables(folder, id);
+        const { errors, errorRecords, missing } = await this.results.tables(folder, id);
+        // Fehler-Export: die festen Spalten plus alle Felder, die an die Ziel-Org gesendet wurden (für die Fehlersuche).
+        const base = new Set(['Id', 'Old Id', 'Errors']);
+        const fieldNames = [
+            ...new Set(errorRecords.flatMap((r) => Object.keys(r).filter((k) => !base.has(k))))
+        ];
         const rows =
             kind === 'errors'
                 ? [
-                      ['Datei', 'Id', 'Old Id', 'Bezeichnung', 'Fehler'],
-                      ...errors.map((e) => [e.file, e.id, e.oldId, e.label, e.error])
+                      ['Datei', 'Id', 'Old Id', 'Bezeichnung', 'Fehler', ...fieldNames],
+                      ...errors.map((e, i) => [
+                          e.file,
+                          e.id,
+                          e.oldId,
+                          e.label,
+                          e.error,
+                          ...fieldNames.map((f) => errorRecords[i]?.[f] ?? '')
+                      ])
                   ]
                 : [
                       ['Lookup-Feld', 'Parent-Objekt', 'Fehlender Wert', 'Record Id', 'Objekt'],

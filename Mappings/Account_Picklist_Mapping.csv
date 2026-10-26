@@ -1,0 +1,331 @@
+﻿Source Object,Source Field,Source Value,Source API Value,Target Object,Target Field,Target Value,Target API Value,Notes
+Account,AccountSource,Prospection,Prospection,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,JK Shop,JK Shop,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,JK Equip,JK Equip,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,JK Support,JK Support,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,SunLync,SunLync,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Website Ergoline US,Website Ergoline US,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Website Ergoline Europe,Website Ergoline Europe,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Website Wellsystem,Website Wellsystem,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Website JK America,Website JK America,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Trade Show & Event,Trade Show & Event,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Technician,Technician,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Consultant,Consultant,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Customer,Customer,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Uvalux,Uvalux,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Four Seasons,Four Seasons,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,U.R.I.,U.R.I.,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Heartland,Heartland,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,All Hours Distribution,All Hours Distribution,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Synergy Tanning System,Synergy Tanning System,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Sunbed Supply,Sunbed Supply,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Bill Niesciur,Bill Niesciur,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Sun Spa Wellness,Sun Spa Wellness,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Advanced Exercise,Advanced Exercise,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,2nd Sun Tan,2nd Sun Tan,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Atlantic Tan,Atlantic Tan,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Distributor,Distributor,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Facebook,Facebook,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,LindedIn,LindedIn,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Social Media,Social Media,Account,Account Source,Social Media,Social Media,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,AccountSource,IST Magazine,IST Magazine,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Smart Tan,Smart Tan,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Athletech,Athletech,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,AccountSource,Other Publications,Other Publications,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Industry,Tanning,Tanning,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Industry,Fitness,Fitness,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Industry,Wellness,Wellness,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Industry,Home,Home,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Industry,Others,Others,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Ownership,Private,Private,Account,Ownership,Privat,Private,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Ownership,Corporate,Corporate,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Ownership,Franchise,Franchise,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Ownership,Public,Public,Account,Ownership,Öffentlich,Public,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Ownership,Subsidiary,Subsidiary,Account,Ownership,Tochtergesellschaft,Subsidiary,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Ownership,Other,Other,Account,Ownership,Andere,Other,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Rating,Hot,Hot,Account,Account Rating,Hot,Hot,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Rating,Warm,Warm,Account,Account Rating,Warm,Warm,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Rating,Cold,Cold,Account,Account Rating,Cold,Cold,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Type,"Customer, Active","Customer, Active",,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,"Customer, In-active","Customer, In-active",,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,Home / Personal Use,Home / Personal Use,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,Distributor,Distributor,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,Certified Technician,Certified Technician,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,Service Contractor,Service Contractor,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,Consultant,Consultant,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,Influencer,Influencer,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,Prospect,Prospect,Account,Account Type,Prospect,Prospect,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Type,Melume,Melume,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Type,Other,Other,Account,Account Type,Other,Other,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Account Blocked Reason,DON'T USE/Inactive,DON'T USE/Inactive,Account,Account Blocked Reason,DON'T USE/Inactive,DON'T USE/Inactive,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Account Blocked Reason,Write off/Inactive,Write off/Inactive,Account,Account Blocked Reason,Write off/Inactive,Write off/Inactive,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Account Blocked Reason,Past Due Balance,Past Due Balance,Account,Account Blocked Reason,Past Due Balance,Past Due Balance,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Account Blocked Reason,Overall block,Overall block,Account,Account Blocked Reason,Overall block,Overall block,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Account Blocked Reason,Inability to pay,Inability to pay,Account,Account Blocked Reason,Inability to pay,Inability to pay,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Account Blocked Reason,Delete mark customer,Delet. mark customer,Account,Account Blocked Reason,Delete mark customer,Delet. mark customer,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Transport,Seller,Seller,,,,,CDEV5 check 2026-10-13: field does not exist in CDEV5
+Account,Transport,Buyer,Buyer,,,,,CDEV5 check 2026-10-13: field does not exist in CDEV5
+Account,Transport,Third Party For Seller,ThirdPartyForSeller,,,,,CDEV5 check 2026-10-13: field does not exist in CDEV5
+Account,Transport,Third Party For Buyer,ThirdPartyForBuyer,,,,,CDEV5 check 2026-10-13: field does not exist in CDEV5
+Account,Transport,No Transport,None,,,,,CDEV5 check 2026-10-13: field does not exist in CDEV5
+Account,Bill to/ Ship to,D501,D501,Account,Bill to/ Ship to,D501,D501,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Bill to/ Ship to,D502,D502,Account,Bill to/ Ship to,D502,D502,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Business Status,New,New,Account,Business Status,New,New,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Business Status,Existing,Existing,Account,Business Status,Existing,Existing,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Business Status,Planned,Planned,Account,Business Status,Planned,Planned,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Business Status,Closed,Closed,Account,Business Status,Closed,Closed,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Devoted Price List,DC-50,DC-50,Account,Devoted Price List,DC-50,DC-50,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Devoted Price List,DC-55,DC-55,Account,Devoted Price List,DC-55,DC-55,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Devoted Price List,DC-58,DC-58,Account,Devoted Price List,DC-58,DC-58,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Devoted Price List,DC-60,DC-60,Account,Devoted Price List,DC-60,DC-60,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Devoted Price List,Level 1,Level 1,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Devoted Price List,Level 2,Level 2,,,,,CDEV5 check 2026-10-13: field exists in CDEV5 but value is missing - add value or map to an existing EU value
+Account,Equipment Price List,Custom,Custom,Account,Equipment Price List,Custom,Custom,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Equipment Price List,Distributer,Distributer,Account,Equipment Price List,Distributer,Distributer,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Equipment Price List,Factory Direct,Factory Direct,Account,Equipment Price List,Factory Direct,Factory Direct,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Equipment Price List,Planet Fitness,Planet Fitness,Account,Equipment Price List,Planet Fitness,Planet Fitness,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,JK Shop Price List,Custom,Custom,Account,JK Shop Price List,Custom,Custom,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,JK Shop Price List,Distributor,Distributor,Account,JK Shop Price List,Distributor,Distributor,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,JK Shop Price List,Planet Fitness,Planet Fitness,Account,JK Shop Price List,Planet Fitness,Planet Fitness,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,JK Shop Price List,Standard,Standard,Account,JK Shop Price List,Standard,Standard,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,JK Shop Price List,TBD,TBD,Account,JK Shop Price List,TBD,TBD,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Beach Bum,Beach Bum,Account,Key Account,Beach Bum,Beach Bum,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Beaches Tanning,Beaches Tanning,Account,Key Account,Beaches Tanning,Beaches Tanning,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,California Sun,California Sun,Account,Key Account,California Sun,California Sun,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Celebrity Tan,Celebrity Tan,Account,Key Account,Celebrity Tan,Celebrity Tan,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Crunch Fitness,Crunch Fitness,Account,Key Account,Crunch Fitness,Crunch Fitness,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Glo Tanning,Glo Tanning,Account,Key Account,Glo Tanning,Glo Tanning,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,iTan,iTan,Account,Key Account,iTan,iTan,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,LA Tan,LA Tan,Account,Key Account,LA Tan,LA Tan,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Massage Envy,Massage Envy,Account,Key Account,Massage Envy,Massage Envy,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Palm Beach Tan,Palm Beach Tan,Account,Key Account,Palm Beach Tan,Palm Beach Tan,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Planet Fitness,Planet Fitness,Account,Key Account,Planet Fitness,Planet Fitness,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Retro Fitness,Retro Fitness,Account,Key Account,Retro Fitness,Retro Fitness,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Slick Rock,Slick Rock,Account,Key Account,Slick Rock,Slick Rock,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Sunday Sun Spa,Sunday Sun Spa,Account,Key Account,Sunday Sun Spa,Sunday Sun Spa,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Sun Tan City,Sun Tan City,Account,Key Account,Sun Tan City,Sun Tan City,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Tan Republic,Tan Republic,Account,Key Account,Tan Republic,Tan Republic,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Totally Tan,Totally Tan,Account,Key Account,Totally Tan,Totally Tan,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Uvalux,Uvalux,Account,Key Account,Uvalux,Uvalux,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Key Account,Workout Anytime,Workout Anytime,Account,Key Account,Workout Anytime,Workout Anytime,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Location Type,Corp. Office,Corp. Office,Account,Location Type,Corp. Office,Corp. Office,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Location Type,Logistic / Warehouse,Logistic / Warehouse,Account,Location Type,Logistic / Warehouse,Logistic / Warehouse,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Location Type,Salon / Gym,Salon / Gym,Account,Location Type,Salon / Gym,Salon / Gym,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,MRI Price List,MRI-30,MRI-30,Account,MRI Price List,MRI-30,MRI-30,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,MRI Price List,MRI-40,MRI-40,Account,MRI Price List,MRI-40,MRI-40,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,MRI Price List,MRI-50,MRI-50,Account,MRI Price List,MRI-50,MRI-50,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,MRI Price List,MRI-60,MRI-60,Account,MRI Price List,MRI-60,MRI-60,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Payment Processor,Slim CD,Slim CD,Account,Payment Processor,Slim CD,Slim CD,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Payment Processor,Global Payments Integrated,Global Payments Integrated,Account,Payment Processor,Global Payments Integrated,Global Payments Integrated,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Payment Processor,Other,Other,Account,Payment Processor,Other,Other,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-10,SE-10,Account,Sun Evolution Price List,SE-10,SE-10,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-15,SE-15,Account,Sun Evolution Price List,SE-15,SE-15,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-20,SE-20,Account,Sun Evolution Price List,SE-20,SE-20,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-25,SE-25,Account,Sun Evolution Price List,SE-25,SE-25,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-30,SE-30,Account,Sun Evolution Price List,SE-30,SE-30,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-35,SE-35,Account,Sun Evolution Price List,SE-35,SE-35,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-40,SE-40,Account,Sun Evolution Price List,SE-40,SE-40,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-45,SE-45,Account,Sun Evolution Price List,SE-45,SE-45,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sun Evolution Price List,SE-50,SE-50,Account,Sun Evolution Price List,SE-50,SE-50,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Service Price List,Custom,Custom,Account,Service Price List,Custom,Custom,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Service Price List,Distributor,Distributor,Account,Service Price List,Distributor,Distributor,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Service Price List,Factory Direct,Factory Direct,Account,Service Price List,Factory Direct,Factory Direct,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Service Price List,Planet Fitness,Planet Fitness,Account,Service Price List,Planet Fitness,Planet Fitness,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-10,Sunless-10,Account,Sunless Price List,Sunless-10,Sunless-10,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-15,Sunless-15,Account,Sunless Price List,Sunless-15,Sunless-15,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-20,Sunless-20,Account,Sunless Price List,Sunless-20,Sunless-20,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-25,Sunless-25,Account,Sunless Price List,Sunless-25,Sunless-25,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-30,Sunless-30,Account,Sunless Price List,Sunless-30,Sunless-30,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-35,Sunless-35,Account,Sunless Price List,Sunless-35,Sunless-35,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-40,Sunless-40,Account,Sunless Price List,Sunless-40,Sunless-40,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-45,Sunless-45,Account,Sunless Price List,Sunless-45,Sunless-45,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Sunless Price List,Sunless-50,Sunless-50,Account,Sunless Price List,Sunless-50,Sunless-50,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,Implementation,Implementation,Account,SunLync Account Type,Implementation,Implementation,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,US SunLync Pro,US SunLync Pro,Account,SunLync Account Type,US SunLync Pro,US SunLync Pro,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,US SunLync Pro Full Suite,US SunLync Pro Full Suite,Account,SunLync Account Type,US SunLync Pro Full Suite,US SunLync Pro Full Suite,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,Support - Gold,Support - Gold,Account,SunLync Account Type,Support - Gold,Support - Gold,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,Support - Platinum,Support - Platinum,Account,SunLync Account Type,Support - Platinum,Support - Platinum,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,JK-NL Implementation,JK-NL Implementation,Account,SunLync Account Type,JK-NL Implementation,JK-NL Implementation,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,JK-NL Support - Platinum,JK-NL Support - Platinum,Account,SunLync Account Type,JK-NL Support - Platinum,JK-NL Support - Platinum,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,JK-UK Implementation,JK-UK Implementation,Account,SunLync Account Type,JK-UK Implementation,JK-UK Implementation,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,JK-UK Support - Gold,JK-UK Support - Gold,Account,SunLync Account Type,JK-UK Support - Gold,JK-UK Support - Gold,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,JK-UK Support - Platinum,JK-UK Support - Platinum,Account,SunLync Account Type,JK-UK Support - Platinum,JK-UK Support - Platinum,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,No Longer a Customer,No Longer a Customer,Account,SunLync Account Type,No Longer a Customer,No Longer a Customer,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,On Hold,On Hold,Account,SunLync Account Type,On Hold,On Hold,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,Partner/Vendor,Partner/Vendor,Account,SunLync Account Type,Partner/Vendor,Partner/Vendor,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Account Type,Prospect,Prospect,Account,SunLync Account Type,Prospect,Prospect,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Billing Cycle,Monthly,Monthly,Account,SunLync Billing Cycle,Monthly,Monthly,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,SunLync Billing Cycle,Annually,Annually,Account,SunLync Billing Cycle,Annually,Annually,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Tax Status,Exempt Retail,Exempt Retail,Account,Tax Status,Exempt Retail,Exempt Retail,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Tax Status,Exempt All,Exempt All,Account,Tax Status,Exempt All,Exempt All,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Tax Status,Other,Other,Account,Tax Status,Other,Other,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Time Zone,Eastern,Eastern,Account,Time Zone,Eastern,Eastern,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Time Zone,Central,Central,Account,Time Zone,Central,Central,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Time Zone,Mountain,Mountain,Account,Time Zone,Mountain,Mountain,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Time Zone,Pacific,Pacific,Account,Time Zone,Pacific,Pacific,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,Time Zone,Other,Other,Account,Time Zone,Other,Other,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,7-Sun Price List,7-Sun-10,7-Sun-10,Account,7-Sun Price List,7-Sun-10,7-Sun-10,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,7-Sun Price List,7-Sun-15,7-Sun-15,Account,7-Sun Price List,7-Sun-15,7-Sun-15,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,7-Sun Price List,7-Sun-20,7-Sun-20,Account,7-Sun Price List,7-Sun-20,7-Sun-20,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,7-Sun Price List,7-Sun-25,7-Sun-25,Account,7-Sun Price List,7-Sun-25,7-Sun-25,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,7-Sun Price List,7-Sun-30,7-Sun-30,Account,7-Sun Price List,7-Sun-30,7-Sun-30,CDEV5 check 2026-10-13: value exists in CDEV5
+Account,7-Sun Price List,7-Sun-35,7-Sun-35,Account,7-Sun Price List,7-Sun-35,7-Sun-35,CDEV5 check 2026-10-13: value exists in CDEV5
+,,,,Account,Account Group,0002 - Goods recipient,0002,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,ADM - JK Sales Representative,ADM,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D150 - Franchise Holder,D150,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D210 - Domestic Debtors,D210,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D221 - Switzerland Debtors,D221,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D310 - Debtors Export domestic,D310,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D320 - Debtors Non-EU,D320,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D325 - Debtors EU,D325,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D330 - JK Subsidiaries,D330,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D410 - IC debtors EU,D410,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D501 - Customer USA General,D501,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D502 - Goods recipient USA,D502,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D504 - SalesRep USA,D504,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,D510 - Customer Studio Chains,D510,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,LALT - Leasing Legacy System,LALT,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,LNEU - Leasing Customers as of 01 07 04,LNEU,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,S210 - Debtors Schwelm Domestic (ext.N),S210,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Account Group,S325 - Debtors Schwelm EU (ext.Nrvg),S325,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Customer Group,US Planet Fitness,01,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Customer Group,US Store Owner,02,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,R0 - CS checking,R0,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,R1 - Check parts,R1,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,"R2 - Parts ok, receipt",R2,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,R3 - To be clarified,R3,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,R4 - Scrap parts,R4,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,R5 - Repair parts,R5,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,R6 - Parts are picked-up,R6,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,R7 - Return parts,R7,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,Z1 - Delivery af. request,Z1,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,Z2 - Prepayment w/o order,Z2,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,Z3 - Prepayment w/ order,Z3,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,Z4 - Outlet w/o replacem.,Z4,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,Z5 - Missing authorizat.,Z5,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,Z6 - salesorg inactive!,Z6,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,Z7 - Prepayment Dlv.block,Z7,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,Z8 - Financing unclear,Z8,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,ZA - Approval required,ZA,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,ZD - Delet. mark customer,ZD,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,ZR - Approval rejected,ZR,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,ZS - Sanctionlist,ZS,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,ZT - Allocation,ZT,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,ZU - Not confirmed,ZU,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Delivery Block,ZV - Check bill-to addrs.,ZV,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,001,001,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,002,002,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,003,003,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,004,004,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,005,005,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,006,006,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,007,007,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,008,008,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,009,009,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,010,010,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,011,011,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,012,012,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,013,013,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,014,014,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,015,015,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,016,016,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,017,017,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,018,018,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,019,019,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,020,020,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,021,021,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,022,022,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,023,023,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,024,024,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,025,025,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,026,026,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,027,027,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,028,028,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,029,029,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,030,030,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,031,031,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,032,032,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,OLD_Industry Code,033,033,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,01 - Overall block,01,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,02 - Inability to pay,02,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,03 - VKORG disabled!,03,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,04 - Write off/Inactive,04,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,05 - Past Due Balance,05,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,06 - DON'T USE/Inactive,06,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,ZC - In Collections,ZC,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,ZD - Delet. mark custome,ZD,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Global Order Block,ZS - Sanctionlist,ZS,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,PersonGenderIdentity,,,"EU org only field, global/standard value set - values not in metadata, verify live in Setup"
+,,,,Account,PersonLeadSource,,,"EU org only field, global/standard value set - values not in metadata, verify live in Setup"
+,,,,Account,PersonPronouns,,,"EU org only field, global/standard value set - values not in metadata, verify live in Setup"
+,,,,Account,Further Interest,,,"EU org only field, global/standard value set - values not in metadata, verify live in Setup"
+,,,,Account,Account Sales Area,,,"EU org only field, global/standard value set - values not in metadata, verify live in Setup"
+,,,,Account,Productline,,,"EU org only field, global/standard value set - values not in metadata, verify live in Setup"
+,,,,Account,Reason for deletion,Account no longer exists,Account no longer exists,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Reason for deletion,Account is insolvent,Account is insolvent,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Reason for deletion,Account does not wish to have further contact,Account does not wish to have further contact,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,SAP Status,Prospect,Prospect,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,SAP Status,Sync to SAP,Sync to SAP,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,SAP Status,Customer,Customer,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Company Language,,,"EU org only field, global/standard value set - values not in metadata, verify live in Setup"
+,,,,Account,Customer Classification,Kerngeschäft Sonne,Kerngeschäft Sonne,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Customer Classification,Teilmärkte,Teilmärkte,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Customer Classification,Gesundheitswesen,Gesundheitswesen,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Customer Classification,Sonstige,Sonstige,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Customer Classification,Dayon,Dayon,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0010 - Tanning Salon,0010,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0020 - Tanning Salon Dealer,0020,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0030 - Wellness/ Spa,0030,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0040 - Fitness,0040,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0050 - Hotel,0050,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0060 - Swimming Pool,0060,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0070 - Special Locations,0070,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0080 - Clinic,0080,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0090 - Group Medical Practice,0090,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0100 - Doctor,0100,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0110 - Showroom Dealer,0110,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0120 - Private,0120,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0130 - Physiotherapy,0130,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0140 - Longevity,0140,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,0150 - Beauty Salon,0150,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,001,001,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,002,002,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,003,003,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,004,004,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,005,005,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,006,006,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,007,007,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,008,008,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,009,009,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,010,010,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,011,011,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,012,012,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,013,013,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,014,014,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,015,015,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,016,016,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,017,017,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,018,018,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,019,019,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,020,020,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,021,021,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,022,022,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,023,023,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,024,024,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,025,025,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,026,026,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,027,027,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,028,028,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,029,029,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,030,030,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,031,031,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,032,032,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,033,033,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Industry Code,130,130,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Nielsen Area,01,01,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Nielsen Area,02,02,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Nielsen Area,03,03,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Nielsen Area,04,04,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Nielsen Area,05,05,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Preferred Communication,E-Mail,E-Mail,"EU org only field - no US source field, clarify with customer if mapping is needed"
+,,,,Account,Preferred Communication,Phone,Phone,"EU org only field - no US source field, clarify with customer if mapping is needed"

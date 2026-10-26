@@ -57,6 +57,28 @@ describe('fieldStatus', () => {
         expect(fieldStatus(field(), d).key).toBe('type');
     });
 
+    it('akzeptiert die Quell-Id in einem Textfeld mit mindestens 18 Zeichen', () => {
+        const src = df({ type: 'id', baseType: 'id' });
+        const ok = describeWith(
+            { Id: src },
+            { Trace__c: df({ type: 'string(18)', baseType: 'string' }) }
+        );
+        expect(
+            fieldStatus(field({ name: 'Id', targetField: 'Trace__c', renamed: true }), ok).key
+        ).toBe('mapped');
+    });
+
+    it('warnt, wenn das Textfeld für die Quell-Id zu kurz ist', () => {
+        const src = df({ type: 'id', baseType: 'id' });
+        const short = describeWith(
+            { Id: src },
+            { Trace__c: df({ type: 'string(15)', baseType: 'string' }) }
+        );
+        expect(
+            fieldStatus(field({ name: 'Id', targetField: 'Trace__c', renamed: true }), short).key
+        ).toBe('type');
+    });
+
     it('erkennt ein nicht schreibbares Zielfeld', () => {
         const d = describeWith({ Phone: df() }, { Phone: df({ createable: false }) });
         expect(fieldStatus(field(), d).key).toBe('readonly');

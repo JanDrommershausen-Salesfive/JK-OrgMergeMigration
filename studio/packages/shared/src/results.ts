@@ -95,4 +95,9 @@ export const RunDetailSchema = z.object({
 });
 export type RunDetail = z.infer<typeof RunDetailSchema>;
 
+export const ErrorRecordResponseSchema = z.object({
+    fields: z.record(z.string(), z.string()) // alle gesendeten Spalten der Fehlerzeile
+});
+export type ErrorRecordResponse = z.infer<typeof ErrorRecordResponseSchema>;
+
 export const RunLogResponseSchema = z.object({ log: z.string() });
