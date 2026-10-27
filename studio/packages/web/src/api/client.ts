@@ -87,8 +87,11 @@ export const api = {
     queryModel: (folder: string) => request(`/api/query?folder=${enc(folder)}`, QueryModelSchema),
     saveFilters: (req: SaveFiltersRequest) => request('/api/query/filters', QueryModelSchema, req),
     changeFields: (req: SetFieldsRequest) => request('/api/query/fields', QueryModelSchema, req),
-    describeObject: (object: string) =>
-        request(`/api/describe/object?object=${enc(object)}`, DescribeResponseSchema),
+    describeObject: (object: string, refresh = false) =>
+        request(
+            `/api/describe/object?object=${enc(object)}${refresh ? '&refresh=1' : ''}`,
+            DescribeResponseSchema
+        ),
     setParentMode: (req: ParentModeRequest) => request('/api/query/parent', QueryModelSchema, req),
     checkQuery: (folder: string) => request('/api/query/check', QueryCheckSchema, { folder }),
     orgs: () => request('/api/orgs', OrgsResponseSchema),

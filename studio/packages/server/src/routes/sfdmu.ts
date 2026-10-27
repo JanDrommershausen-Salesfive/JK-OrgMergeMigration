@@ -26,6 +26,7 @@ import type { Studio } from '@studio/core';
 
 const FolderQuery = z.object({ folder: z.string() });
 const ObjectQuery = z.object({ object: z.string() });
+const DescribeObjectQuery = ObjectQuery.extend({ refresh: z.enum(['0', '1']).optional() });
 const IdBody = z.object({ id: z.string() });
 const ParentQuery = FolderQuery.extend({ parent: z.coerce.number().int().min(0).optional() });
 const RunQuery = FolderQuery.extend({ id: z.string() });
@@ -56,9 +57,10 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
     );
     app.post('/query/check', (req) => studio.checkQuery(FolderQuery.parse(req.body).folder));
 
-    app.get('/describe/object', (req) =>
-        studio.describeObject(ObjectQuery.parse(req.query).object)
-    );
+    app.get('/describe/object', (req) => {
+        const q = DescribeObjectQuery.parse(req.query);
+        return studio.describeObject(q.object, q.refresh === '1');
+    });
     app.get('/orgs', () => studio.orgs());
     app.get('/orgs/available', () => studio.availableOrgs());
     app.post('/orgs/login', (req) => studio.login(LoginRequestSchema.parse(req.body)));

@@ -386,12 +386,12 @@ export class Studio {
     }
 
     // Describe für ein beliebiges Objekt (zum Beispiel einen Parent), nicht nur das Zielobjekt eines Ordners.
-    async describeObject(object: string): Promise<DescribeResponse> {
+    async describeObject(object: string, refresh = false): Promise<DescribeResponse> {
         if (!/^\w+$/.test(object)) throw badRequest('Ungültiger Objektname.');
         const { source, target } = this.requireOrgs();
         const [src, tgt] = await Promise.all([
-            this.describeCache.describe(source.alias, object),
-            this.describeCache.describe(target.alias, object)
+            this.describeCache.describe(source.alias, object, refresh),
+            this.describeCache.describe(target.alias, object, refresh)
         ]);
         return { source: src, target: tgt };
     }

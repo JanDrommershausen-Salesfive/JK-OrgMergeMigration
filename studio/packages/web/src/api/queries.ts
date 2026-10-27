@@ -134,6 +134,23 @@ function useQueryMutation<V>(folder: string, fn: (v: V) => Promise<QueryModel>) 
 export const useSaveFilters = (folder: string) => useQueryMutation(folder, api.saveFilters);
 export const useChangeFields = (folder: string) => useQueryMutation(folder, api.changeFields);
 
+// Liest die Felder beider Orgs am Server-Cache vorbei neu, etwa nachdem in einer Org Felder angelegt wurden.
+// objects: weitere Objekte (mitgezogene Parents), deren Describe ebenfalls veraltet sein kann.
+export function useRefreshDescribe(folder: string, objects: string[]) {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: () =>
+            Promise.all([
+                api.describe(folder, true),
+                ...objects.map((o) => api.describeObject(o, true))
+            ]),
+        onSuccess: ([own, ...others]) => {
+            client.setQueryData(['describe', folder], own);
+            objects.forEach((o, i) => client.setQueryData(['describeObject', o], others[i]));
+        }
+    });
+}
+
 // Describe eines beliebigen Objekts (zum Beispiel eines Parents).
 export const useDescribeObject = (object: string | null) =>
     useQuery({

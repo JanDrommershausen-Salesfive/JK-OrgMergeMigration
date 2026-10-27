@@ -1,5 +1,6 @@
 import { useDescribe, useDescribeObject, useObject } from '../../api/queries';
 import type { Report } from '../detail/saveMessage';
+import { AddField } from '../fields/AddField';
 import { FieldsTab } from '../fields/FieldsTab';
 import { UncoveredTargetFields } from '../fields/UncoveredTargetFields';
 
@@ -12,7 +13,8 @@ interface Props {
     onOpenValueMapping?: (field: string) => void;
 }
 
-// Mapping eines Eintrags: Feldtabelle (Quelle → Ziel) und darunter die Zielfelder ohne Quelle.
+// Mapping eines Eintrags: Feldtabelle (Quelle → Ziel), Zeile zum Aufnehmen weiterer Quellfelder
+// und darunter die Zielfelder ohne Quelle.
 export function EntryMapping({
     folder,
     parentIndex,
@@ -48,6 +50,15 @@ export function EntryMapping({
                 report={report}
                 onOpenValueMapping={onOpenValueMapping}
             />
+            {d?.source.ok && d.target.ok && (
+                <AddField
+                    detail={detail.data}
+                    source={d.source.fields}
+                    target={d.target.fields}
+                    running={running}
+                    report={report}
+                />
+            )}
             {d?.target.ok && (
                 <UncoveredTargetFields fields={detail.data.fields} target={d.target.fields} />
             )}

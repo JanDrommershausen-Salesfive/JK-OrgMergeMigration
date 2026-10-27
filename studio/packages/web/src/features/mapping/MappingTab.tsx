@@ -1,4 +1,5 @@
-import { useQueryModel } from '../../api/queries';
+import { useQueryModel, useRefreshDescribe } from '../../api/queries';
+import { Button } from '../../components/ui';
 import type { Report } from '../detail/saveMessage';
 import { EntryMapping } from './EntryMapping';
 
@@ -23,11 +24,33 @@ export function MappingTab({
 }: Props) {
     const model = useQueryModel(folder);
     const pulled = (model.data?.parents ?? []).filter((p) => p.mode === 'pull');
+    const refresh = useRefreshDescribe(
+        folder,
+        pulled.map((p) => p.object)
+    );
+    const reload = () => {
+        report('Lade Felder aus Quelle und Ziel …');
+        refresh.mutate(undefined, {
+            onSuccess: () => report('✓ Felder aus Quelle und Ziel neu geladen'),
+            onError: (e) => report(e.message, true)
+        });
+    };
 
     return (
         <div className="space-y-8">
             <section>
-                <h3 className="mb-2 text-sm font-bold">{object} · Hauptobjekt</h3>
+                <div className="mb-2 flex flex-wrap items-center gap-3">
+                    <h3 className="flex-1 text-sm font-bold">{object} · Hauptobjekt</h3>
+                    <Button
+                        small
+                        variant="ghost"
+                        onClick={reload}
+                        disabled={refresh.isPending}
+                        title="Felder neu aus beiden Orgs lesen, zum Beispiel nachdem dort Felder angelegt wurden"
+                    >
+                        {refresh.isPending ? 'Lädt …' : '↻ Felder aus Orgs neu laden'}
+                    </Button>
+                </div>
                 <EntryMapping
                     folder={folder}
                     onlyDiff={onlyDiff}
