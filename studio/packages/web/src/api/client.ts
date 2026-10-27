@@ -117,8 +117,11 @@ export const api = {
             `/api/results/error-record?folder=${enc(folder)}&id=${enc(id)}&index=${index}`,
             ErrorRecordResponseSchema
         ),
-    exportUrl: (folder: string, id: string, kind: 'errors' | 'missing-parents') =>
-        `/api/results/export?folder=${enc(folder)}&id=${enc(id)}&kind=${kind}`,
+    exportUrl: (
+        folder: string,
+        id: string,
+        kind: 'errors' | 'missing-parents' | 'inserted' | 'updated'
+    ) => `/api/results/export?folder=${enc(folder)}&id=${enc(id)}&kind=${kind}`,
     runStatus: () => request('/api/run', RunStatusSchema),
     startRun: (folder: string, mode: RunMode, cohortId?: string, keepFilters?: boolean) =>
         request('/api/run', RunStatusSchema, { folder, mode, cohortId, keepFilters }),

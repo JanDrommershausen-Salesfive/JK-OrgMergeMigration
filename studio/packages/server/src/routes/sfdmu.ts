@@ -34,7 +34,9 @@ const IdBody = z.object({ id: z.string() });
 const ParentQuery = FolderQuery.extend({ parent: z.coerce.number().int().min(0).optional() });
 const RunQuery = FolderQuery.extend({ id: z.string() });
 const ErrorRecordQuery = RunQuery.extend({ index: z.coerce.number().int().min(0) });
-const ExportQuery = RunQuery.extend({ kind: z.enum(['errors', 'missing-parents']) });
+const ExportQuery = RunQuery.extend({
+    kind: z.enum(['errors', 'missing-parents', 'inserted', 'updated'])
+});
 const DescribeQuery = FolderQuery.extend({ refresh: z.enum(['0', '1']).optional() });
 const UploadQuery = z.object({ name: z.string().max(200), replace: z.enum(['0', '1']).optional() });
 

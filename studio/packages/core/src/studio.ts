@@ -809,8 +809,28 @@ export class Studio {
         };
     }
 
-    async exportRun(folder: string, id: string, kind: 'errors' | 'missing-parents') {
-        const { errors, errorRecords, missing } = await this.results.tables(folder, id);
+    async exportRun(
+        folder: string,
+        id: string,
+        kind: 'errors' | 'missing-parents' | 'inserted' | 'updated'
+    ) {
+        const { errors, errorRecords, records, missing } = await this.results.tables(folder, id);
+        if (kind === 'inserted' || kind === 'updated') {
+            // Erfolgreiche Zeilen mit allen Spalten, die SFDMU in die Zieldatei geschrieben hat (ohne "Errors").
+            const wanted = records.filter(
+                (r) => r.row.file === (kind === 'inserted' ? 'insert' : 'update')
+            );
+            const columns = [
+                ...new Set(
+                    wanted.flatMap((r) => Object.keys(r.fields)).filter((k) => k !== 'Errors')
+                )
+            ];
+            const table = [
+                columns.length ? columns : ['Id'],
+                ...wanted.map((r) => columns.map((c) => r.fields[c] ?? ''))
+            ];
+            return { filename: `${folder}_${id}_${kind}.csv`, text: '\uFEFF' + toCsv(table, true) };
+        }
         // Fehler-Export: die festen Spalten plus alle Felder, die an die Ziel-Org gesendet wurden (für die Fehlersuche).
         const base = new Set(['Id', 'Old Id', 'Errors']);
         const fieldNames = [

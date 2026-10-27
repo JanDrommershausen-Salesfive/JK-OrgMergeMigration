@@ -158,7 +158,11 @@ describe('Ergebnis-Routen', () => {
         await writeFile(path.join(dir, 'log.txt'), 'LOGTEXT');
         await writeFile(
             path.join(dir, 'target', 'Contact_insert_target.csv'),
-            '"Id","Old Id","Email","Errors"\n"F1","003A","a@b.de","Pflichtfeld fehlt"\n'
+            '"Id","Old Id","Email","Errors"\n"F1","003A","a@b.de","Pflichtfeld fehlt"\n"F2","003B","ok@b.de","#N/A"\n'
+        );
+        await writeFile(
+            path.join(dir, 'target', 'Contact_update_target.csv'),
+            '"Id","Old Id","ParentId","Errors"\n"U1","003C","001X","#N/A"\n"U2","003D","001Y","#N/A"\n'
         );
     });
 
@@ -177,7 +181,11 @@ describe('Ergebnis-Routen', () => {
         });
         expect(detail.json()).toMatchObject({
             errorsTotal: 1,
-            errors: [{ error: 'Pflichtfeld fehlt' }]
+            errors: [{ error: 'Pflichtfeld fehlt' }],
+            insertedTotal: 1,
+            inserted: [{ file: 'insert', id: 'F2', oldId: '003B', label: 'ok@b.de' }],
+            updatedTotal: 2,
+            updated: [{ id: 'U1', oldId: '003C' }, { id: 'U2' }]
         });
 
         const log = await app.inject({
@@ -195,6 +203,32 @@ describe('Ergebnis-Routen', () => {
         expect(csv.headers['content-type']).toMatch(/text\/csv/);
         expect(csv.headers['content-disposition']).toMatch(/attachment/);
         expect(csv.body).toContain('Pflichtfeld fehlt');
+    });
+
+    it('exportiert erfolgreiche Zeilen je Operation mit allen Spalten, ohne Fehlerzeilen', async () => {
+        const get = (kind: string) =>
+            app.inject({
+                method: 'GET',
+                url: `/api/results/export?folder=020_Contact&id=${id}&kind=${kind}`,
+                headers
+            });
+        const inserted = await get('inserted');
+        expect(inserted.statusCode).toBe(200);
+        expect(inserted.headers['content-disposition']).toContain(`020_Contact_${id}_inserted.csv`);
+        expect(
+            inserted.body
+                .replace(/^\uFEFF/, '')
+                .trim()
+                .split('\n')
+        ).toEqual(['Id,Old Id,Email', 'F2,003B,ok@b.de']);
+        const updated = await get('updated');
+        expect(
+            updated.body
+                .replace(/^\uFEFF/, '')
+                .trim()
+                .split('\n')
+        ).toEqual(['Id,Old Id,ParentId', 'U1,003C,001X', 'U2,003D,001Y']);
+        expect((await get('gibtsnicht')).statusCode).toBe(400);
     });
 
     it('liefert alle gesendeten Felder einer Fehlerzeile', async () => {
