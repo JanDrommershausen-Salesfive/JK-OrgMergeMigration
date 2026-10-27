@@ -92,3 +92,44 @@ export const ValueMappingRequestSchema = z.object({
     rows: z.array(z.object({ from: z.string(), to: z.string() }))
 });
 export type ValueMappingRequest = z.infer<typeof ValueMappingRequestSchema>;
+
+// Wertemapping aus der Mapping-Datei (Excel, Blatt "Picklist Mapping") übernehmen.
+export const ValueMappingSyncRequestSchema = z.object({
+    folder: z.string(),
+    parentIndex: z.number().int().min(0).optional()
+});
+export type ValueMappingSyncRequest = z.infer<typeof ValueMappingSyncRequestSchema>;
+
+export const ValueMappingSyncSchema = z.object({
+    file: z.string().nullable(), // Pfad relativ zum Projekt; null: keine Mapping-Datei gefunden
+    added: z.array(ValueMappingRowSchema),
+    // Quellwerte, die in der CSV schon anders gemappt sind. Die CSV bleibt, wie sie ist.
+    conflicts: z.array(
+        z.object({ field: z.string(), from: z.string(), csv: z.string(), file: z.string() })
+    ),
+    error: z.string().optional() // Datei nicht lesbar; die eigentliche Änderung ist trotzdem gespeichert
+});
+export type ValueMappingSync = z.infer<typeof ValueMappingSyncSchema>;
+
+export const ValueMappingSyncResponseSchema = z.object({
+    detail: ObjectDetailSchema,
+    sync: ValueMappingSyncSchema
+});
+export type ValueMappingSyncResponse = z.infer<typeof ValueMappingSyncResponseSchema>;
+
+// Excel-Dateien in Mappings/ und die gewählte (mapping.config.json). Ohne Wahl wird nichts übernommen.
+export const MappingFilesResponseSchema = z.object({
+    files: z.array(
+        z.object({
+            file: z.string(),
+            modified: z.string(),
+            usable: z.boolean(),
+            problem: z.string().optional()
+        })
+    ),
+    selected: z.string().nullable()
+});
+export type MappingFilesResponse = z.infer<typeof MappingFilesResponseSchema>;
+
+export const SelectMappingFileRequestSchema = z.object({ file: z.string().max(500).nullable() });
+export type SelectMappingFileRequest = z.infer<typeof SelectMappingFileRequestSchema>;

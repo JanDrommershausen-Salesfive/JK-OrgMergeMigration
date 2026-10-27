@@ -1,6 +1,7 @@
 import type { QueryModel } from '@studio/shared';
 import { useChangeFields, useDescribe, useObject } from '../../api/queries';
 import type { Report } from '../detail/saveMessage';
+import { syncMessage } from '../values/syncMessage';
 import { FieldChecklist } from './FieldChecklist';
 
 // Schritt 1: Welche Felder liest die Quelle? Die Liste zeigt nur Felder, die die Quelle liefern kann.
@@ -47,10 +48,13 @@ export function FieldsSection({
                         change.mutate(
                             { folder: model.folder, add, remove },
                             {
-                                onSuccess: () =>
+                                onSuccess: (m) => {
+                                    const sync = syncMessage(m.valueMappingSync);
                                     report(
-                                        `✓ Query gespeichert (${add.length ? `+${add.length}` : ''}${add.length && remove.length ? ' ' : ''}${remove.length ? `−${remove.length}` : ''})`
-                                    ),
+                                        `✓ Query gespeichert (${add.length ? `+${add.length}` : ''}${add.length && remove.length ? ' ' : ''}${remove.length ? `−${remove.length}` : ''})${sync ? ` · ${sync.text}` : ''}`,
+                                        sync?.error
+                                    );
+                                },
                                 onError: (e) => report(e.message, true)
                             }
                         );

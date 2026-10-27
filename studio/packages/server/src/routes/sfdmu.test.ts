@@ -1,6 +1,7 @@
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import ExcelJS from 'exceljs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buildApp } from '../app';
 
@@ -440,5 +441,64 @@ describe('Versionen-Routen', () => {
             payload: { folder: '020_Contact', id: '..' }
         });
         expect(evil.statusCode).toBe(404);
+    });
+});
+
+describe('Mapping-Datei aus dem Finder', () => {
+    async function xlsx(sheet: string) {
+        const book = new ExcelJS.Workbook();
+        const ws = book.addWorksheet(sheet);
+        ws.addRow(['Source', 'Source', 'Source', 'Source', 'Target', 'Target', 'Target', 'Target']);
+        ws.addRow([
+            'Object',
+            'Field',
+            'Value',
+            'API Value',
+            'Object',
+            'Field',
+            'Value',
+            'API Value'
+        ]);
+        ws.addRow(['Account', 'Type', 'Melume', 'Melume', 'Account', 'Type', 'Andere', 'Other']);
+        return Buffer.from(await book.xlsx.writeBuffer());
+    }
+    const upload = (name: string, payload: Buffer, replace = false) =>
+        app.inject({
+            method: 'POST',
+            url: `/api/valuemapping/upload?name=${encodeURIComponent(name)}${replace ? '&replace=1' : ''}`,
+            headers: { ...headers, 'content-type': 'application/octet-stream' },
+            payload
+        });
+
+    it('legt die Datei in Mappings/ ab, wählt sie und fragt bei gleichem Namen nach', async () => {
+        const res = await upload('Andreas Feedback.xlsx', await xlsx('Picklist Mapping'));
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toMatchObject({
+            selected: 'Mappings/Andreas Feedback.xlsx',
+            files: [{ file: 'Mappings/Andreas Feedback.xlsx', usable: true }]
+        });
+
+        const again = await upload('Andreas Feedback.xlsx', await xlsx('Picklist Mapping'));
+        expect(again.statusCode).toBe(409);
+        const replaced = await upload(
+            'Andreas Feedback.xlsx',
+            await xlsx('Picklist Mapping'),
+            true
+        );
+        expect(replaced.statusCode).toBe(200);
+    });
+
+    it('lehnt Dateien ohne Blatt, Nicht-Excel und Pfadtricks ab', async () => {
+        expect((await upload('ohne.xlsx', await xlsx('Anderes'))).json().error).toMatch(
+            /kein Blatt/
+        );
+        expect((await upload('kaputt.xlsx', Buffer.from('kein zip'))).statusCode).toBe(400);
+        expect(
+            (await upload('../../evil.xlsx', await xlsx('Picklist Mapping'))).json()
+        ).toMatchObject({
+            selected: 'Mappings/evil.xlsx' // nur der Dateiname zählt, die Datei landet in Mappings/
+        });
+        expect((await upload('notiz.txt', Buffer.from('x'))).statusCode).toBe(400);
+        expect((await upload('~$lock.xlsx', await xlsx('Picklist Mapping'))).statusCode).toBe(400);
     });
 });

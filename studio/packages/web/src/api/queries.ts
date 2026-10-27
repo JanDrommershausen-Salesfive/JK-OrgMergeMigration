@@ -75,6 +75,35 @@ export function useSaveExcluded() {
     return useMutation({ mutationFn: api.setExcluded, onSuccess: (d) => storeDetail(client, d) });
 }
 
+// Wertemapping aus der Mapping-Datei übernehmen; liefert das neue Detail und was übernommen wurde.
+export function useSyncValueMappings() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.syncValueMappings,
+        onSuccess: (r) => storeDetail(client, r.detail)
+    });
+}
+
+// Excel-Dateien in Mappings/ und welche davon gewählt ist.
+export const useMappingFiles = () =>
+    useQuery({ queryKey: ['mappingFiles'], queryFn: api.mappingFiles, staleTime: 0 });
+
+export function useSelectMappingFile() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.selectMappingFile,
+        onSuccess: (data) => client.setQueryData(['mappingFiles'], data)
+    });
+}
+
+export function useUploadMappingFile() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.uploadMappingFile,
+        onSuccess: (data) => client.setQueryData(['mappingFiles'], data)
+    });
+}
+
 export function useSaveValueMapping() {
     const client = useQueryClient();
     return useMutation({
@@ -119,7 +148,7 @@ export const useQueryModel = (folder: string) =>
     useQuery({ queryKey: ['query', folder], queryFn: () => api.queryModel(folder) });
 
 // Query-Änderungen liefern das neue Modell zurück. Felder und Parents der Objektansicht ändern sich mit.
-function useQueryMutation<V>(folder: string, fn: (v: V) => Promise<QueryModel>) {
+function useQueryMutation<V, R extends QueryModel>(folder: string, fn: (v: V) => Promise<R>) {
     const client = useQueryClient();
     return useMutation({
         mutationFn: fn,

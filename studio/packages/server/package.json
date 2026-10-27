@@ -13,5 +13,8 @@
         "@studio/core": "*",
         "@studio/shared": "*",
         "fastify": "^5.0.0"
+    },
+    "devDependencies": {
+        "exceljs": "4.4.0"
     }
 }

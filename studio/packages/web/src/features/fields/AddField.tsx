@@ -4,6 +4,7 @@ import { useChangeFields, useSaveMapping } from '../../api/queries';
 import { Button } from '../../components/ui';
 import type { Report } from '../detail/saveMessage';
 import { NOT_LISTED } from '../query/FieldChecklist';
+import { syncMessage } from '../values/syncMessage';
 
 interface Props {
     detail: ObjectDetail;
@@ -51,15 +52,17 @@ export function AddField({ detail, source, target, running, report }: Props) {
 
     const add = () => {
         report('Speichere …');
+        let sync: ReturnType<typeof syncMessage> = null;
         const done = () => {
-            report(`✓ ${src} → ${tgt} aufgenommen`);
+            report(`✓ ${src} → ${tgt} aufgenommen${sync ? ` · ${sync.text}` : ''}`, sync?.error);
             setSrc('');
             setTgt('');
         };
         changeFields.mutate(
             { folder: detail.folder, parentIndex, add: [src], remove: [] },
             {
-                onSuccess: () => {
+                onSuccess: (m) => {
+                    sync = syncMessage(m.valueMappingSync);
                     if (tgt === src) return done();
                     saveMapping.mutate(
                         { folder: detail.folder, parentIndex, sourceField: src, targetField: tgt },

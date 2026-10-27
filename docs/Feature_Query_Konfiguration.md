@@ -130,6 +130,18 @@ Technik: Die Query wird aus `export.json` gelesen und beim Speichern wieder dort
 
 Die frühere gemeinsame `sfdmu/ValueMapping.csv` (mit den Zeilen aller Objekte, per Lauf in jeden Ordner kopiert) ist aufgelöst. Jeder Objektordner hat eine eigene `ValueMapping.csv` mit nur den Zeilen seines Objekts. SFDMU liest sie im Lauf-Ordner, `run.sh` legt bei fehlender Datei eine leere an. Zeilen eines mitgezogenen Parents stehen in der Datei des Ordners, in dem er mitgezogen wird: Beim Umschalten auf **Mitziehen** werden sie aus dem Ordner des Parents kopiert, bei **Nur lesen** entfernt. Im Reiter **Wertemapping** gibt es wie im Mapping einen Abschnitt je mitgezogenem Parent. Die alte GUI unter `sfdmu/gui/` kennt die gemeinsame Datei nicht mehr.
 
+
+### Wertemapping aus der Mapping-Datei (2026-10-27)
+
+Die Studio liest die Picklist-Werte aus einer `.xlsx` in `Mappings/` mit dem Blatt **Picklist Mapping** (Spalten A–D Quelle: Object, Field, Value, API Value; E–H Ziel). Welche Datei gilt, wählt man oben im Schritt 3 unter **Mapping-Datei**. **Select file** öffnet den Datei-Dialog des Systems (Finder), beliebige Excel-Datei von diesem Rechner: Die gewählte Datei wird nach `Mappings/` kopiert (nur wenn sie das Blatt hat) und gleich gewählt; liegt dort schon eine gleichnamige, fragt die Studio vor dem Ersetzen. Spätere Änderungen an der Originaldatei kommen erst mit erneutem Wählen an.
+
+- **Automatisch:** Kommt ein Picklist-Feld in die Query (Schritt 1 oder "Feld hinzufügen" im Mapping), schreibt die Studio dessen Zeilen sofort in die `ValueMapping.csv` des Ordners. Die Speichermeldung nennt, was übernommen wurde.
+- **Nachträglich:** Im Schritt 3 übernimmt **Aus Mapping-Datei übernehmen** fehlende Werte aller Picklist-Felder des Objekts, zum Beispiel nach einer neuen Excel-Version.
+- Das Excel nennt Standardfelder beim API-Namen (`AccountSource`), Custom-Felder beim Label (`Tax Status`). Die Studio löst beides über das Describe der Quelle auf; ein Label gilt nur, wenn es eindeutig ist.
+- Vorhandene CSV-Zeilen werden nie überschrieben. Weicht das Excel ab, meldet die Studio das ("CSV bleibt").
+- Ohne Zielwert im Excel ("leave blank") schreibt die Studio `#N/A`. SFDMU übergeht leere Zielwerte und würde den Quellwert unverändert schreiben; erst `#N/A` setzt das Feld leer.
+- Abgeleitete Felder (zum Beispiel Industry Code aus Industry) deckt das nicht ab, weil ein Wertemapping nur die Werte desselben Felds ersetzt.
+
 ### Befunde
 
 - **Alle 16 bestehenden Queries** sind darstellbar und haben nur einfache Filter (`CreatedDate = LAST_N_DAYS:7` oder keinen). Es kommt kein OR, keine Klammer und keine Unterabfrage vor. Damit ist die Frage nach den nötigen SOQL-Konstrukten geklärt.

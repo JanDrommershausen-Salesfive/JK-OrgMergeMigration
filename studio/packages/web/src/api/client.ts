@@ -26,6 +26,9 @@ import {
     CohortSchema,
     QueryCheckSchema,
     QueryModelSchema,
+    SetFieldsResponseSchema,
+    ValueMappingSyncResponseSchema,
+    MappingFilesResponseSchema,
     DescribeResponseSchema,
     ObjectDetailSchema,
     ObjectListResponseSchema,
@@ -48,7 +51,9 @@ import {
     type MappingRequest,
     type RunMode,
     type SelectOrgsRequest,
-    type ValueMappingRequest
+    type ValueMappingRequest,
+    type ValueMappingSyncRequest,
+    type SelectMappingFileRequest
 } from '@studio/shared';
 import { z, type ZodType, type ZodTypeDef } from 'zod';
 
@@ -86,7 +91,8 @@ export const api = {
         ),
     queryModel: (folder: string) => request(`/api/query?folder=${enc(folder)}`, QueryModelSchema),
     saveFilters: (req: SaveFiltersRequest) => request('/api/query/filters', QueryModelSchema, req),
-    changeFields: (req: SetFieldsRequest) => request('/api/query/fields', QueryModelSchema, req),
+    changeFields: (req: SetFieldsRequest) =>
+        request('/api/query/fields', SetFieldsResponseSchema, req),
     describeObject: (object: string, refresh = false) =>
         request(
             `/api/describe/object?object=${enc(object)}${refresh ? '&refresh=1' : ''}`,
@@ -221,5 +227,26 @@ export const api = {
     setMapping: (req: MappingRequest) => request('/api/mapping', ObjectDetailSchema, req),
     setExcluded: (req: ExcludeRequest) => request('/api/exclude', ObjectDetailSchema, req),
     setValueMapping: (req: ValueMappingRequest) =>
-        request('/api/valuemapping', ObjectDetailSchema, req)
+        request('/api/valuemapping', ObjectDetailSchema, req),
+    syncValueMappings: (req: ValueMappingSyncRequest) =>
+        request('/api/valuemapping/sync', ValueMappingSyncResponseSchema, req),
+    mappingFiles: () => request('/api/valuemapping/files', MappingFilesResponseSchema),
+    selectMappingFile: (req: SelectMappingFileRequest) =>
+        request('/api/valuemapping/file', MappingFilesResponseSchema, req),
+    // Excel aus dem Finder ablegen und wählen. 409: gleichnamige Datei liegt schon in Mappings/.
+    uploadMappingFile: async ({ file, replace }: { file: File; replace: boolean }) => {
+        const url = `/api/valuemapping/upload?name=${enc(file.name)}${replace ? '&replace=1' : ''}`;
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/octet-stream' },
+            body: file
+        });
+        const payload = (await res.json().catch(() => null)) as { error?: string } | null;
+        if (!res.ok) {
+            throw Object.assign(new Error(payload?.error ?? `${url}: HTTP ${res.status}`), {
+                status: res.status
+            });
+        }
+        return MappingFilesResponseSchema.parse(payload);
+    }
 };

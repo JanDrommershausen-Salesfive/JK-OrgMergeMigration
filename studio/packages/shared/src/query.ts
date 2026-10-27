@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ValueMappingSyncSchema } from './objects';
 
 // Wert in einer WHERE-Bedingung, so wie SOQL ihn kennt.
 export const FilterValueSchema: z.ZodType<FilterValue> = z.lazy(() =>
@@ -88,6 +89,12 @@ export const SetFieldsRequestSchema = z.object({
         .default([])
 });
 export type SetFieldsRequest = z.infer<typeof SetFieldsRequestSchema>;
+
+// Neue Picklist-Felder bekommen ihr Wertemapping aus der Mapping-Datei; das Ergebnis kommt mit zurück.
+export const SetFieldsResponseSchema = QueryModelSchema.extend({
+    valueMappingSync: ValueMappingSyncSchema.optional()
+});
+export type SetFieldsResponse = z.infer<typeof SetFieldsResponseSchema>;
 
 export const ParentModeRequestSchema = z.object({
     folder: z.string(),

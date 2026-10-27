@@ -18,7 +18,9 @@ import {
     SelectOrgsRequestSchema,
     StartCleanRequestSchema,
     StartRunRequestSchema,
-    ValueMappingRequestSchema
+    ValueMappingRequestSchema,
+    ValueMappingSyncRequestSchema,
+    SelectMappingFileRequestSchema
 } from '@studio/shared';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
@@ -33,6 +35,7 @@ const RunQuery = FolderQuery.extend({ id: z.string() });
 const ErrorRecordQuery = RunQuery.extend({ index: z.coerce.number().int().min(0) });
 const ExportQuery = RunQuery.extend({ kind: z.enum(['errors', 'missing-parents']) });
 const DescribeQuery = FolderQuery.extend({ refresh: z.enum(['0', '1']).optional() });
+const UploadQuery = z.object({ name: z.string().max(200), replace: z.enum(['0', '1']).optional() });
 
 // Objekte, Felder, Mappings und Orgs. Die Routen validieren nur und rufen Studio auf.
 export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, { studio }) => {
@@ -70,6 +73,24 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
     app.post('/exclude', (req) => studio.setExcluded(ExcludeRequestSchema.parse(req.body)));
     app.post('/valuemapping', (req) =>
         studio.setValueMapping(ValueMappingRequestSchema.parse(req.body))
+    );
+    app.get('/valuemapping/files', () => studio.mappingFiles());
+    // Excel aus dem Finder: der Browser schickt die Datei roh, den Namen in der URL.
+    app.addContentTypeParser(
+        'application/octet-stream',
+        { parseAs: 'buffer', bodyLimit: 25 * 1024 * 1024 },
+        (_req, body, done) => done(null, body)
+    );
+    app.post('/valuemapping/upload', (req, reply) => {
+        const q = UploadQuery.parse(req.query);
+        if (!Buffer.isBuffer(req.body)) return reply.code(400).send({ error: 'Datei fehlt.' });
+        return studio.uploadMappingFile(q.name, req.body, q.replace === '1');
+    });
+    app.post('/valuemapping/file', (req) =>
+        studio.selectMappingFile(SelectMappingFileRequestSchema.parse(req.body))
+    );
+    app.post('/valuemapping/sync', (req) =>
+        studio.syncValueMappings(ValueMappingSyncRequestSchema.parse(req.body))
     );
 
     app.get('/results/all', () => studio.allRuns());
