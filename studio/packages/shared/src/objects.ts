@@ -39,7 +39,9 @@ export const FieldInfoSchema = z.object({
     valueMapped: z.boolean(),
     excluded: z.boolean(),
     targetField: z.string(),
-    renamed: z.boolean()
+    renamed: z.boolean(),
+    // Gesetzt: technischer Träger für einen festen Wert des Zielfelds targetField (siehe StaticValueRequest)
+    staticValue: z.string().optional()
 });
 export type FieldInfo = z.infer<typeof FieldInfoSchema>;
 
@@ -92,6 +94,15 @@ export const ValueMappingRequestSchema = z.object({
     rows: z.array(z.object({ from: z.string(), to: z.string() }))
 });
 export type ValueMappingRequest = z.infer<typeof ValueMappingRequestSchema>;
+
+// Fester Wert für ein Zielfeld, der in jeden Datensatz geschrieben wird (value null: wieder entfernen).
+export const StaticValueRequestSchema = z.object({
+    folder: z.string(),
+    parentIndex: z.number().int().min(0).optional(),
+    targetField: z.string().regex(/^\w+$/, 'Ungültiger Feldname'),
+    value: z.string().max(255).nullable()
+});
+export type StaticValueRequest = z.infer<typeof StaticValueRequestSchema>;
 
 // Wertemapping aus der Mapping-Datei (Excel, Blatt "Picklist Mapping") übernehmen.
 export const ValueMappingSyncRequestSchema = z.object({

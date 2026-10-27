@@ -104,6 +104,18 @@ export function useUploadMappingFile() {
     });
 }
 
+// Fester Wert ändert Query, Mapping und Mock; Query-Modell und Describe-abhängige Ansichten laden neu.
+export function useSaveStaticValue(folder: string) {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.setStaticValue,
+        onSuccess: (d) => {
+            storeDetail(client, d);
+            void client.invalidateQueries({ queryKey: ['query', folder] });
+        }
+    });
+}
+
 export function useSaveValueMapping() {
     const client = useQueryClient();
     return useMutation({

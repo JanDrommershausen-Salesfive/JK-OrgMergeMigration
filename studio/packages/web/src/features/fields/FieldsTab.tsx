@@ -109,7 +109,10 @@ export function FieldsTab({
         );
     };
 
-    const rows = detail.fields.map((f) => ({ f, s: fieldStatus(f, describe) }));
+    // Träger fester Werte sind technisch und stehen unter "Feste Werte", nicht in dieser Tabelle.
+    const rows = detail.fields
+        .filter((f) => f.staticValue === undefined)
+        .map((f) => ({ f, s: fieldStatus(f, describe) }));
     const shown = onlyDiff ? rows.filter((r) => r.s.key !== 'ok') : rows;
     const targetFields = describe?.target.ok ? describe.target.fields : null;
     const sourceOk = !!describe?.source.ok;

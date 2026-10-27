@@ -16,6 +16,7 @@ interface SfField {
     defaultedOnCreate?: boolean;
     createable: boolean;
     updateable: boolean;
+    picklistValues?: { value: string; active: boolean }[];
 }
 
 // Vergleichbarer Typtext. Polymorphe Referenzlisten unterscheiden sich je Org und sind nicht vergleichbar.
@@ -52,7 +53,14 @@ export class DescribeCache {
                     updateable: f.updateable,
                     relationshipName: f.relationshipName ?? null,
                     referenceTo: f.referenceTo ?? [],
-                    required: f.createable && f.nillable === false && f.defaultedOnCreate !== true
+                    required: f.createable && f.nillable === false && f.defaultedOnCreate !== true,
+                    ...(f.type === 'picklist' && f.picklistValues?.length
+                        ? {
+                              picklistValues: f.picklistValues
+                                  .filter((v) => v.active)
+                                  .map((v) => v.value)
+                          }
+                        : {})
                 };
             }
             const result: DescribeResult = { ok: true, fields };

@@ -48,6 +48,7 @@ import type {
     SaveFiltersRequest,
     SetFieldsRequest,
     SetFieldsResponse,
+    StaticValueRequest,
     SelectOrgsRequest,
     ValueMappingRequest,
     ValueMappingSync,
@@ -108,6 +109,7 @@ import { ResultStore } from './results/store';
 import { toCsv } from './sfdmu/csv';
 import { listObjects, objectDetail } from './sfdmu/objects';
 import { setFieldExcluded, setFieldMapping, setValueMapping } from './sfdmu/mutations';
+import { setStaticValue } from './sfdmu/staticValue';
 import {
     MappingFileExistsError,
     listMappingFiles,
@@ -208,6 +210,19 @@ export class Studio {
             await this.object(req.folder, req.parentIndex),
             req
         );
+        return this.object(req.folder, req.parentIndex);
+    }
+
+    // Fester Wert für ein Zielfeld ohne Quelle (value null: entfernen), siehe sfdmu/staticValue.ts.
+    async setStaticValue(req: StaticValueRequest): Promise<ObjectDetail> {
+        this.assertIdle();
+        const detail = await this.object(req.folder, req.parentIndex);
+        const { source, target } = this.requireOrgs();
+        const [src, tgt] = await Promise.all([
+            this.describeCache.describe(source.alias, detail.object),
+            this.describeCache.describe(target.alias, detail.object)
+        ]);
+        await setStaticValue(this.config.sfdmuDir, detail, req, src, tgt);
         return this.object(req.folder, req.parentIndex);
     }
 
@@ -466,6 +481,14 @@ export class Studio {
         if (req.parentIndex !== undefined && !parent)
             throw badRequest('Unbekannter Parent-Eintrag.');
         const object = parent ? parent.object : model.object;
+        const carriers = (await this.object(req.folder, req.parentIndex)).fields.filter(
+            (f) => f.staticValue !== undefined && req.remove.includes(f.name)
+        );
+        if (carriers.length) {
+            throw badRequest(
+                `${carriers[0]?.name} trägt den festen Wert für ${carriers[0]?.targetField}. Erst den festen Wert im Mapping entfernen.`
+            );
+        }
         const source = await this.describeCache.describe(this.requireOrgs().source.alias, object);
         await changeFields(this.config.sfdmuDir, req.folder, req, source);
         if (!req.add.length) return this.queryModel(req.folder);

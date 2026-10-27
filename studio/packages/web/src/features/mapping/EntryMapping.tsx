@@ -1,6 +1,7 @@
 import { useDescribe, useDescribeObject, useObject } from '../../api/queries';
 import type { Report } from '../detail/saveMessage';
 import { AddField } from '../fields/AddField';
+import { StaticValues } from '../fields/StaticValues';
 import { FieldsTab } from '../fields/FieldsTab';
 import { UncoveredTargetFields } from '../fields/UncoveredTargetFields';
 
@@ -54,6 +55,14 @@ export function EntryMapping({
                 <AddField
                     detail={detail.data}
                     source={d.source.fields}
+                    target={d.target.fields}
+                    running={running}
+                    report={report}
+                />
+            )}
+            {d?.target.ok && (
+                <StaticValues
+                    detail={detail.data}
                     target={d.target.fields}
                     running={running}
                     report={report}

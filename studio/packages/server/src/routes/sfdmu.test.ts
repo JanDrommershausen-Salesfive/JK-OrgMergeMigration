@@ -501,4 +501,15 @@ describe('Mapping-Datei aus dem Finder', () => {
         expect((await upload('notiz.txt', Buffer.from('x'))).statusCode).toBe(400);
         expect((await upload('~$lock.xlsx', await xlsx('Picklist Mapping'))).statusCode).toBe(400);
     });
+
+    it('weist ungültige Anfragen für feste Werte mit 400 ab', async () => {
+        const post = (payload: Record<string, unknown>) =>
+            app.inject({ method: 'POST', url: '/api/static', headers, payload });
+        expect((await post({})).statusCode).toBe(400);
+        const bad = { folder: '020_Contact', value: 'USD' };
+        expect((await post({ ...bad, targetField: 'a b' })).statusCode).toBe(400);
+        expect((await post({ ...bad, targetField: 'X', value: 'x'.repeat(256) })).statusCode).toBe(
+            400
+        );
+    });
 });

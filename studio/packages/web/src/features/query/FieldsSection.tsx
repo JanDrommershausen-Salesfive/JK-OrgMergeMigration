@@ -22,6 +22,9 @@ export function FieldsSection({
     const locked: Record<string, string> = { Id: 'wird immer gelesen' };
     for (const f of detail.data?.fields ?? []) {
         if (f.externalId) locked[f.name] = 'External ID, zum Abgleich nötig';
+        if (f.staticValue !== undefined) {
+            locked[f.name] = `trägt den festen Wert für ${f.targetField}`;
+        }
     }
 
     return (

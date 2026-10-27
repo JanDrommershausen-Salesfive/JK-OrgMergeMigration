@@ -142,6 +142,26 @@ Die Studio liest die Picklist-Werte aus einer `.xlsx` in `Mappings/` mit dem Bla
 - Ohne Zielwert im Excel ("leave blank") schreibt die Studio `#N/A`. SFDMU übergeht leere Zielwerte und würde den Quellwert unverändert schreiben; erst `#N/A` setzt das Feld leer.
 - Abgeleitete Felder (zum Beispiel Industry Code aus Industry) deckt das nicht ab, weil ein Wertemapping nur die Werte desselben Felds ersetzt.
 
+
+### Feste Werte für Zielfelder (2026-10-27)
+
+Anlass: "Currency: bitte auf allen US-Accounts USD setzen". `CurrencyIsoCode` gibt es im Ziel (Multi-Currency, aktive Werte EUR und USD), in der US-Quelle nicht. Im Mapping-Schritt gibt es dafür den Abschnitt **Feste Werte**: Zielfeld wählen (bei Picklists der Wert aus einer Liste, sonst Text), **Hinzufügen**. Der Wert gilt für jeden Datensatz bei jedem Lauf, auch beim Aktualisieren vorhandener Datensätze. Ändern und Entfernen geht in derselben Liste. Das Zielfeld muss schreibbar und noch nicht von einem Quellfeld belegt sein; für Readonly-Einträge gibt es keine festen Werte.
+
+**Technik (SFDMU 5.8.0 geprüft, nur Simulation):** SFDMU hat keine Konstanten. `c_set_value` aus den Mock-Funktionen arbeitet aber auf Feldern der Quell-Query. Die Studio legt deshalb ein technisches **Trägerfeld** an:
+
+```json
+"query": "SELECT …, AVA_MAPPER__Business_Identification_Number__c FROM Account …",
+"updateWithMockData": true,
+"mockFields": [{ "name": "AVA_MAPPER__Business_Identification_Number__c", "pattern": "c_set_value('USD')" }],
+"fieldMapping": [{ "sourceField": "AVA_MAPPER__Business_Identification_Number__c", "targetField": "CurrencyIsoCode" }]
+```
+
+- Der Mock überschreibt das Trägerfeld in jedem Datensatz mit dem festen Wert, das Feld-Mapping leitet es ins Zielfeld um.
+- **Trägerwahl:** ein beschreibbares Textfeld der Quelle, das nicht in der Query steht, und zuerst eines, das es im Ziel gar nicht gibt (beim Account die AvaTax-Felder), damit nichts verloren geht, was sonst 1:1 migriert würde. Der Träger erscheint nicht in der Feldtabelle, ist im Query-Schritt gesperrt ("trägt den festen Wert für …") und lässt sich nicht umhängen oder ausschließen. Mit dem Entfernen des festen Werts verschwinden Träger, Mapping und Mock wieder.
+- **Nicht tauglich** (ausprobiert): schreibgeschützte Felder wie `SystemModstamp` (SFDMU schreibt sie nicht), das Zielfeld selbst in der Query (fehlt in der Quelle, SFDMU ignoriert es) und ein Mock allein ohne Quellfeld. Auch das Add-on `core:RecordsTransform` taugt nicht: Es nimmt das Zielfeld in die Quell-Query auf.
+- **Zeichen im Wert:** SFDMU setzt den Wert ungeprüft in einen `eval`-Ausdruck ein. Deshalb sind nur Buchstaben, Ziffern, Leerzeichen und `_ . , : ; / @ # + & % = ! ? * < > | [ ] ~ ^ -` erlaubt, höchstens 255 Zeichen. Anführungszeichen, Klammern, Backslash, Backtick, `$`, Zeilenumbrüche und `RAW_VALUE` lehnt die Studio ab.
+- Der Wert wird als Text geschrieben. Für ein Checkbox-, Zahl- oder Datumsfeld muss das Ziel den Text so annehmen; die Studio prüft das nicht.
+
 ### Befunde
 
 - **Alle 16 bestehenden Queries** sind darstellbar und haben nur einfache Filter (`CreatedDate = LAST_N_DAYS:7` oder keinen). Es kommt kein OR, keine Klammer und keine Unterabfrage vor. Damit ist die Frage nach den nötigen SOQL-Konstrukten geklärt.

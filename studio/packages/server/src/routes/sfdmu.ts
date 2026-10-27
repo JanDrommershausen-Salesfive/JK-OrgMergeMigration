@@ -20,7 +20,8 @@ import {
     StartRunRequestSchema,
     ValueMappingRequestSchema,
     ValueMappingSyncRequestSchema,
-    SelectMappingFileRequestSchema
+    SelectMappingFileRequestSchema,
+    StaticValueRequestSchema
 } from '@studio/shared';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
@@ -74,6 +75,7 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
     app.post('/valuemapping', (req) =>
         studio.setValueMapping(ValueMappingRequestSchema.parse(req.body))
     );
+    app.post('/static', (req) => studio.setStaticValue(StaticValueRequestSchema.parse(req.body)));
     app.get('/valuemapping/files', () => studio.mappingFiles());
     // Excel aus dem Finder: der Browser schickt die Datei roh, den Namen in der URL.
     app.addContentTypeParser(

@@ -53,7 +53,8 @@ import {
     type SelectOrgsRequest,
     type ValueMappingRequest,
     type ValueMappingSyncRequest,
-    type SelectMappingFileRequest
+    type SelectMappingFileRequest,
+    type StaticValueRequest
 } from '@studio/shared';
 import { z, type ZodType, type ZodTypeDef } from 'zod';
 
@@ -226,6 +227,7 @@ export const api = {
     },
     setMapping: (req: MappingRequest) => request('/api/mapping', ObjectDetailSchema, req),
     setExcluded: (req: ExcludeRequest) => request('/api/exclude', ObjectDetailSchema, req),
+    setStaticValue: (req: StaticValueRequest) => request('/api/static', ObjectDetailSchema, req),
     setValueMapping: (req: ValueMappingRequest) =>
         request('/api/valuemapping', ObjectDetailSchema, req),
     syncValueMappings: (req: ValueMappingSyncRequest) =>
