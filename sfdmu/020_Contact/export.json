@@ -1,17 +1,30 @@
 {
   "objects": [
     {
-      "query": "SELECT Id, Name, BillingStreet, BillingCity, BillingPostalCode, BillingCountry, Phone, Website, AccountSource, BillingAddress, Description, Industry, Jigsaw, NumberOfEmployees, Ownership, ParentId, Rating, ShippingAddress, SicDesc, Site, Type, BillingState FROM Account",
-      "operation": "Upsert",
-      "externalId": "Name",
-      "useValuesMapping": true,
-      "master": false
+      "query": "SELECT Id, Name FROM Account",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "master": false,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AccountCrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, FirstName, LastName, Email, Phone, AccountId, BuyerAttributes, ContactSource, Department, Description, DoNotCall, Fax, HasOptedOutOfEmail, Jigsaw, LastCURequestDate, LastCUUpdateDate, LeadSource, MailingAddress, MobilePhone, Name, ReportsToId, Title, Salutation, IsDeleted FROM Contact WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, AccountId, LastName, FirstName, Salutation, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingCountry, Phone, Fax, MobilePhone, HomePhone, OtherPhone, AssistantPhone, ReportsToId, Email, Title, Department, AssistantName, LeadSource, Birthdate, Description, HasOptedOutOfEmail, HasOptedOutOfFax, DoNotCall, EmailBouncedReason, EmailBouncedDate, Jigsaw, Pronouns, GenderIdentity, ContactSource, BuyerAttributes, Direct_Phone__c, Ext__c, LinkedIn_Profile__c, VIP__c, Personal_Email__c, Personal_Notes__c, Contact_Type__c, Verified_from_SAP__c, JK_VIP__c, JK_Equipment__c, JK_Light__c, JK_Parts__c, SunLync__c, SunLync_Contact_Type__c, Customer_First_Contact_ID__c, Time_Zone__c, SAP_Contact_Import__c, Emailing_List__c, Tech_Hotline__c, Ongoing_Follow_up__c, Exclude_From_Installer_Map__c FROM Contact WHERE AccountId IN ('001Dn00000PsIh4IAF', '001Dn00000PsIoCIAV', '001Dn00000PsJHZIA3', '001Dn00000PsJPOIA3', '001Dn00000PsJWFIA3', '001Dn00000PsJWqIAN', '001Dn00000PsJdoIAF', '001Dn00000PsJe4IAF', '001Dn00000PsJeGIAV', '001Dn00000PsJeIIAV', '001Dn00000PsJkoIAF', '001Dn00000PsKxCIAV', '001Dn00000PsNB0IAN', '001Dn00000PsOL9IAN', '001Dn00000PsP8IIAV', '001Dn00000PsPnrIAF', '001Dn00000PsRVNIA3', '001Dn00000PsSLBIA3', '001Dn00000PsSeVIAV', '001VQ00000EWYIbYAP', '001VQ00000UTcQsYAL', '001VQ00000zSa5TYAS', '001VQ0000100rgcYAA', '001VQ000019kQLCYA2', '001VQ000019l618YAA', '001VQ000019lXJ0YAM', '001VQ00001AAHEFYA5', '001VQ00001AGoU5YAL', '001VQ00001ANEFZYA5', '001VQ00001ANEFaYAP', '001VQ00001ANEFbYAP', '001VQ00001AnwEHYAZ', '001VQ00001AtX6xYAF', '001VQ00001AtX6yYAF', '001VQ00001AtX6zYAF', '001VQ00001AtX70YAF', '001VQ00001B1ZhtYAF', '001VQ00001B1ZhuYAF', '001VQ00001B1ZhvYAF', '001VQ00001B1ZhwYAF', '001VQ00001B1ZhxYAF', '001VQ00001B1ZhyYAF', '001VQ00001B7THnYAN', '001VQ00001B7THoYAN', '001VQ00001B7THpYAN', '001VQ00001B7THqYAN', '001VQ00001B7THrYAN', '001VQ00001B7THsYAN', '001VQ00001BKMDnYAP', '001VQ00001BXlGaYAL', '001VQ00001BXlGbYAL', '001VQ00001Bex17YAB', '001VQ00001Bex18YAB', '001VQ00001Bex19YAB', '001VQ00001BkmitYAB', '001VQ00001C4IBwYAN', '001VQ00001CBanIYAT', '001VQ00001CBanJYAT', '001VQ00001CHrruYAD', '001VQ00001CHrrvYAD', '001VQ00001CHrrwYAD', '001VQ00001CHrrxYAD', '001VQ00001CcSK3YAN', '001VQ00001DIxZXYA1', '001VQ00001DSGeXYAX', '001VQ00001EFo8qYAD', '001VQ00001EdLTzYAN', '001VQ00001Eq6SDYAZ', '001VQ00001FjZQJYA3', '001VQ00001FrP0jYAF', '001VQ00001FrTPJYA3', '001VQ00001FsqZyYAJ', '001VQ00001FsyivYAB', '001VQ00001FtLtuYAF', '001VQ00001FxMY3YAN', '001VQ00001Fxl51YAB', '001VQ00001Fxna1YAB', '001VQ00001Fxna2YAB', '001VQ00001Fy0C6YAJ', '001VQ00001FycisYAB', '001VQ00001G3E6LYAV', '001VQ00001G3wnKYAR', '001VQ00001G3wnLYAR', '001VQ00001G3wnMYAR', '001VQ00001GGg1bYAD', '001VQ00001GJ5VKYA1', '001VQ00001GMkbyYAD', '001VQ00001GOIN4YAP', '001VQ00001GUCA7YAP', '001VQ00001GUCA8YAP', '001VQ00001GUL3kYAH', '001VQ00001GUu4fYAD')",
       "operation": "Upsert",
-      "externalId": "Email",
-      "useValuesMapping": true
+      "externalId": "Id",
+      "useValuesMapping": true,
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ContactCrossOrgTraceID__c"
+        }
+      ]
     }
   ]
 }
