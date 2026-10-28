@@ -1,4 +1,4 @@
-import type { ErrorRow, MissingParentGroup, MissingParentRow } from '@studio/shared';
+import type { ErrorRow, MissingParentGroup, MissingParentRow, RecordRow } from '@studio/shared';
 import { Fragment, useMemo, useState } from 'react';
 import { useErrorRecord } from '../../api/queries';
 
@@ -237,6 +237,35 @@ export function MissingParentsTable({
                             <td className={td}>{g.parentObject}</td>
                             <td className={td}>{g.value}</td>
                             <td className={`${td} text-right`}>{g.records}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </>
+    );
+}
+
+// Erfolgreich geschriebene Datensätze eines Laufs; der vollständige Stand steht im CSV-Export.
+export function RecordsTable({ rows, total }: { rows: RecordRow[]; total: number }) {
+    const { query, setQuery, filtered, shown } = useFiltered(rows);
+    if (!total) return <p className="py-4 text-grey-500">Keine Datensätze.</p>;
+    return (
+        <>
+            <Filter query={query} onChange={setQuery} count={filtered.length} total={total} />
+            <table className="w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th className={th}>Bezeichnung</th>
+                        <th className={th}>Id im Ziel</th>
+                        <th className={th}>Id in der Quelle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {shown.map((r, i) => (
+                        <tr key={`${r.id}-${i}`}>
+                            <td className={td}>{r.label}</td>
+                            <td className={`${td} font-mono text-[13px]`}>{r.id}</td>
+                            <td className={`${td} font-mono text-[13px]`}>{r.oldId}</td>
                         </tr>
                     ))}
                 </tbody>

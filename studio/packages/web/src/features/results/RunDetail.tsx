@@ -5,12 +5,20 @@ import { api } from '../../api/client';
 import { useImportTodos, useRunDetail, useRunLog } from '../../api/queries';
 import { Tag } from '../../components/ui';
 import { formatWhen, modeLabel } from './format';
-import { ErrorsTable, MissingParentsTable } from './Tables';
+import { ErrorsTable, MissingParentsTable, RecordsTable } from './Tables';
 import { Tiles, type Section } from './Tiles';
 
 const EXPORT_LINK =
     'rounded-full border border-grey-line px-4 py-1.5 text-sm font-bold text-ink hover:border-ink';
-const SECTIONS: Section[] = ['fehler', 'parents', 'warnungen', 'zusammenfassung', 'log'];
+const SECTIONS: Section[] = [
+    'eingefuegt',
+    'aktualisiert',
+    'fehler',
+    'parents',
+    'warnungen',
+    'zusammenfassung',
+    'log'
+];
 
 // Ohne Auswahl die auffälligste Ansicht zeigen.
 function defaultSection(meta: RunMeta): Section {
@@ -208,6 +216,8 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                 <h3 className="text-sm font-bold">
                     {
                         {
+                            eingefuegt: 'Eingefügte Datensätze',
+                            aktualisiert: 'Aktualisierte Datensätze',
                             fehler: 'Fehler',
                             parents: 'Fehlende Parents',
                             warnungen: 'Warnungen',
@@ -217,6 +227,15 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                     }
                 </h3>
                 <span className="flex-1" />
+                {section !== 'zusammenfassung' && (
+                    <button
+                        type="button"
+                        className={`${EXPORT_LINK} cursor-pointer`}
+                        onClick={() => select('zusammenfassung')}
+                    >
+                        Zusammenfassung
+                    </button>
+                )}
                 {section !== 'log' && (
                     <button
                         type="button"
@@ -225,6 +244,20 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                     >
                         Log anzeigen
                     </button>
+                )}
+                {section === 'eingefuegt' && d.insertedTotal > 0 && (
+                    <a
+                        className={EXPORT_LINK}
+                        href={api.exportUrl(folder, id, 'inserted')}
+                        download
+                    >
+                        CSV exportieren
+                    </a>
+                )}
+                {section === 'aktualisiert' && d.updatedTotal > 0 && (
+                    <a className={EXPORT_LINK} href={api.exportUrl(folder, id, 'updated')} download>
+                        CSV exportieren
+                    </a>
                 )}
                 {section === 'fehler' && d.errorsTotal > 0 && (
                     <a className={EXPORT_LINK} href={api.exportUrl(folder, id, 'errors')} download>
@@ -241,6 +274,26 @@ export function RunDetail({ folder, id }: { folder: string; id: string }) {
                     </a>
                 )}
             </div>
+            {section === 'eingefuegt' && (
+                <>
+                    <p className="mb-3 text-[13px] text-grey-500">
+                        Nur Zeilen ohne Fehler. Fehlgeschlagene Zeilen stehen unter Fehler. Das CSV
+                        enthält alle Felder, die an die Ziel-Org gesendet wurden.
+                    </p>
+                    <RecordsTable rows={d.inserted} total={d.insertedTotal} />
+                </>
+            )}
+            {section === 'aktualisiert' && (
+                <>
+                    <p className="mb-3 text-[13px] text-grey-500">
+                        SFDMU schreibt jeden Durchlauf in dieselbe Datei. Die Liste zeigt die
+                        Datensätze des letzten Durchlaufs ({d.updatedTotal}); im Lauf wurden{' '}
+                        {m.counts.updated} Aktualisierungen gezählt, weil mehrere Durchläufe
+                        dieselben Datensätze erneut aktualisieren (zum Beispiel für Lookups).
+                    </p>
+                    <RecordsTable rows={d.updated} total={d.updatedTotal} />
+                </>
+            )}
             {section === 'fehler' && (
                 <ErrorsTable
                     rows={d.errors}

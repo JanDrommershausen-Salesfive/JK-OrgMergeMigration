@@ -37,7 +37,8 @@ export const DescribedFieldSchema = z.object({
     updateable: z.boolean(),
     relationshipName: z.string().nullable().optional(),
     referenceTo: z.array(z.string()).optional(), // Ziel-Objekte eines Lookups
-    required: z.boolean().optional() // im Ziel ohne Wert nicht anlegbar (Pflichtfeld ohne Standard)
+    required: z.boolean().optional(), // im Ziel ohne Wert nicht anlegbar (Pflichtfeld ohne Standard)
+    picklistValues: z.array(z.string()).optional() // aktive Werte einer Picklist
 });
 export type DescribedField = z.infer<typeof DescribedFieldSchema>;
 

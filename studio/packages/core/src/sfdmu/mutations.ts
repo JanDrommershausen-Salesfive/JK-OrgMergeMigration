@@ -30,6 +30,11 @@ export async function setFieldMapping(
         );
     }
     if (sourceField === 'Id') throw badRequest('Id kann nicht umgemappt werden.');
+    if (field.staticValue !== undefined) {
+        throw badRequest(
+            `${sourceField} trägt einen festen Wert und lässt sich hier nicht umhängen.`
+        );
+    }
     if (field.excluded) {
         throw badRequest(
             `${sourceField} ist von der Migration ausgeschlossen. Erst wieder aufnehmen.`
@@ -70,6 +75,11 @@ export async function setFieldExcluded(
     if (!field) throw badRequest(`Feld ${name} steht nicht in der Query.`);
     if (name === 'Id' || field.externalId) {
         throw badRequest('Id und External-ID-Felder können nicht ausgeschlossen werden.');
+    }
+    if (field.staticValue !== undefined) {
+        throw badRequest(
+            `${name} trägt einen festen Wert. Den Wert entfernen statt das Feld auszuschließen.`
+        );
     }
     if (!excluded) {
         const clash = detail.fields.find(

@@ -1,6 +1,7 @@
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import ExcelJS from 'exceljs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { buildApp } from '../app';
 
@@ -157,7 +158,11 @@ describe('Ergebnis-Routen', () => {
         await writeFile(path.join(dir, 'log.txt'), 'LOGTEXT');
         await writeFile(
             path.join(dir, 'target', 'Contact_insert_target.csv'),
-            '"Id","Old Id","Email","Errors"\n"F1","003A","a@b.de","Pflichtfeld fehlt"\n'
+            '"Id","Old Id","Email","Errors"\n"F1","003A","a@b.de","Pflichtfeld fehlt"\n"F2","003B","ok@b.de","#N/A"\n'
+        );
+        await writeFile(
+            path.join(dir, 'target', 'Contact_update_target.csv'),
+            '"Id","Old Id","ParentId","Errors"\n"U1","003C","001X","#N/A"\n"U2","003D","001Y","#N/A"\n'
         );
     });
 
@@ -176,7 +181,11 @@ describe('Ergebnis-Routen', () => {
         });
         expect(detail.json()).toMatchObject({
             errorsTotal: 1,
-            errors: [{ error: 'Pflichtfeld fehlt' }]
+            errors: [{ error: 'Pflichtfeld fehlt' }],
+            insertedTotal: 1,
+            inserted: [{ file: 'insert', id: 'F2', oldId: '003B', label: 'ok@b.de' }],
+            updatedTotal: 2,
+            updated: [{ id: 'U1', oldId: '003C' }, { id: 'U2' }]
         });
 
         const log = await app.inject({
@@ -194,6 +203,32 @@ describe('Ergebnis-Routen', () => {
         expect(csv.headers['content-type']).toMatch(/text\/csv/);
         expect(csv.headers['content-disposition']).toMatch(/attachment/);
         expect(csv.body).toContain('Pflichtfeld fehlt');
+    });
+
+    it('exportiert erfolgreiche Zeilen je Operation mit allen Spalten, ohne Fehlerzeilen', async () => {
+        const get = (kind: string) =>
+            app.inject({
+                method: 'GET',
+                url: `/api/results/export?folder=020_Contact&id=${id}&kind=${kind}`,
+                headers
+            });
+        const inserted = await get('inserted');
+        expect(inserted.statusCode).toBe(200);
+        expect(inserted.headers['content-disposition']).toContain(`020_Contact_${id}_inserted.csv`);
+        expect(
+            inserted.body
+                .replace(/^\uFEFF/, '')
+                .trim()
+                .split('\n')
+        ).toEqual(['Id,Old Id,Email', 'F2,003B,ok@b.de']);
+        const updated = await get('updated');
+        expect(
+            updated.body
+                .replace(/^\uFEFF/, '')
+                .trim()
+                .split('\n')
+        ).toEqual(['Id,Old Id,ParentId', 'U1,003C,001X', 'U2,003D,001Y']);
+        expect((await get('gibtsnicht')).statusCode).toBe(400);
     });
 
     it('liefert alle gesendeten Felder einer Fehlerzeile', async () => {
@@ -440,5 +475,75 @@ describe('Versionen-Routen', () => {
             payload: { folder: '020_Contact', id: '..' }
         });
         expect(evil.statusCode).toBe(404);
+    });
+});
+
+describe('Mapping-Datei aus dem Finder', () => {
+    async function xlsx(sheet: string) {
+        const book = new ExcelJS.Workbook();
+        const ws = book.addWorksheet(sheet);
+        ws.addRow(['Source', 'Source', 'Source', 'Source', 'Target', 'Target', 'Target', 'Target']);
+        ws.addRow([
+            'Object',
+            'Field',
+            'Value',
+            'API Value',
+            'Object',
+            'Field',
+            'Value',
+            'API Value'
+        ]);
+        ws.addRow(['Account', 'Type', 'Melume', 'Melume', 'Account', 'Type', 'Andere', 'Other']);
+        return Buffer.from(await book.xlsx.writeBuffer());
+    }
+    const upload = (name: string, payload: Buffer, replace = false) =>
+        app.inject({
+            method: 'POST',
+            url: `/api/valuemapping/upload?name=${encodeURIComponent(name)}${replace ? '&replace=1' : ''}`,
+            headers: { ...headers, 'content-type': 'application/octet-stream' },
+            payload
+        });
+
+    it('legt die Datei in Mappings/ ab, wählt sie und fragt bei gleichem Namen nach', async () => {
+        const res = await upload('Andreas Feedback.xlsx', await xlsx('Picklist Mapping'));
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toMatchObject({
+            selected: 'Mappings/Andreas Feedback.xlsx',
+            files: [{ file: 'Mappings/Andreas Feedback.xlsx', usable: true }]
+        });
+
+        const again = await upload('Andreas Feedback.xlsx', await xlsx('Picklist Mapping'));
+        expect(again.statusCode).toBe(409);
+        const replaced = await upload(
+            'Andreas Feedback.xlsx',
+            await xlsx('Picklist Mapping'),
+            true
+        );
+        expect(replaced.statusCode).toBe(200);
+    });
+
+    it('lehnt Dateien ohne Blatt, Nicht-Excel und Pfadtricks ab', async () => {
+        expect((await upload('ohne.xlsx', await xlsx('Anderes'))).json().error).toMatch(
+            /kein Blatt/
+        );
+        expect((await upload('kaputt.xlsx', Buffer.from('kein zip'))).statusCode).toBe(400);
+        expect(
+            (await upload('../../evil.xlsx', await xlsx('Picklist Mapping'))).json()
+        ).toMatchObject({
+            selected: 'Mappings/evil.xlsx' // nur der Dateiname zählt, die Datei landet in Mappings/
+        });
+        expect((await upload('notiz.txt', Buffer.from('x'))).statusCode).toBe(400);
+        expect((await upload('~$lock.xlsx', await xlsx('Picklist Mapping'))).statusCode).toBe(400);
+    });
+
+    it('weist ungültige Anfragen für feste Werte mit 400 ab', async () => {
+        const post = (payload: Record<string, unknown>) =>
+            app.inject({ method: 'POST', url: '/api/static', headers, payload });
+        expect((await post({})).statusCode).toBe(400);
+        const bad = { folder: '020_Contact', value: 'USD' };
+        expect((await post({ ...bad, targetField: 'a b' })).statusCode).toBe(400);
+        expect((await post({ ...bad, targetField: 'X', value: 'x'.repeat(256) })).statusCode).toBe(
+            400
+        );
     });
 });

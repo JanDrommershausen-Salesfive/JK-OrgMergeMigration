@@ -75,6 +75,47 @@ export function useSaveExcluded() {
     return useMutation({ mutationFn: api.setExcluded, onSuccess: (d) => storeDetail(client, d) });
 }
 
+// Wertemapping aus der Mapping-Datei übernehmen; liefert das neue Detail und was übernommen wurde.
+export function useSyncValueMappings() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.syncValueMappings,
+        onSuccess: (r) => storeDetail(client, r.detail)
+    });
+}
+
+// Excel-Dateien in Mappings/ und welche davon gewählt ist.
+export const useMappingFiles = () =>
+    useQuery({ queryKey: ['mappingFiles'], queryFn: api.mappingFiles, staleTime: 0 });
+
+export function useSelectMappingFile() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.selectMappingFile,
+        onSuccess: (data) => client.setQueryData(['mappingFiles'], data)
+    });
+}
+
+export function useUploadMappingFile() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.uploadMappingFile,
+        onSuccess: (data) => client.setQueryData(['mappingFiles'], data)
+    });
+}
+
+// Fester Wert ändert Query, Mapping und Mock; Query-Modell und Describe-abhängige Ansichten laden neu.
+export function useSaveStaticValue(folder: string) {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.setStaticValue,
+        onSuccess: (d) => {
+            storeDetail(client, d);
+            void client.invalidateQueries({ queryKey: ['query', folder] });
+        }
+    });
+}
+
 export function useSaveValueMapping() {
     const client = useQueryClient();
     return useMutation({
@@ -119,7 +160,7 @@ export const useQueryModel = (folder: string) =>
     useQuery({ queryKey: ['query', folder], queryFn: () => api.queryModel(folder) });
 
 // Query-Änderungen liefern das neue Modell zurück. Felder und Parents der Objektansicht ändern sich mit.
-function useQueryMutation<V>(folder: string, fn: (v: V) => Promise<QueryModel>) {
+function useQueryMutation<V, R extends QueryModel>(folder: string, fn: (v: V) => Promise<R>) {
     const client = useQueryClient();
     return useMutation({
         mutationFn: fn,
@@ -133,6 +174,23 @@ function useQueryMutation<V>(folder: string, fn: (v: V) => Promise<QueryModel>) 
 
 export const useSaveFilters = (folder: string) => useQueryMutation(folder, api.saveFilters);
 export const useChangeFields = (folder: string) => useQueryMutation(folder, api.changeFields);
+
+// Liest die Felder beider Orgs am Server-Cache vorbei neu, etwa nachdem in einer Org Felder angelegt wurden.
+// objects: weitere Objekte (mitgezogene Parents), deren Describe ebenfalls veraltet sein kann.
+export function useRefreshDescribe(folder: string, objects: string[]) {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: () =>
+            Promise.all([
+                api.describe(folder, true),
+                ...objects.map((o) => api.describeObject(o, true))
+            ]),
+        onSuccess: ([own, ...others]) => {
+            client.setQueryData(['describe', folder], own);
+            objects.forEach((o, i) => client.setQueryData(['describeObject', o], others[i]));
+        }
+    });
+}
 
 // Describe eines beliebigen Objekts (zum Beispiel eines Parents).
 export const useDescribeObject = (object: string | null) =>

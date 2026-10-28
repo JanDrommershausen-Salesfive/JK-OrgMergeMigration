@@ -26,6 +26,9 @@ import {
     CohortSchema,
     QueryCheckSchema,
     QueryModelSchema,
+    SetFieldsResponseSchema,
+    ValueMappingSyncResponseSchema,
+    MappingFilesResponseSchema,
     DescribeResponseSchema,
     ObjectDetailSchema,
     ObjectListResponseSchema,
@@ -48,7 +51,10 @@ import {
     type MappingRequest,
     type RunMode,
     type SelectOrgsRequest,
-    type ValueMappingRequest
+    type ValueMappingRequest,
+    type ValueMappingSyncRequest,
+    type SelectMappingFileRequest,
+    type StaticValueRequest
 } from '@studio/shared';
 import { z, type ZodType, type ZodTypeDef } from 'zod';
 
@@ -86,9 +92,13 @@ export const api = {
         ),
     queryModel: (folder: string) => request(`/api/query?folder=${enc(folder)}`, QueryModelSchema),
     saveFilters: (req: SaveFiltersRequest) => request('/api/query/filters', QueryModelSchema, req),
-    changeFields: (req: SetFieldsRequest) => request('/api/query/fields', QueryModelSchema, req),
-    describeObject: (object: string) =>
-        request(`/api/describe/object?object=${enc(object)}`, DescribeResponseSchema),
+    changeFields: (req: SetFieldsRequest) =>
+        request('/api/query/fields', SetFieldsResponseSchema, req),
+    describeObject: (object: string, refresh = false) =>
+        request(
+            `/api/describe/object?object=${enc(object)}${refresh ? '&refresh=1' : ''}`,
+            DescribeResponseSchema
+        ),
     setParentMode: (req: ParentModeRequest) => request('/api/query/parent', QueryModelSchema, req),
     checkQuery: (folder: string) => request('/api/query/check', QueryCheckSchema, { folder }),
     orgs: () => request('/api/orgs', OrgsResponseSchema),
@@ -107,8 +117,11 @@ export const api = {
             `/api/results/error-record?folder=${enc(folder)}&id=${enc(id)}&index=${index}`,
             ErrorRecordResponseSchema
         ),
-    exportUrl: (folder: string, id: string, kind: 'errors' | 'missing-parents') =>
-        `/api/results/export?folder=${enc(folder)}&id=${enc(id)}&kind=${kind}`,
+    exportUrl: (
+        folder: string,
+        id: string,
+        kind: 'errors' | 'missing-parents' | 'inserted' | 'updated'
+    ) => `/api/results/export?folder=${enc(folder)}&id=${enc(id)}&kind=${kind}`,
     runStatus: () => request('/api/run', RunStatusSchema),
     startRun: (folder: string, mode: RunMode, cohortId?: string, keepFilters?: boolean) =>
         request('/api/run', RunStatusSchema, { folder, mode, cohortId, keepFilters }),
@@ -217,6 +230,28 @@ export const api = {
     },
     setMapping: (req: MappingRequest) => request('/api/mapping', ObjectDetailSchema, req),
     setExcluded: (req: ExcludeRequest) => request('/api/exclude', ObjectDetailSchema, req),
+    setStaticValue: (req: StaticValueRequest) => request('/api/static', ObjectDetailSchema, req),
     setValueMapping: (req: ValueMappingRequest) =>
-        request('/api/valuemapping', ObjectDetailSchema, req)
+        request('/api/valuemapping', ObjectDetailSchema, req),
+    syncValueMappings: (req: ValueMappingSyncRequest) =>
+        request('/api/valuemapping/sync', ValueMappingSyncResponseSchema, req),
+    mappingFiles: () => request('/api/valuemapping/files', MappingFilesResponseSchema),
+    selectMappingFile: (req: SelectMappingFileRequest) =>
+        request('/api/valuemapping/file', MappingFilesResponseSchema, req),
+    // Excel aus dem Finder ablegen und wählen. 409: gleichnamige Datei liegt schon in Mappings/.
+    uploadMappingFile: async ({ file, replace }: { file: File; replace: boolean }) => {
+        const url = `/api/valuemapping/upload?name=${enc(file.name)}${replace ? '&replace=1' : ''}`;
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/octet-stream' },
+            body: file
+        });
+        const payload = (await res.json().catch(() => null)) as { error?: string } | null;
+        if (!res.ok) {
+            throw Object.assign(new Error(payload?.error ?? `${url}: HTTP ${res.status}`), {
+                status: res.status
+            });
+        }
+        return MappingFilesResponseSchema.parse(payload);
+    }
 };

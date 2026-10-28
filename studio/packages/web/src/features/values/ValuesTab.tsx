@@ -122,6 +122,7 @@ export function ValuesTab({ detail, filterField, running, report, onFilterChange
         ...new Set([...saved.keys(), ...drafts, ...(filterField ? [filterField] : [])])
     ].filter((n) => !filterField || n === filterField);
     const free = detail.fields
+        .filter((f) => f.staticValue === undefined)
         .map((f) => f.name)
         .filter((n) => n !== 'Id' && !names.includes(n) && !saved.has(n));
 

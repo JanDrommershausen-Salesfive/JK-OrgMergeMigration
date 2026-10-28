@@ -10,6 +10,7 @@
         "typecheck": "tsc -p ."
     },
     "dependencies": {
-        "@studio/shared": "*"
+        "@studio/shared": "*",
+        "exceljs": "4.4.0"
     }
 }

@@ -57,9 +57,16 @@ export class ResultStore {
 
     async detail(folder: string, id: string): Promise<RunDetail> {
         const meta = await this.meta(folder, id);
-        const { errors, missing } = await this.tables(folder, id);
+        const { errors, records, missing } = await this.tables(folder, id);
+        const of = (file: string) => records.filter((r) => r.row.file === file).map((r) => r.row);
+        const inserted = of('insert');
+        const updated = of('update');
         return {
             meta,
+            inserted: inserted.slice(0, MAX_ROWS),
+            insertedTotal: inserted.length,
+            updated: updated.slice(0, MAX_ROWS),
+            updatedTotal: updated.length,
             errors: errors.slice(0, MAX_ROWS),
             errorsTotal: errors.length,
             missingParents: missing.rows.slice(0, MAX_ROWS),
@@ -81,10 +88,11 @@ export class ResultStore {
         );
         const errors = tables.flatMap((t) => t.errors);
         const errorRecords = tables.flatMap((t) => t.errorRecords);
+        const records = tables.flatMap((t) => t.records);
         const missingText = await readFile(
             path.join(dir, 'reports', 'MissingParentRecordsReport.csv'),
             'utf8'
         ).catch(() => '');
-        return { errors, errorRecords, missing: readMissingParents(missingText) };
+        return { errors, errorRecords, records, missing: readMissingParents(missingText) };
     }
 }
