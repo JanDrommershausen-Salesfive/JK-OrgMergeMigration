@@ -178,11 +178,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Account.IsExcludedFromRealign</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Account.JK_Equipments__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -517,11 +512,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Account.SalesC_CreditLimit__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>Account.SalesC_IsEU__c</field>
         <readable>true</readable>
@@ -799,16 +789,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Activity.FSL__Event_Type__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Activity.SalesC_EventCompleted__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Activity.SalesC_Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2453,11 +2433,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Order.Effective_Total_Cost2__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Order.Effective_Total_Cost__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2544,11 +2519,6 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Order.Order_Billing_ZIP__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Order.Order_Level_Discount2__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2788,11 +2758,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Order.Sales_Order_Amount2__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Order.Sales_Order_Amount__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2943,17 +2908,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Order.Total_Cost2__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Order.Total_Cost__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Order.Total_of_Discountable_Item2__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -3895,6 +3850,10 @@
         <object>Quote</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>CreateAuditFields</name>
+    </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
         <name>EditEvent</name>

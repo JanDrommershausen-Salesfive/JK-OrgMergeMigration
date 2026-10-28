@@ -1,0 +1,172 @@
+ObjectName,FieldName,RawValue,Value
+Account,BillingCountry,USA,United States
+Account,BillingCountry,England,United Kingdom
+Account,ShippingCountry,UK,United Kingdom
+Account,AccountSource,Social Media,Social Media
+Account,AccountSource,Prospection,Cold Acquisition
+Account,AccountSource,JK Shop,Tip
+Account,AccountSource,JK Equip,Tip
+Account,AccountSource,JK Support,Tip
+Account,AccountSource,SunLync,Tip
+Account,AccountSource,Website Ergoline US,Homepage US
+Account,AccountSource,Website Ergoline Europe,Homepage US
+Account,AccountSource,Website Wellsystem,Homepage US
+Account,AccountSource,Website JK America,Homepage US
+Account,AccountSource,Trade Show & Event,Trade Fair
+Account,AccountSource,Technician,Tip
+Account,AccountSource,Consultant,Tip
+Account,AccountSource,Customer,Tip
+Account,AccountSource,Uvalux,Tip
+Account,AccountSource,Four Seasons,Tip
+Account,AccountSource,U.R.I.,Tip
+Account,AccountSource,Heartland,Tip
+Account,AccountSource,All Hours Distribution,Tip
+Account,AccountSource,Synergy Tanning System,Tip
+Account,AccountSource,Sunbed Supply,Tip
+Account,AccountSource,Bill Niesciur,Tip
+Account,AccountSource,Sun Spa Wellness,Tip
+Account,AccountSource,Advanced Exercise,Tip
+Account,AccountSource,2nd Sun Tan,Tip
+Account,AccountSource,Atlantic Tan,Tip
+Account,AccountSource,Distributor,Tip
+Account,AccountSource,Facebook,Social Media
+Account,AccountSource,LindedIn,Social Media
+Account,AccountSource,IST Magazine,Tip
+Account,AccountSource,Smart Tan,Tip
+Account,AccountSource,Athletech,Tip
+Account,AccountSource,Other Publications,Tip
+Account,AccountSource,Website US,Homepage US
+Account,AccountSource,Club Solution,Tip
+Account,AccountSource,Call Center,Cold Acquisition
+Account,AccountSource,American Spa,Tip
+Account,AccountSource,Website Europe,Homepage US
+Account,AccountSource,JK Parts,Tip
+Account,AccountSource,Spa Industry Association,Tip
+Account,Ownership,Private,Private
+Account,Ownership,Public,Public
+Account,Ownership,Subsidiary,Subsidiary
+Account,Ownership,Other,Other
+Account,Ownership,Corporate,Corporate
+Account,Ownership,Franchise,Franchise
+Account,Rating,Hot,Hot
+Account,Rating,Warm,Warm
+Account,Rating,Cold,Cold
+Account,Type,Prospect,Prospect
+Account,Type,Other,Other
+Account,Type,"Customer, Active",Customer
+Account,Type,"Customer, In-active",Customer
+Account,Type,Home / Personal Use,Customer
+Account,Type,Distributor,Reseller
+Account,Type,Certified Technician,Partner
+Account,Type,Service Contractor,Partner
+Account,Type,Consultant,Partner
+Account,Type,Influencer,Other
+Account,Type,Melume,Other
+Account,Bill_to_Ship_to__c,D501,D501
+Account,Bill_to_Ship_to__c,D502,D502
+Account,Business_Status__c,New,New
+Account,Business_Status__c,Existing,Existing
+Account,Business_Status__c,Planned,Planned
+Account,Business_Status__c,Closed,Closed
+Account,Devoted_Price_List__c,DC-50,DC-50
+Account,Devoted_Price_List__c,DC-55,DC-55
+Account,Devoted_Price_List__c,DC-58,DC-58
+Account,Devoted_Price_List__c,DC-60,DC-60
+Account,Devoted_Price_List__c,Level 1,#N/A
+Account,Devoted_Price_List__c,Level 2,#N/A
+Account,Equipment_Price_List__c,Custom,Custom
+Account,Equipment_Price_List__c,Distributer,Distributer
+Account,Equipment_Price_List__c,Factory Direct,Factory Direct
+Account,Equipment_Price_List__c,Planet Fitness,Planet Fitness
+Account,JK_Shop_Price_List__c,Custom,Custom
+Account,JK_Shop_Price_List__c,Distributor,Distributor
+Account,JK_Shop_Price_List__c,Planet Fitness,Planet Fitness
+Account,JK_Shop_Price_List__c,Standard,Standard
+Account,JK_Shop_Price_List__c,TBD,TBD
+Account,Key_Account__c,Beach Bum,Beach Bum
+Account,Key_Account__c,Beaches Tanning,Beaches Tanning
+Account,Key_Account__c,California Sun,California Sun
+Account,Key_Account__c,Celebrity Tan,Celebrity Tan
+Account,Key_Account__c,Crunch Fitness,Crunch Fitness
+Account,Key_Account__c,Glo Tanning,Glo Tanning
+Account,Key_Account__c,iTan,iTan
+Account,Key_Account__c,LA Tan,LA Tan
+Account,Key_Account__c,Massage Envy,Massage Envy
+Account,Key_Account__c,Palm Beach Tan,Palm Beach Tan
+Account,Key_Account__c,Planet Fitness,Planet Fitness
+Account,Key_Account__c,Retro Fitness,Retro Fitness
+Account,Key_Account__c,Slick Rock,Slick Rock
+Account,Key_Account__c,Sunday Sun Spa,Sunday Sun Spa
+Account,Key_Account__c,Sun Tan City,Sun Tan City
+Account,Key_Account__c,Tan Republic,Tan Republic
+Account,Key_Account__c,Totally Tan,Totally Tan
+Account,Key_Account__c,Uvalux,Uvalux
+Account,Key_Account__c,Workout Anytime,Workout Anytime
+Account,Location_Type__c,Corp. Office,Corp. Office
+Account,Location_Type__c,Logistic / Warehouse,Logistic / Warehouse
+Account,Location_Type__c,Salon / Gym,Salon / Gym
+Account,MRI_Price_List__c,MRI-30,MRI-30
+Account,MRI_Price_List__c,MRI-40,MRI-40
+Account,MRI_Price_List__c,MRI-50,MRI-50
+Account,MRI_Price_List__c,MRI-60,MRI-60
+Account,Payment_Processor__c,Slim CD,Slim CD
+Account,Payment_Processor__c,Global Payments Integrated,Global Payments Integrated
+Account,Payment_Processor__c,Other,Other
+Account,Price_List__c,SE-10,SE-10
+Account,Price_List__c,SE-15,SE-15
+Account,Price_List__c,SE-20,SE-20
+Account,Price_List__c,SE-25,SE-25
+Account,Price_List__c,SE-30,SE-30
+Account,Price_List__c,SE-35,SE-35
+Account,Price_List__c,SE-40,SE-40
+Account,Price_List__c,SE-45,SE-45
+Account,Price_List__c,SE-50,SE-50
+Account,Service_Price_List__c,Custom,Custom
+Account,Service_Price_List__c,Distributor,Distributor
+Account,Service_Price_List__c,Factory Direct,Factory Direct
+Account,Service_Price_List__c,Planet Fitness,Planet Fitness
+Account,Sunless_Price_List__c,Sunless-10,Sunless-10
+Account,Sunless_Price_List__c,Sunless-15,Sunless-15
+Account,Sunless_Price_List__c,Sunless-20,Sunless-20
+Account,Sunless_Price_List__c,Sunless-25,Sunless-25
+Account,Sunless_Price_List__c,Sunless-30,Sunless-30
+Account,Sunless_Price_List__c,Sunless-35,Sunless-35
+Account,Sunless_Price_List__c,Sunless-40,Sunless-40
+Account,Sunless_Price_List__c,Sunless-45,Sunless-45
+Account,Sunless_Price_List__c,Sunless-50,Sunless-50
+Account,SunLync_Account_Type__c,Implementation,Implementation
+Account,SunLync_Account_Type__c,US SunLync Pro,US SunLync Pro
+Account,SunLync_Account_Type__c,US SunLync Pro Full Suite,US SunLync Pro Full Suite
+Account,SunLync_Account_Type__c,Support - Gold,Support - Gold
+Account,SunLync_Account_Type__c,Support - Platinum,Support - Platinum
+Account,SunLync_Account_Type__c,JK-NL Implementation,JK-NL Implementation
+Account,SunLync_Account_Type__c,JK-NL Support - Platinum,JK-NL Support - Platinum
+Account,SunLync_Account_Type__c,JK-UK Implementation,JK-UK Implementation
+Account,SunLync_Account_Type__c,JK-UK Support - Gold,JK-UK Support - Gold
+Account,SunLync_Account_Type__c,JK-UK Support - Platinum,JK-UK Support - Platinum
+Account,SunLync_Account_Type__c,No Longer a Customer,No Longer a Customer
+Account,SunLync_Account_Type__c,On Hold,On Hold
+Account,SunLync_Account_Type__c,Partner/Vendor,Partner/Vendor
+Account,SunLync_Account_Type__c,Prospect,Prospect
+Account,SunLync_Billing_Cycle__c,Monthly,Monthly
+Account,SunLync_Billing_Cycle__c,Annually,Annually
+Account,Time_Zone__c,Eastern,Eastern
+Account,Time_Zone__c,Central,Central
+Account,Time_Zone__c,Mountain,Mountain
+Account,Time_Zone__c,Pacific,Pacific
+Account,Time_Zone__c,Other,Other
+Account,X7_Sun_Price_List__c,7-Sun-10,7-Sun-10
+Account,X7_Sun_Price_List__c,7-Sun-15,7-Sun-15
+Account,X7_Sun_Price_List__c,7-Sun-20,7-Sun-20
+Account,X7_Sun_Price_List__c,7-Sun-25,7-Sun-25
+Account,X7_Sun_Price_List__c,7-Sun-30,7-Sun-30
+Account,X7_Sun_Price_List__c,7-Sun-35,7-Sun-35
+Account,Industry,Tanning,1030
+Account,Industry,Fitness,1010
+Account,Industry,Wellness,1030
+Account,Industry,Home,1030
+Account,Industry,Others,#N/A
+Account,Industry,Other,#N/A
+Account,Tax_Status__c,Exempt Retail,Exempt Retail
+Account,Tax_Status__c,Exempt All,Exempt All
+Account,Tax_Status__c,Other,Other

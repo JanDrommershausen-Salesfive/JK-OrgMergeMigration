@@ -3,15 +3,65 @@ Account,BillingCountry,USA,United States
 Account,BillingCountry,England,United Kingdom
 Account,ShippingCountry,UK,United Kingdom
 Account,AccountSource,Social Media,Social Media
+Account,AccountSource,Prospection,Cold Acquisition
+Account,AccountSource,JK Shop,Tip
+Account,AccountSource,JK Equip,Tip
+Account,AccountSource,JK Support,Tip
+Account,AccountSource,SunLync,Tip
+Account,AccountSource,Website Ergoline US,Homepage US
+Account,AccountSource,Website Ergoline Europe,Homepage US
+Account,AccountSource,Website Wellsystem,Homepage US
+Account,AccountSource,Website JK America,Homepage US
+Account,AccountSource,Trade Show & Event,Trade Fair
+Account,AccountSource,Technician,Tip
+Account,AccountSource,Consultant,Tip
+Account,AccountSource,Customer,Tip
+Account,AccountSource,Uvalux,Tip
+Account,AccountSource,Four Seasons,Tip
+Account,AccountSource,U.R.I.,Tip
+Account,AccountSource,Heartland,Tip
+Account,AccountSource,All Hours Distribution,Tip
+Account,AccountSource,Synergy Tanning System,Tip
+Account,AccountSource,Sunbed Supply,Tip
+Account,AccountSource,Bill Niesciur,Tip
+Account,AccountSource,Sun Spa Wellness,Tip
+Account,AccountSource,Advanced Exercise,Tip
+Account,AccountSource,2nd Sun Tan,Tip
+Account,AccountSource,Atlantic Tan,Tip
+Account,AccountSource,Distributor,Tip
+Account,AccountSource,Facebook,Social Media
+Account,AccountSource,LindedIn,Social Media
+Account,AccountSource,IST Magazine,Tip
+Account,AccountSource,Smart Tan,Tip
+Account,AccountSource,Athletech,Tip
+Account,AccountSource,Other Publications,Tip
+Account,AccountSource,Website US,Homepage US
+Account,AccountSource,Club Solution,Tip
+Account,AccountSource,Call Center,Cold Acquisition
+Account,AccountSource,American Spa,Tip
+Account,AccountSource,Website Europe,Homepage US
+Account,AccountSource,JK Parts,Tip
+Account,AccountSource,Spa Industry Association,Tip
 Account,Ownership,Private,Private
 Account,Ownership,Public,Public
 Account,Ownership,Subsidiary,Subsidiary
 Account,Ownership,Other,Other
+Account,Ownership,Corporate,Corporate
+Account,Ownership,Franchise,Franchise
 Account,Rating,Hot,Hot
 Account,Rating,Warm,Warm
 Account,Rating,Cold,Cold
 Account,Type,Prospect,Prospect
 Account,Type,Other,Other
+Account,Type,"Customer, Active",Customer
+Account,Type,"Customer, In-active",Customer
+Account,Type,Home / Personal Use,Customer
+Account,Type,Distributor,Reseller
+Account,Type,Certified Technician,Partner
+Account,Type,Service Contractor,Partner
+Account,Type,Consultant,Partner
+Account,Type,Influencer,Other
+Account,Type,Melume,Other
 Account,Bill_to_Ship_to__c,D501,D501
 Account,Bill_to_Ship_to__c,D502,D502
 Account,Business_Status__c,New,New
@@ -22,6 +72,8 @@ Account,Devoted_Price_List__c,DC-50,DC-50
 Account,Devoted_Price_List__c,DC-55,DC-55
 Account,Devoted_Price_List__c,DC-58,DC-58
 Account,Devoted_Price_List__c,DC-60,DC-60
+Account,Devoted_Price_List__c,Level 1,#N/A
+Account,Devoted_Price_List__c,Level 2,#N/A
 Account,Equipment_Price_List__c,Custom,Custom
 Account,Equipment_Price_List__c,Distributer,Distributer
 Account,Equipment_Price_List__c,Factory Direct,Factory Direct
@@ -109,3 +161,12 @@ Account,X7_Sun_Price_List__c,7-Sun-20,7-Sun-20
 Account,X7_Sun_Price_List__c,7-Sun-25,7-Sun-25
 Account,X7_Sun_Price_List__c,7-Sun-30,7-Sun-30
 Account,X7_Sun_Price_List__c,7-Sun-35,7-Sun-35
+Account,Industry,Tanning,1030
+Account,Industry,Fitness,1010
+Account,Industry,Wellness,1030
+Account,Industry,Home,1030
+Account,Industry,Others,#N/A
+Account,Industry,Other,#N/A
+Account,Tax_Status__c,Exempt Retail,Exempt Retail
+Account,Tax_Status__c,Exempt All,Exempt All
+Account,Tax_Status__c,Other,Other
