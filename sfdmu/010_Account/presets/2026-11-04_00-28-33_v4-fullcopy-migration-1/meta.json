@@ -1,0 +1,7 @@
+{
+  "name": "V4_FullCopy_Migration_1",
+  "note": "The first run of Accounts to FullCopy with in a full Data Volume",
+  "createdAt": "2026-11-03T23:28:33.467Z",
+  "source": "manual",
+  "hasValueMapping": true
+}
