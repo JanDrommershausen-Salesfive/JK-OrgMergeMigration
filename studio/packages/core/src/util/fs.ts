@@ -1,7 +1,7 @@
 import { readFile, rename, writeFile } from 'node:fs/promises';
 
 // Erst in eine temporäre Datei schreiben, dann umbenennen: ein Abbruch hinterlässt nie eine halbe Datei.
-export async function writeFileAtomic(file: string, content: string): Promise<void> {
+export async function writeFileAtomic(file: string, content: string | Uint8Array): Promise<void> {
     const tmp = `${file}.tmp`;
     await writeFile(tmp, content);
     await rename(tmp, file);

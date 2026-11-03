@@ -20,7 +20,7 @@ interface Row {
 }
 
 // Zusammengesetzte oder binäre Felder lassen sich nicht einzeln in die Query aufnehmen.
-const NOT_LISTED = new Set(['address', 'location', 'base64']);
+export const NOT_LISTED = new Set(['address', 'location', 'base64']);
 
 function buildRows({
     fields,

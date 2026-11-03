@@ -33,6 +33,16 @@ sfdmu/<Objektordner>/runs/<Zeitstempel>/
 - Trend pro Objekt über Batches hinweg (siehe [Feature_Batch_Migration_Kohorten.md](Feature_Batch_Migration_Kohorten.md)).
 - Chat kann auf Läufe verweisen ("Was ist zwischen Lauf 1 und 2 passiert?").
 
+## Erfolgreiche Datensätze (2026-10-27)
+
+Die Kacheln **Eingefügt** und **Aktualisiert** eines Laufs öffnen je eine Liste der erfolgreich geschriebenen Datensätze (Bezeichnung, Id im Ziel, Id in der Quelle) mit **CSV exportieren**. Vorher führten beide nur zur Zusammenfassung, die jetzt über die Schaltfläche **Zusammenfassung** erreichbar bleibt.
+
+- Quelle sind die archivierten SFDMU-Zieldateien (`<Objekt>_insert_target.csv`, `<Objekt>_update_target.csv`). Zeilen mit Text in "Errors" zählen als fehlgeschlagen und stehen unter **Fehler**, alle anderen als erfolgreich.
+- Das CSV enthält alle Spalten, die SFDMU an die Ziel-Org gesendet hat (ohne "Errors"). Leere Werte stehen als `#N/A`, so schreibt SFDMU sie.
+- Die Id in der Quelle kommt aus der Spalte "Old Id" oder, wenn es sie nicht gibt, aus dem Trace-Feld (`…CrossOrgTraceID__c`).
+- **Aktualisiert:** SFDMU schreibt jeden Durchlauf in dieselbe `…_update_target.csv`. Die Liste zeigt deshalb nur die Datensätze des letzten Durchlaufs; die Kachel zählt dagegen alle Aktualisierungen (beim Account Pass 2 und 3, dieselben Datensätze zweimal, für die Lookups).
+- Die Liste zeigt die ersten 500 Zeilen, das CSV alle.
+
 ## Zu klären
 
 - Aufbewahrung: Wie viele Läufe pro Objekt, Aufräumen älterer Läufe?

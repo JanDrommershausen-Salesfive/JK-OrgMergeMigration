@@ -1,4 +1,4 @@
-import type { ErrorRow, MissingParentGroup, MissingParentRow } from '@studio/shared';
+import type { ErrorRow, MissingParentGroup, MissingParentRow, RecordRow } from '@studio/shared';
 import { parseCsv } from '../sfdmu/csv';
 
 // CSV mit Kopfzeile als Liste von Objekten; SFDMU schreibt ein BOM an den Dateianfang.
@@ -15,9 +15,23 @@ const LABEL_COLUMNS = ['Name', 'Subject', 'Email', 'LastName', 'FirstName', 'Pro
 export const operationOf = (fileName: string) =>
     fileName.match(/^\w+?_(\w+)_target\.csv$/)?.[1] ?? fileName;
 
+const labelOf = (row: Record<string, string>) => {
+    const column = LABEL_COLUMNS.find((c) => !isEmpty(row[c]));
+    return column ? (row[column] ?? '') : '';
+};
+
+// Die Quell-Id steht je nach Objekt in "Old Id" oder im Trace-Feld (zum Beispiel AccountCrossOrgTraceID__c).
+const sourceIdOf = (row: Record<string, string>) => {
+    if (!isEmpty(row['Old Id'])) return row['Old Id'] ?? '';
+    const trace = Object.keys(row).find((k) => /CrossOrgTraceID__c$/.test(k));
+    return trace && !isEmpty(row[trace]) ? (row[trace] ?? '') : '';
+};
+
 export interface TargetTables {
     rows: number;
     errors: ErrorRow[];
+    // Erfolgreiche Zeilen (ohne Text in "Errors") samt allen Spalten, in Dateireihenfolge.
+    records: { row: RecordRow; fields: Record<string, string> }[];
     // Alle Spalten der fehlgeschlagenen Zeilen (das, was an die Ziel-Org gesendet wurde), gleiche Reihenfolge wie errors.
     errorRecords: Record<string, string>[];
 }
@@ -27,19 +41,30 @@ export function readTargetTable(fileName: string, text: string): TargetTables {
     const table = readTable(text);
     const errors: ErrorRow[] = [];
     const errorRecords: Record<string, string>[] = [];
+    const records: TargetTables['records'] = [];
     for (const row of table) {
-        if (isEmpty(row.Errors)) continue;
+        if (isEmpty(row.Errors)) {
+            records.push({
+                row: {
+                    file: operationOf(fileName),
+                    id: row.Id ?? '',
+                    oldId: sourceIdOf(row),
+                    label: labelOf(row)
+                },
+                fields: row
+            });
+            continue;
+        }
         errorRecords.push(row);
-        const labelColumn = LABEL_COLUMNS.find((c) => !isEmpty(row[c]));
         errors.push({
             file: operationOf(fileName),
             id: row.Id ?? '',
             oldId: row['Old Id'] ?? '',
-            label: labelColumn ? (row[labelColumn] ?? '') : '',
+            label: labelOf(row),
             error: row.Errors ?? ''
         });
     }
-    return { rows: table.length, errors, errorRecords };
+    return { rows: table.length, errors, errorRecords, records };
 }
 
 // MissingParentRecordsReport.csv: SFDMU wiederholt Zeilen je Durchlauf, hier dedupliziert.

@@ -18,7 +18,10 @@ import {
     SelectOrgsRequestSchema,
     StartCleanRequestSchema,
     StartRunRequestSchema,
-    ValueMappingRequestSchema
+    ValueMappingRequestSchema,
+    ValueMappingSyncRequestSchema,
+    SelectMappingFileRequestSchema,
+    StaticValueRequestSchema
 } from '@studio/shared';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
@@ -26,12 +29,16 @@ import type { Studio } from '@studio/core';
 
 const FolderQuery = z.object({ folder: z.string() });
 const ObjectQuery = z.object({ object: z.string() });
+const DescribeObjectQuery = ObjectQuery.extend({ refresh: z.enum(['0', '1']).optional() });
 const IdBody = z.object({ id: z.string() });
 const ParentQuery = FolderQuery.extend({ parent: z.coerce.number().int().min(0).optional() });
 const RunQuery = FolderQuery.extend({ id: z.string() });
 const ErrorRecordQuery = RunQuery.extend({ index: z.coerce.number().int().min(0) });
-const ExportQuery = RunQuery.extend({ kind: z.enum(['errors', 'missing-parents']) });
+const ExportQuery = RunQuery.extend({
+    kind: z.enum(['errors', 'missing-parents', 'inserted', 'updated'])
+});
 const DescribeQuery = FolderQuery.extend({ refresh: z.enum(['0', '1']).optional() });
+const UploadQuery = z.object({ name: z.string().max(200), replace: z.enum(['0', '1']).optional() });
 
 // Objekte, Felder, Mappings und Orgs. Die Routen validieren nur und rufen Studio auf.
 export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, { studio }) => {
@@ -56,9 +63,10 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
     );
     app.post('/query/check', (req) => studio.checkQuery(FolderQuery.parse(req.body).folder));
 
-    app.get('/describe/object', (req) =>
-        studio.describeObject(ObjectQuery.parse(req.query).object)
-    );
+    app.get('/describe/object', (req) => {
+        const q = DescribeObjectQuery.parse(req.query);
+        return studio.describeObject(q.object, q.refresh === '1');
+    });
     app.get('/orgs', () => studio.orgs());
     app.get('/orgs/available', () => studio.availableOrgs());
     app.post('/orgs/login', (req) => studio.login(LoginRequestSchema.parse(req.body)));
@@ -68,6 +76,25 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
     app.post('/exclude', (req) => studio.setExcluded(ExcludeRequestSchema.parse(req.body)));
     app.post('/valuemapping', (req) =>
         studio.setValueMapping(ValueMappingRequestSchema.parse(req.body))
+    );
+    app.post('/static', (req) => studio.setStaticValue(StaticValueRequestSchema.parse(req.body)));
+    app.get('/valuemapping/files', () => studio.mappingFiles());
+    // Excel aus dem Finder: der Browser schickt die Datei roh, den Namen in der URL.
+    app.addContentTypeParser(
+        'application/octet-stream',
+        { parseAs: 'buffer', bodyLimit: 25 * 1024 * 1024 },
+        (_req, body, done) => done(null, body)
+    );
+    app.post('/valuemapping/upload', (req, reply) => {
+        const q = UploadQuery.parse(req.query);
+        if (!Buffer.isBuffer(req.body)) return reply.code(400).send({ error: 'Datei fehlt.' });
+        return studio.uploadMappingFile(q.name, req.body, q.replace === '1');
+    });
+    app.post('/valuemapping/file', (req) =>
+        studio.selectMappingFile(SelectMappingFileRequestSchema.parse(req.body))
+    );
+    app.post('/valuemapping/sync', (req) =>
+        studio.syncValueMappings(ValueMappingSyncRequestSchema.parse(req.body))
     );
 
     app.get('/results/all', () => studio.allRuns());
