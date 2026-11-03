@@ -26,6 +26,23 @@ describe('parseOrgList', () => {
     });
 });
 
+describe('parseOrgList: Sandbox-Erkennung', () => {
+    const org = (extra: object) => ({ username: 'a@x', orgId: '00D1', ...extra });
+    const isSandbox = (extra: object) =>
+        parseOrgList({ nonScratchOrgs: [org(extra)] })[0]?.isSandbox;
+
+    it('erkennt Sandbox an der Instanz-URL, wenn isSandbox fehlt', () => {
+        expect(isSandbox({ instanceUrl: 'https://jk-group--fullcopy.sandbox.my.salesforce.com' })).toBe(true);
+    });
+    it('lässt ein ausdrückliches false stehen', () => {
+        expect(isSandbox({ isSandbox: false, instanceUrl: 'https://x.sandbox.my.salesforce.com' })).toBe(false);
+    });
+    it('hält Produktiv-URLs und Fremd-Hosts für Produktion', () => {
+        expect(isSandbox({ instanceUrl: 'https://jk.my.salesforce.com' })).toBe(false);
+        expect(isSandbox({ instanceUrl: 'https://a.sandbox.my.salesforce.com.evil.com' })).toBe(false);
+    });
+});
+
 describe('login', () => {
     it('baut die Argumente je Art', () => {
         expect(loginArgs({ alias: 'x', kind: 'production' })).toEqual([
