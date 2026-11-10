@@ -1,0 +1,78 @@
+ObjectName,FieldName,RawValue,Value
+Contact,MailingCountry,USA,United States
+Contact,MailingCountry,England,United Kingdom
+Contact,MailingCountry,UNITED STATES,United States
+Contact,MailingCountry,US,United States
+Contact,MailingCountry,PH,Philippines
+Contact,MailingCountry,MX,Mexico
+Contact,MailingCountry,MI,United States
+Contact,MailingCountry,MN,United States
+Contact,MailingCountry,usa,United States
+Contact,LeadSource,Social Media,Social Media
+Contact,LeadSource,Prospection,Cold Acquisition
+Contact,LeadSource,JK Shop,Tip
+Contact,LeadSource,JK Equip,Tip
+Contact,LeadSource,JK Support,Tip
+Contact,LeadSource,SunLync,Tip
+Contact,LeadSource,Website Ergoline US,Homepage US
+Contact,LeadSource,Website Ergoline Europe,Homepage US
+Contact,LeadSource,Website Wellsystem,Homepage US
+Contact,LeadSource,Website JK America,Homepage US
+Contact,LeadSource,Trade Show & Event,Trade Fair
+Contact,LeadSource,Technician,Tip
+Contact,LeadSource,Consultant,Tip
+Contact,LeadSource,Customer,Tip
+Contact,LeadSource,Uvalux,Tip
+Contact,LeadSource,Four Seasons,Tip
+Contact,LeadSource,U.R.I.,Tip
+Contact,LeadSource,Heartland,Tip
+Contact,LeadSource,All Hours Distribution,Tip
+Contact,LeadSource,Synergy Tanning System,Tip
+Contact,LeadSource,Sunbed Supply,Tip
+Contact,LeadSource,Bill Niesciur,Tip
+Contact,LeadSource,Sun Spa Wellness,Tip
+Contact,LeadSource,Advanced Exercise,Tip
+Contact,LeadSource,2nd Sun Tan,Tip
+Contact,LeadSource,Atlantic Tan,Tip
+Contact,LeadSource,Distributor,Tip
+Contact,LeadSource,Facebook,Social Media
+Contact,LeadSource,LindedIn,Social Media
+Contact,LeadSource,IST Magazine,Tip
+Contact,LeadSource,Smart Tan,Tip
+Contact,LeadSource,Athletech,Tip
+Contact,LeadSource,Other Publications,Tip
+Contact,LeadSource,Website US,Homepage US
+Contact,LeadSource,Club Solution,Tip
+Contact,LeadSource,Call Center,Cold Acquisition
+Contact,LeadSource,American Spa,Tip
+Contact,LeadSource,Website Europe,Homepage US
+Contact,LeadSource,JK Parts,Tip
+Contact,LeadSource,Spa Industry Association,Tip
+Contact,Salutation,Mr.,Mr.
+Contact,Salutation,Ms.,Ms.
+Contact,Contact_Type__c,Customer,Customer
+Contact,Contact_Type__c,Corporate Customer,Corporate Customer
+Contact,Contact_Type__c,Franchisee Customer,Franchisee Customer
+Contact,Contact_Type__c,Distributor,Distributor
+Contact,Contact_Type__c,Consultant,Consultant
+Contact,Contact_Type__c,Influencer,Influencer
+Contact,Contact_Type__c,Certified Installer,Certified Installer
+Contact,Contact_Type__c,Certified Technician,Certified Technician
+Contact,Contact_Type__c,Technician,Technician
+Contact,Contact_Type__c,Supplier/Vendor,Supplier/Vendor
+Contact,Contact_Type__c,Competitor,Competitor
+Contact,Contact_Type__c,JK Employee,JK Employee
+Contact,Contact_Type__c,Other,Other
+Contact,SunLync_Contact_Type__c,Owner,Owner
+Contact,SunLync_Contact_Type__c,Authorized Owner,Authorized Owner
+Contact,SunLync_Contact_Type__c,Billing Contact,Billing Contact
+Contact,SunLync_Contact_Type__c,Primary Contact,Primary Contact
+Contact,SunLync_Contact_Type__c,IT,IT
+Contact,SunLync_Contact_Type__c,District Manager,District Manager
+Contact,SunLync_Contact_Type__c,Manager,Manager
+Contact,SunLync_Contact_Type__c,POS Employee,POS Employee
+Contact,Time_Zone__c,Eastern,Eastern
+Contact,Time_Zone__c,Central,Central
+Contact,Time_Zone__c,Mountain,Mountain
+Contact,Time_Zone__c,Pacific,Pacific
+Contact,Time_Zone__c,Other,Other

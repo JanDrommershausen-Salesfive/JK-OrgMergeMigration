@@ -24,6 +24,7 @@ const clean = (v: string | undefined) => (v ?? '').replace(/\u00a0/g, ' ').trim(
 
 // Spalten A–D Quelle (Object, Field, Value, API Value), E–H Ziel, I Notizen. Die Kopfzeile mit
 // "Field" in B und "API Value" in D steht in den ersten Zeilen, darüber die Gruppenzeile Source/Target.
+// Fehlt die Kopfzeile, gilt die Gruppenzeile als Kopf und die Daten beginnen in Zeile 2.
 export function parsePicklistSheet(sheet: ExcelJS.Worksheet): PicklistMappingRow[] {
     const cell = (row: ExcelJS.Row, col: number) => clean(row.getCell(col).text);
     let header = 0;
@@ -33,6 +34,10 @@ export function parsePicklistSheet(sheet: ExcelJS.Worksheet): PicklistMappingRow
             header = r;
             break;
         }
+    }
+    // Manche Dateien haben nur die Gruppenzeile (Source/Target) und direkt darunter die Daten.
+    if (!header && cell(sheet.getRow(1), 1) === 'Source' && cell(sheet.getRow(1), 5) === 'Target') {
+        header = 1;
     }
     if (!header) {
         throw new Error(`Blatt „${PICKLIST_SHEET}“: Kopfzeile (Field … API Value) nicht gefunden.`);
