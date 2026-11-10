@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 import {
     listMappingFiles,
     loadPicklistMapping,
+    parsePicklistSheet,
     selectMappingFile,
     selectedMappingFile
 } from './mappingFile';
@@ -102,6 +103,47 @@ async function workbook(file: string, sheetName: string, rows: (string | null)[]
     rows.forEach((r) => sheet.addRow(r));
     await book.xlsx.writeFile(file);
 }
+
+describe('parsePicklistSheet', () => {
+    it('liest auch Blätter, in denen die Kopfzeile Field/API Value fehlt', () => {
+        const sheet = new ExcelJS.Workbook().addWorksheet('Picklist Mapping');
+        sheet.addRow([
+            'Source',
+            'Source',
+            'Source',
+            'Source ',
+            'Target',
+            'Target',
+            'Target',
+            'Target ',
+            'Notes'
+        ]);
+        sheet.addRow([
+            'Account',
+            'AccountSource',
+            'JK Shop',
+            'JK Shop',
+            'Account',
+            'Account Source',
+            'Tip',
+            'Tip',
+            null
+        ]);
+        expect(parsePicklistSheet(sheet)).toEqual([
+            {
+                sourceObject: 'Account',
+                sourceField: 'AccountSource',
+                sourceValue: 'JK Shop',
+                targetValue: 'Tip'
+            }
+        ]);
+    });
+    it('meldet ein Blatt ohne erkennbare Kopfzeile', () => {
+        const sheet = new ExcelJS.Workbook().addWorksheet('Picklist Mapping');
+        sheet.addRow(['irgendwas', 'anderes']);
+        expect(() => parsePicklistSheet(sheet)).toThrow(/Kopfzeile/);
+    });
+});
 
 describe('Mapping-Datei', () => {
     const header = [
