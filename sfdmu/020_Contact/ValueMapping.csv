@@ -50,6 +50,8 @@ Contact,LeadSource,JK Parts,Tip
 Contact,LeadSource,Spa Industry Association,Tip
 Contact,Salutation,Mr.,Mr.
 Contact,Salutation,Ms.,Ms.
+Contact,Salutation,Mrs.,Mrs.
+Contact,Salutation,Dr.,Dr.
 Contact,Contact_Type__c,Customer,Customer
 Contact,Contact_Type__c,Corporate Customer,Corporate Customer
 Contact,Contact_Type__c,Franchisee Customer,Franchisee Customer

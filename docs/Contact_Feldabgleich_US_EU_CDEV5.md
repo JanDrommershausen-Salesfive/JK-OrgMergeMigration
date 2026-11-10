@@ -84,3 +84,24 @@ Simulation mit der Konfiguration, 10.994 Contacts, nichts geschrieben:
 | 7 | Owner-Zuordnung (Klärungsliste #6). |
 
 Von JK US liegt für Contact noch kein Feedback vor. In der Arbeitsmappe stehen deshalb keine "JK US:"-Zeilen, nur die Prüfung vom 2026-10-28.
+
+## Stand 2026-11-04: Feedback JK US und Vorbereitung Lauf nach jk-eu-fullcopy
+
+Feedback von Zach Tolley (JK US) zu den offenen Punkten:
+
+| # | Punkt | Entscheidung | Umsetzung |
+|---|---|---|---|
+| 1 | `Salutation` | `Mrs.` und `Dr.` im Ziel ergänzen | Am 2026-11-04 im Fullcopy per Deploy des StandardValueSet `Salutation` ergänzt (Reihenfolge: Mr., Ms., Mrs., Dr., Company). Das Set gilt auch für Lead. In CDEV5 und im späteren EU-Ziel noch nachzuziehen. |
+| 2 | `LeadSource` | Gleiche Zuordnung wie `Account.AccountSource` | Schon so in `ValueMapping.csv` (40 Zeilen, identisch), alle in den US-Daten vorkommenden Werte sind abgedeckt. |
+| 4 | `Suffix` | Darf entfallen | Nicht in der Query. |
+| 5 | Bundesland ohne Land | Länder in der US-Org bereinigt | Nichts zu tun, nach dem Lauf prüfen. |
+
+Änderungen in [sfdmu/020_Contact/export.json](../sfdmu/020_Contact/export.json):
+
+- Kohorte entfernt: alle Contacts, `restApiBatchSize` 200, `CreatedDate`/`LastModifiedDate` in der Query (Audit-Felder wie beim Account, nur beim Insert).
+- `HasOptedOutOfFax`, `Pronouns`, `GenderIdentity` aus der Query genommen: existieren im Fullcopy nicht, in den US-Daten sind sie nirgends befüllt.
+- Filter `AccountId NOT IN (109 Accounts)`: nur Contacts, deren Account im Ziel liegt.
+
+Zahlen (US-Quelle, Stand 2026-11-04): 11.041 Contacts, alle mit Account. 10.858 haben ihren Account im Fullcopy (18.620 Accounts mit Trace-Id aus dem Lauf vom 03.11.). **183 Contacts** (109 Accounts) werden nicht migriert: 117 wegen Duplicate Rule, 65 wegen Land/Bundesland beim Account-Lauf, 1 Account nicht Teil des Laufs. Liste: `Mappings/Contacts_not_migrated_no_target_account_2026-11-04.csv`. Wird einer dieser Accounts nachgezogen, muss der Filter angepasst werden.
+
+Im Fullcopy waren 22 Contact-Felder (u. a. `ContactCrossOrgTraceID__c`, `JK_VIP__c`) für den Migrationsuser per Feldsicherheit unsichtbar. Sie sind im temporären Permission Set `Temp_FieldCheck_Read` freigegeben (Lesen und Bearbeiten, nach dem Abgleich zu löschen). Simulation: 10.858 Inserts, keine Missing Parents.
