@@ -1,0 +1,33 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name, BillingStreet, BillingCity, BillingPostalCode, BillingCountry, Phone, Website, BillingAddress, Description, Fax, Industry, Jigsaw, NumberOfEmployees, Ownership, ParentId, Rating, ShippingAddress, Sic, SicDesc, Site, TickerSymbol, Type, BillingState, AccountSource, Accounting_Note__c, Account_Blocked__c, Account_Created_in_SAP__c, Bill_to_Ship_to__c, Business_Status__c, Credit_Limit__c, Customer_First_Account_ID__c, Devoted_5_Stars__c, Devoted_Price_List__c, Equipment_KA__c, Equipment_Price_List__c, Import_ID__c, Inactive_Do_Not_Use__c, JK_Shop_KA__c, JK_Shop_Note__c, JK_Shop_Price_List__c, JK_VIP__c, Key_Account__c, Location_Type__c, MRI_Price_List__c, Number_of_Licenses__c, Number_of_Locations__c, Number_of_Rooms__c, Number_of_Units__c, Payment_Processor__c, Price_List__c, RTI_Notes__c, SAP_Account_Number__c, SAP_Email__c, SAP_Name__c, Service_KA__c, Service_Price_List__c, Shipping_Delivery_Note__c, Sunless_Price_List__c, SunLync_Account_Created_Date__c, SunLync_Account_ID__c, SunLync_Account_Name__c, SunLync_Account_Type__c, SunLync_Billing_Cycle__c, SunLync_Comments__c, SunLync_Contract__c, SunLync_Contract_Expiration_Date__c, SunLync_Database_Hosting__c, SunLync_License_Last_Price_Change__c, SunLync_License_Pricing__c, SunLync_Parent_Account__c, SunLync_Special_Message__c, SunLync_Support_Last_Price_Change__c, SunLync_Support_Pricing__c, Tax_Exempt_Verified__c, Time_Zone__c, Verified_from_SAP__c, X7_Sun_Price_List__c, Search_Term__c, Tax_Status__c, Account_Aliases__c, Database_Hosting_Provider__c, Hosting_Provider_Other__c, AVA_MAPPER__Business_Identification_Number__c, CreatedDate, LastModifiedDate FROM Account",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useValuesMapping": true,
+      "useFieldMapping": true,
+      "restApiBatchSize": 200,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AccountCrossOrgTraceID__c"
+        },
+        {
+          "sourceField": "Search_Term__c",
+          "targetField": "SalesC_SearchTerm__c"
+        },
+        {
+          "sourceField": "AVA_MAPPER__Business_Identification_Number__c",
+          "targetField": "CurrencyIsoCode"
+        }
+      ],
+      "mockFields": [
+        {
+          "name": "AVA_MAPPER__Business_Identification_Number__c",
+          "pattern": "c_set_value('USD')"
+        }
+      ],
+      "updateWithMockData": true
+    }
+  ]
+}

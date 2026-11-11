@@ -1,0 +1,7 @@
+{
+  "name": "V5_FullCopy_Migration",
+  "note": "User fields included (audit fields)",
+  "createdAt": "2026-11-10T16:38:00.433Z",
+  "source": "manual",
+  "hasValueMapping": true
+}
