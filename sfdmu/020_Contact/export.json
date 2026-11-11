@@ -1,5 +1,49 @@
 {
+  "dataRetrievedAddons": [
+    {
+      "module": "core:RecordsTransform",
+      "args": {
+        "fields": [
+          {
+            "alias": "owner",
+            "sourceObject": "Contact",
+            "sourceField": "OwnerId"
+          },
+          {
+            "alias": "creator",
+            "sourceObject": "Contact",
+            "sourceField": "CreatedById"
+          }
+        ],
+        "transformations": [
+          {
+            "targetObject": "Contact",
+            "targetField": "OwnerId",
+            "formula": "[\"005Dn0000047AhIIAU\", \"005Dn0000047AhLIAU\", \"005Dn0000047AhPIAU\", \"005Dn000008FxnwIAC\", \"005VQ00000SBYr5YAH\", \"005Dn000008FyWSIA0\"].includes(formula.owner) ? '005Dn000008FyWSIA0' : formula.owner"
+          },
+          {
+            "targetObject": "Contact",
+            "targetField": "CreatedById",
+            "formula": "[\"005Dn0000047AhIIAU\", \"005Dn0000047AhLIAU\", \"005Dn0000047AhPIAU\", \"005Dn000008FxnwIAC\", \"005VQ00000SBYr5YAH\", \"005Dn000008FyWSIA0\"].includes(formula.creator) ? '005Dn000008FyWSIA0' : formula.creator"
+          }
+        ]
+      }
+    }
+  ],
   "objects": [
+    {
+      "query": "SELECT Id FROM User",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "master": false,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Legacy_User_id__c"
+        }
+      ]
+    },
     {
       "query": "SELECT Id, Name FROM Account",
       "operation": "Readonly",
@@ -14,7 +58,7 @@
       ]
     },
     {
-      "query": "SELECT Id, AccountId, LastName, FirstName, Salutation, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingCountry, Phone, Fax, MobilePhone, HomePhone, OtherPhone, AssistantPhone, ReportsToId, Email, Title, Department, AssistantName, LeadSource, Birthdate, Description, HasOptedOutOfEmail, DoNotCall, EmailBouncedReason, EmailBouncedDate, Jigsaw, ContactSource, BuyerAttributes, Direct_Phone__c, Ext__c, LinkedIn_Profile__c, VIP__c, Personal_Email__c, Personal_Notes__c, Contact_Type__c, Verified_from_SAP__c, JK_VIP__c, JK_Equipment__c, JK_Light__c, JK_Parts__c, SunLync__c, SunLync_Contact_Type__c, Customer_First_Contact_ID__c, Time_Zone__c, SAP_Contact_Import__c, Emailing_List__c, Tech_Hotline__c, Ongoing_Follow_up__c, Exclude_From_Installer_Map__c, CreatedDate, LastModifiedDate FROM Contact",
+      "query": "SELECT Id, AccountId, LastName, FirstName, Salutation, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingCountry, Phone, Fax, MobilePhone, HomePhone, OtherPhone, AssistantPhone, ReportsToId, Email, Title, Department, AssistantName, LeadSource, Birthdate, Description, HasOptedOutOfEmail, DoNotCall, EmailBouncedReason, EmailBouncedDate, Jigsaw, ContactSource, BuyerAttributes, Direct_Phone__c, Ext__c, LinkedIn_Profile__c, VIP__c, Personal_Email__c, Personal_Notes__c, Contact_Type__c, Verified_from_SAP__c, JK_VIP__c, JK_Equipment__c, JK_Light__c, JK_Parts__c, SunLync__c, SunLync_Contact_Type__c, Customer_First_Contact_ID__c, Time_Zone__c, SAP_Contact_Import__c, Emailing_List__c, Tech_Hotline__c, Ongoing_Follow_up__c, Exclude_From_Installer_Map__c, CreatedDate, LastModifiedDate, OwnerId, CreatedById FROM Contact",
       "operation": "Upsert",
       "externalId": "Id",
       "useValuesMapping": true,

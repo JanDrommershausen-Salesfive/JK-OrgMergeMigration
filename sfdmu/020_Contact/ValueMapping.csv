@@ -78,3 +78,4 @@ Contact,Time_Zone__c,Central,Central
 Contact,Time_Zone__c,Mountain,Mountain
 Contact,Time_Zone__c,Pacific,Pacific
 Contact,Time_Zone__c,Other,Other
+Contact,MailingState,BS,BCS
