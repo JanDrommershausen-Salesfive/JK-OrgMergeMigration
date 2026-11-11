@@ -2,6 +2,8 @@ ObjectName,FieldName,RawValue,Value
 Account,BillingCountry,USA,United States
 Account,BillingCountry,England,United Kingdom
 Account,ShippingCountry,UK,United Kingdom
+Account,BillingState,Dublin,DB
+Account,BillingState,Puebla,PUE
 Account,AccountSource,Social Media,Social Media
 Account,AccountSource,Prospection,Cold Acquisition
 Account,AccountSource,JK Shop,Tip
