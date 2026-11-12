@@ -10,7 +10,9 @@ interface Props {
 
 // × nimmt ein Feld aus dem Mapping: erst eine Umbenennung (zurück auf 1:1), sonst das Feld aus der Migration.
 function RemoveButton({ field: f, running, onMap, onExclude }: Omit<Props, 'targetFields'>) {
-    if (running || f.externalId || f.name === 'Id') return null;
+    // Id und External-ID-Felder bleiben in der Migration; nur eine Umbenennung der Id lässt sich zurücknehmen.
+    if (running || ((f.externalId || f.name === 'Id') && !(f.name === 'Id' && f.renamed)))
+        return null;
     const base =
         'size-6 flex-none cursor-pointer rounded-full border text-base leading-[22px] text-center';
     if (f.excluded) {
@@ -63,7 +65,7 @@ export function TargetCell(props: Props) {
             </div>
         );
     }
-    const canEdit = !!targetFields && !running && !f.externalId && f.name !== 'Id';
+    const canEdit = !!targetFields && !running && (f.name === 'Id' || !f.externalId);
     if (!canEdit) {
         const why = f.externalId ? 'External-ID-Felder können hier nicht umgemappt werden' : '';
         return (

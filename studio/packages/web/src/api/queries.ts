@@ -45,6 +45,18 @@ export function useLogin() {
     });
 }
 
+// Abgelaufene Anmeldung erneuern: öffnet den Browser, danach ist der Status neu und alles Org-Abhängige veraltet.
+export function useRelogin() {
+    const client = useQueryClient();
+    return useMutation({
+        mutationFn: api.relogin,
+        onSuccess: (data) => {
+            client.setQueryData(['orgs'], data);
+            void client.invalidateQueries({ queryKey: ['describe'] });
+        }
+    });
+}
+
 // Nach der Auswahl sind alle Org-abhängigen Daten (Status, Describe, Objekte) veraltet.
 export function useSelectOrgs() {
     const client = useQueryClient();

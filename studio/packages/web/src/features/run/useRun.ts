@@ -58,7 +58,15 @@ export function useRun() {
             try {
                 await api.startRun(folder, mode, cohortId, keepFilters);
             } catch (e) {
-                setLog(e instanceof Error ? e.message : String(e));
+                const message = e instanceof Error ? e.message : String(e);
+                // Läuft schon ein Lauf (z. B. neu geladene GUI, deren Status noch nicht da war), darf die
+                // Meldung das Log nicht ersetzen: Stream neu verbinden, der Server liefert das gepufferte Log nach.
+                const current = await api.runStatus().catch(() => null);
+                void client.invalidateQueries({ queryKey: ['run'] });
+                if (current?.running) {
+                    connect();
+                    setLog(`${message}\n\n`);
+                } else setLog(message);
                 return;
             }
             connect();

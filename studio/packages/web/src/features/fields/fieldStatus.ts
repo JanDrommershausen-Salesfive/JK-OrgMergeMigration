@@ -45,6 +45,9 @@ export function fieldStatus(f: FieldInfo, d: DescribeResponse | undefined): Fiel
     if (!tgt.createable && f.targetField !== 'Id' && tgt.baseType !== 'address') {
         return { key: 'readonly', label: 'im Ziel nicht schreibbar', tone: 'warn', src, tgt };
     }
+    // Die Id in ein Trace-Feld zu schreiben ist gewollt, der Typ (id gegen string) weicht dabei immer ab.
+    if (f.name === 'Id' && f.renamed)
+        return { key: 'mapped', label: '⇄ gemappt', tone: 'ren', src, tgt };
     const same = src && (polymorphic(src) && polymorphic(tgt) ? true : src.type === tgt.type);
     if (src && !same) return { key: 'type', label: 'Typ/Länge weicht ab', tone: 'warn', src, tgt };
     if (f.renamed) return { key: 'mapped', label: '⇄ gemappt', tone: 'ren', src, tgt };

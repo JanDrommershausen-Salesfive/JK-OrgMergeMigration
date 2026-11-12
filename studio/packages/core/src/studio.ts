@@ -30,6 +30,7 @@ import type {
     DescribeResponse,
     ExcludeRequest,
     LoginRequest,
+    ReloginRequest,
     MappingRequest,
     ObjectDetail,
     ObjectListResponse,
@@ -705,6 +706,25 @@ export class Studio {
             this.loginInProgress = false;
         }
         return this.availableOrgs();
+    }
+
+    // Erneuert die Anmeldung der gepinnten Org (Browser-Login mit gleichem Alias). Die Adresse stammt aus der alten
+    // Anmeldung, damit Sandbox oder My Domain stimmen; danach prüft der Status, ob es dieselbe Org ist.
+    async relogin({ role }: ReloginRequest): Promise<OrgsResponse> {
+        const alias = this.requireOrgs()[role].alias;
+        if (this.loginInProgress) throw conflict('Es läuft bereits ein Login.');
+        this.loginInProgress = true;
+        try {
+            const display = await sf(['org', 'display', '-o', alias]);
+            const url: string | undefined =
+                display.status === 0 ? display.result?.instanceUrl : undefined;
+            await loginOrg(
+                url ? { alias, kind: 'custom', instanceUrl: url } : { alias, kind: 'production' }
+            );
+        } finally {
+            this.loginInProgress = false;
+        }
+        return this.orgs();
     }
 
     // Legt Quelle und Ziel fest und pinnt deren Org-IDs in migration.project.json.

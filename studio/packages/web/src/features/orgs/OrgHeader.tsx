@@ -1,17 +1,22 @@
 import type { OrgStatus } from '@studio/shared';
 import { useIsFetching, useQueryClient } from '@tanstack/react-query';
-import { useOrgs } from '../../api/queries';
+import { useOrgs, useRelogin } from '../../api/queries';
 import { Button } from '../../components/ui';
 
 function OrgCard({
     role,
+    kind,
     org,
-    alias
+    alias,
+    busy
 }: {
     role: string;
+    kind: 'source' | 'target';
     org: OrgStatus | undefined;
     alias: string;
+    busy: boolean;
 }) {
+    const relogin = useRelogin();
     const dot = !org
         ? 'bg-grey-500 animate-pulse'
         : org.connected && org.idMatches
@@ -58,8 +63,27 @@ function OrgCard({
             )}
             {org && !org.connected && (
                 <div className="text-[13px] text-[#ffb4ae]">
-                    {org.error} (
-                    <span className="font-mono">sf org login web --alias {org.alias}</span>)
+                    <div className="line-clamp-2" title={org.error}>
+                        {org.error}
+                    </div>
+                    {org.error && (
+                        <Button
+                            variant="onDark"
+                            small
+                            className="mt-2"
+                            disabled={relogin.isPending || busy}
+                            onClick={() => relogin.mutate(kind)}
+                        >
+                            {relogin.isPending
+                                ? 'Browser offen – bitte anmelden …'
+                                : 'Neu anmelden'}
+                        </Button>
+                    )}
+                    {relogin.isError && (
+                        <div role="alert" className="mt-1">
+                            {relogin.error.message}
+                        </div>
+                    )}
                 </div>
             )}
         </div>
@@ -130,6 +154,8 @@ export function OrgHeader({
                     >
                         <OrgCard
                             role="QUELLE"
+                            kind="source"
+                            busy={running}
                             alias={sourceAlias}
                             org={error ? failed(sourceAlias) : orgs.data?.source}
                         />
@@ -141,6 +167,8 @@ export function OrgHeader({
                         </div>
                         <OrgCard
                             role="ZIEL"
+                            kind="target"
+                            busy={running}
                             alias={targetAlias}
                             org={error ? failed(targetAlias) : orgs.data?.target}
                         />

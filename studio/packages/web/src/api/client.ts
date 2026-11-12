@@ -92,6 +92,8 @@ export const api = {
     checkQuery: (folder: string) => request('/api/query/check', QueryCheckSchema, { folder }),
     orgs: () => request('/api/orgs', OrgsResponseSchema),
     availableOrgs: () => request('/api/orgs/available', AvailableOrgsResponseSchema),
+    relogin: (role: 'source' | 'target') =>
+        request('/api/orgs/relogin', OrgsResponseSchema, { role }),
     login: (req: LoginRequest) => request('/api/orgs/login', AvailableOrgsResponseSchema, req),
     selectOrgs: (req: SelectOrgsRequest) =>
         request('/api/orgs/select', ObjectListResponseSchema, req),
