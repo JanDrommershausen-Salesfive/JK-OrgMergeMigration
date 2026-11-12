@@ -1,0 +1,7 @@
+{
+  "name": "V3_Test_AccountMapping",
+  "note": "Anpassungen nach dem Zach's Feedback; Neue Studio Features (PicklistValue Mapping, Feste Werte, Neues Feld hinzufügen etc.)",
+  "createdAt": "2026-10-27T17:34:31.756Z",
+  "source": "manual",
+  "hasValueMapping": true
+}

@@ -1,0 +1,7 @@
+{
+  "name": "V2_Test_AccountMapping",
+  "note": "All the available fields & picklist values mapped; LIMIT 100 specific Accounts with and without Parents; SAP related fields excluded",
+  "createdAt": "2026-10-15T07:52:12.261Z",
+  "source": "manual",
+  "hasValueMapping": true
+}

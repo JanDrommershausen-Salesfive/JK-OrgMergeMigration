@@ -67,10 +67,13 @@ describe('checkQuery', () => {
             sourceAlias: 'src',
             targetAlias: 'tgt',
             sourceDescribe: describeOk,
+            recordBaseUrl: 'https://us.my.salesforce.com/',
             run
         });
 
         expect(r.count).toBe(46);
+        expect(r.idColumns).toEqual(['Id', 'AccountId']);
+        expect(r.recordBaseUrl).toBe('https://us.my.salesforce.com');
         expect(r.columns).toEqual(['Id', 'Email', 'AccountId']);
         expect(r.rows).toEqual([['003', 'x@y.de', '001']]);
         expect(r.parents[0]).toMatchObject({
@@ -152,5 +155,38 @@ describe('checkQuery', () => {
             run
         });
         expect(r.parents[0]?.note).toMatch(/Mehrteilige/);
+    });
+
+    it('liest alle Felder der Query, nicht nur die ersten acht', async () => {
+        const fields = Array.from({ length: 12 }, (_, i) => `Feld${i}__c`);
+        const wide: QueryModel = { ...model, fields, parents: [] };
+        const describe = {
+            ok: true as const,
+            fields: Object.fromEntries(
+                fields.map((f) => [
+                    f,
+                    {
+                        type: 'string',
+                        baseType: 'string',
+                        label: f,
+                        createable: true,
+                        updateable: true
+                    }
+                ])
+            )
+        };
+        const run: QueryRunner = async (_alias, soql) =>
+            soql.startsWith('SELECT COUNT()')
+                ? { records: [], totalSize: 1 }
+                : { records: [Object.fromEntries(fields.map((f) => [f, 'x']))], totalSize: 1 };
+        const r = await checkQuery({
+            model: wide,
+            sourceAlias: 'src',
+            targetAlias: 'tgt',
+            sourceDescribe: describe,
+            run
+        });
+        expect(r.columns).toEqual(fields);
+        expect(r.rows[0]).toHaveLength(12);
     });
 });

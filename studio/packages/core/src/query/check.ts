@@ -21,7 +21,6 @@ export const sfQuery: QueryRunner = async (alias, soql) => {
 
 const UNQUERYABLE = new Set(['address', 'location']);
 const SAMPLE_ROWS = 5;
-const SAMPLE_COLUMNS = 8;
 const GROUP_LIMIT = 2000;
 const IN_CHUNK = 100;
 
@@ -36,6 +35,13 @@ function cell(v: unknown): string {
     if (typeof v === 'object') return '';
     const s = String(v);
     return s.length > 60 ? `${s.slice(0, 57)}…` : s;
+}
+
+// Spalten, die Salesforce-IDs enthalten: Id und Lookups. Ohne Describe nur nach dem Namen.
+function isIdColumn(column: string, describe: DescribeResult): boolean {
+    if (!describe.ok) return column === 'Id' || /Id$/.test(column);
+    const type = describe.fields[column]?.type ?? '';
+    return type === 'id' || type.startsWith('reference');
 }
 
 // Erster Wert eines Aggregat-Ergebnisses (Spaltenname ist je nach Abfrage unterschiedlich).
@@ -57,12 +63,21 @@ export async function checkQuery(opts: {
     sourceAlias: string;
     targetAlias: string;
     sourceDescribe: DescribeResult;
+    recordBaseUrl?: string | null;
     run?: QueryRunner;
 }): Promise<QueryCheck> {
     const { model, sourceAlias, targetAlias, sourceDescribe } = opts;
     const run = opts.run ?? sfQuery;
     const where = andWhere(model);
-    const result: QueryCheck = { count: null, error: null, columns: [], rows: [], parents: [] };
+    const result: QueryCheck = {
+        count: null,
+        error: null,
+        columns: [],
+        rows: [],
+        idColumns: [],
+        recordBaseUrl: opts.recordBaseUrl?.replace(/\/+$/, '') ?? null,
+        parents: []
+    };
 
     try {
         result.count = (
@@ -74,12 +89,13 @@ export async function checkQuery(opts: {
             (!sourceDescribe.ok ||
                 (!!sourceDescribe.fields[f] &&
                     !UNQUERYABLE.has(sourceDescribe.fields[f]?.baseType ?? '')));
-        const columns = model.fields.filter(readable).slice(0, SAMPLE_COLUMNS);
+        const columns = model.fields.filter(readable);
         const sample = await run(
             sourceAlias,
             `SELECT ${columns.join(', ')} FROM ${model.object}${clause(where)} LIMIT ${SAMPLE_ROWS}`
         );
         result.columns = columns;
+        result.idColumns = columns.filter((c) => isIdColumn(c, sourceDescribe));
         result.rows = sample.records.map((r) => columns.map((c) => cell(r[c])));
     } catch (err) {
         result.error = err instanceof Error ? err.message : String(err);

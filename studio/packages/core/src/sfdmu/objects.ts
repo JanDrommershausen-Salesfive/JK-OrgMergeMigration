@@ -1,6 +1,7 @@
 import type { FieldInfo, LastRun, ObjectDetail, ObjectSummary } from '@studio/shared';
 import { notFound } from '../errors';
 import { parseCsv } from './csv';
+import { staticValuesOf } from './staticValue';
 import {
     entryOf,
     listFolders,
@@ -85,6 +86,7 @@ export async function objectDetail(
     );
     const excluded = new Set(target.excludedFields ?? []);
     const targetOf = new Map(fieldMapping.map((m) => [m.sourceField, m.targetField]));
+    const statics = staticValuesOf(target);
 
     const fields: FieldInfo[] = select
         .split(',')
@@ -103,7 +105,8 @@ export async function objectDetail(
                 valueMapped: mappedFields.has(name),
                 excluded: excluded.has(name),
                 targetField,
-                renamed: targetOf.has(name) && targetField !== name
+                renamed: targetOf.has(name) && targetField !== name,
+                ...(statics.has(name) ? { staticValue: statics.get(name)?.value } : {})
             };
         });
     return { ...entry, parentIndex: parentIndex ?? null, where, fields, valueMappings };

@@ -1,7 +1,8 @@
 import type { RunMeta } from '@studio/shared';
 import { formatDuration } from './format';
 
-export type Section = 'fehler' | 'parents' | 'warnungen' | 'zusammenfassung' | 'log';
+export type Section =
+    'eingefuegt' | 'aktualisiert' | 'fehler' | 'parents' | 'warnungen' | 'zusammenfassung' | 'log';
 
 interface Tile {
     label: string;
@@ -27,8 +28,8 @@ interface Props {
 export function Tiles({ meta, active, onSelect }: Props) {
     const c = meta.counts;
     const tiles: Tile[] = [
-        { label: 'Eingefügt', value: c.inserted, tone: 'plain', section: 'zusammenfassung' },
-        { label: 'Aktualisiert', value: c.updated, tone: 'plain', section: 'zusammenfassung' },
+        { label: 'Eingefügt', value: c.inserted, tone: 'plain', section: 'eingefuegt' },
+        { label: 'Aktualisiert', value: c.updated, tone: 'plain', section: 'aktualisiert' },
         { label: 'Fehler', value: c.errors, tone: c.errors ? 'bad' : 'ok', section: 'fehler' },
         {
             label: 'Fehlende Parents',

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ValueMappingSyncSchema } from './objects';
 
 // Wert in einer WHERE-Bedingung, so wie SOQL ihn kennt.
 export const FilterValueSchema: z.ZodType<FilterValue> = z.lazy(() =>
@@ -89,6 +90,12 @@ export const SetFieldsRequestSchema = z.object({
 });
 export type SetFieldsRequest = z.infer<typeof SetFieldsRequestSchema>;
 
+// Neue Picklist-Felder bekommen ihr Wertemapping aus der Mapping-Datei; das Ergebnis kommt mit zurück.
+export const SetFieldsResponseSchema = QueryModelSchema.extend({
+    valueMappingSync: ValueMappingSyncSchema.optional()
+});
+export type SetFieldsResponse = z.infer<typeof SetFieldsResponseSchema>;
+
 export const ParentModeRequestSchema = z.object({
     folder: z.string(),
     index: z.number().int().min(0),
@@ -111,6 +118,9 @@ export const QueryCheckSchema = z.object({
     error: z.string().nullable(),
     columns: z.array(z.string()),
     rows: z.array(z.array(z.string())),
+    // Spalten mit Salesforce-IDs (Id, Lookups) und Instanz-URL der Quelle, damit die UI Datensätze verlinken kann.
+    idColumns: z.array(z.string()).default([]),
+    recordBaseUrl: z.string().nullable().default(null),
     parents: z.array(ParentCheckSchema)
 });
 export type QueryCheck = z.infer<typeof QueryCheckSchema>;

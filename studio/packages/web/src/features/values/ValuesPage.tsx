@@ -1,5 +1,9 @@
-import { useObject, useQueryModel } from '../../api/queries';
+import { useState } from 'react';
+import { useMappingFiles, useObject, useQueryModel, useSyncValueMappings } from '../../api/queries';
+import { Button } from '../../components/ui';
 import type { Report } from '../detail/saveMessage';
+import { MappingFilePicker } from './MappingFilePicker';
+import { syncMessage } from './syncMessage';
 import { ValuesTab } from './ValuesTab';
 
 interface EntryProps {
@@ -20,6 +24,24 @@ function EntryValues({
     onFilterChange
 }: EntryProps) {
     const detail = useObject(folder, parentIndex);
+    const sync = useSyncValueMappings();
+    const selected = useMappingFiles().data?.selected ?? null;
+    // Nach dem Übernehmen zeigen die Feldgruppen den neuen Stand der Datei, nicht ihren alten Entwurf.
+    const [generation, setGeneration] = useState(0);
+    const syncFromFile = () => {
+        report('Lese Mapping-Datei …');
+        sync.mutate(
+            { folder, parentIndex },
+            {
+                onSuccess: (r) => {
+                    setGeneration((g) => g + 1);
+                    const msg = syncMessage(r.sync, true);
+                    report(msg ? `${r.sync.added.length ? '✓ ' : ''}${msg.text}` : '', msg?.error);
+                },
+                onError: (e) => report(e.message, true)
+            }
+        );
+    };
     if (detail.error)
         return (
             <p role="alert" className="text-bad">
@@ -28,13 +50,31 @@ function EntryValues({
         );
     if (!detail.data) return <p className="text-grey-500">Lade …</p>;
     return (
-        <ValuesTab
-            detail={detail.data}
-            filterField={filterField}
-            running={running}
-            report={report}
-            onFilterChange={onFilterChange}
-        />
+        <>
+            <div className="mb-3 flex justify-end">
+                <Button
+                    small
+                    variant="ghost"
+                    onClick={syncFromFile}
+                    disabled={running || sync.isPending || !selected}
+                    title={
+                        selected
+                            ? 'Fehlende Werte aller Picklist-Felder dieses Objekts aus der Mapping-Datei übernehmen'
+                            : 'Erst oben eine Mapping-Datei wählen'
+                    }
+                >
+                    {sync.isPending ? 'Liest …' : '↧ Aus Mapping-Datei übernehmen'}
+                </Button>
+            </div>
+            <ValuesTab
+                key={generation}
+                detail={detail.data}
+                filterField={filterField}
+                running={running}
+                report={report}
+                onFilterChange={onFilterChange}
+            />
+        </>
     );
 }
 
@@ -62,6 +102,7 @@ export function ValuesPage({
 
     return (
         <div className="space-y-8">
+            <MappingFilePicker running={running} report={report} />
             <section>
                 <h3 className="mb-2 text-sm font-bold">{object} · Hauptobjekt</h3>
                 <EntryValues

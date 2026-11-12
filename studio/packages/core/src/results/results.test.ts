@@ -100,6 +100,49 @@ describe('CSV-Tabellen', () => {
         ]);
     });
 
+    it('liefert zu jeder Fehlerzeile alle gesendeten Spalten', () => {
+        const t = readTargetTable('Contact_insert_target.csv', INSERT_CSV);
+        expect(t.errorRecords).toEqual([
+            {
+                Id: 'FKB2',
+                'Old Id': '003B',
+                FirstName: 'Max',
+                LastName: 'Muster',
+                Email: 'max@x.de',
+                Errors: 'FIELD_CUSTOM_VALIDATION_EXCEPTION: Land fehlt'
+            }
+        ]);
+    });
+
+    it('liefert erfolgreiche Zeilen mit Bezeichnung und Quell-Id', () => {
+        const t = readTargetTable('Contact_insert_target.csv', INSERT_CSV);
+        expect(t.records).toEqual([
+            {
+                row: { file: 'insert', id: 'FKB1', oldId: '003A', label: 'Rausch' },
+                fields: {
+                    Id: 'FKB1',
+                    'Old Id': '003A',
+                    FirstName: 'Bayla',
+                    LastName: 'Rausch',
+                    Email: '#N/A',
+                    Errors: '#N/A'
+                }
+            }
+        ]);
+    });
+
+    it('nimmt die Quell-Id aus dem Trace-Feld, wenn es keine Spalte "Old Id" gibt', () => {
+        const live =
+            '"Id","AccountCrossOrgTraceID__c","Name","Errors"\n"001A","001SRC","Glo Tanning","#N/A"\n';
+        const t = readTargetTable('Account_insert_target.csv', live);
+        expect(t.records[0]?.row).toEqual({
+            file: 'insert',
+            id: '001A',
+            oldId: '001SRC',
+            label: 'Glo Tanning'
+        });
+    });
+
     it('dedupliziert fehlende Parents und gruppiert nach Wert', () => {
         const { rows, groups } = readMissingParents(REPORT_CSV);
         expect(rows).toHaveLength(3);

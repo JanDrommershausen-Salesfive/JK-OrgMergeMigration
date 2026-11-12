@@ -68,6 +68,15 @@ export const ErrorRowSchema = z.object({
 });
 export type ErrorRow = z.infer<typeof ErrorRowSchema>;
 
+// Erfolgreich geschriebene Zeile einer SFDMU-Zieldatei (ohne Text in "Errors").
+export const RecordRowSchema = z.object({
+    file: z.string(), // insert oder update
+    id: z.string(), // Id im Ziel
+    oldId: z.string(), // Id in der Quelle, soweit SFDMU sie mitschreibt
+    label: z.string()
+});
+export type RecordRow = z.infer<typeof RecordRowSchema>;
+
 export const MissingParentRowSchema = z.object({
     lookupField: z.string(),
     parentObject: z.string(),
@@ -91,8 +100,18 @@ export const RunDetailSchema = z.object({
     errorsTotal: z.number(),
     missingParents: z.array(MissingParentRowSchema),
     missingParentsTotal: z.number(),
-    missingParentGroups: z.array(MissingParentGroupSchema)
+    missingParentGroups: z.array(MissingParentGroupSchema),
+    // Erfolgreich geschriebene Datensätze je Operation (SFDMU-Zieldateien), auf die ersten Zeilen gekürzt
+    inserted: z.array(RecordRowSchema).default([]),
+    insertedTotal: z.number().default(0),
+    updated: z.array(RecordRowSchema).default([]),
+    updatedTotal: z.number().default(0)
 });
 export type RunDetail = z.infer<typeof RunDetailSchema>;
+
+export const ErrorRecordResponseSchema = z.object({
+    fields: z.record(z.string(), z.string()) // alle gesendeten Spalten der Fehlerzeile
+});
+export type ErrorRecordResponse = z.infer<typeof ErrorRecordResponseSchema>;
 
 export const RunLogResponseSchema = z.object({ log: z.string() });

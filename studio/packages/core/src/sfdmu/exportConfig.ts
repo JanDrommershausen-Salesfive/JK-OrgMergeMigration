@@ -13,6 +13,8 @@ export interface ExportObject {
     useFieldMapping?: boolean;
     fieldMapping?: { sourceField: string; targetField: string; targetObject?: string }[];
     excludedFields?: string[];
+    updateWithMockData?: boolean;
+    mockFields?: { name: string; pattern: string; [key: string]: unknown }[];
     [key: string]: unknown;
 }
 

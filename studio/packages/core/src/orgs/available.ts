@@ -11,6 +11,17 @@ interface SfOrgEntry {
     connectedStatus?: string;
 }
 
+// Fehlt isSandbox in der Anmeldedatei (null), zeigt die Instanz-URL (*.sandbox.my.salesforce.com) die Sandbox an.
+// Ein ausdrückliches false bleibt false. Schreibende Läufe prüfen weiterhin live per Organization.IsSandbox.
+function detectSandbox(o: SfOrgEntry): boolean {
+    if (typeof o.isSandbox === 'boolean') return o.isSandbox;
+    try {
+        return new URL(o.instanceUrl ?? '').hostname.endsWith('.sandbox.my.salesforce.com');
+    } catch {
+        return false;
+    }
+}
+
 // Fasst die Gruppen aus `sf org list --json` zusammen und entfernt doppelte Benutzer.
 export function parseOrgList(result: Record<string, SfOrgEntry[] | undefined>): AvailableOrg[] {
     const byUser = new Map<string, AvailableOrg>();
@@ -22,7 +33,7 @@ export function parseOrgList(result: Record<string, SfOrgEntry[] | undefined>): 
                 username: o.username,
                 orgId: o.orgId,
                 instanceUrl: o.instanceUrl ?? '',
-                isSandbox: !!o.isSandbox,
+                isSandbox: detectSandbox(o),
                 isScratch: !!o.isScratch,
                 status: o.connectedStatus ?? 'Unbekannt'
             });

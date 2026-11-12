@@ -9,6 +9,8 @@ interface Props {
     onCheck: () => void;
 }
 
+const SF_ID = /^[a-zA-Z0-9]{15}(?:[a-zA-Z0-9]{3})?$/;
+
 // Lesende Prüfung: Treffer, Beispielzeilen. Die Parent-Zahlen erscheinen bei den Parents.
 export function CheckPanel({ result, pending, error, disabled, onCheck }: Props) {
     return (
@@ -58,7 +60,18 @@ export function CheckPanel({ result, pending, error, disabled, onCheck }: Props)
                                                     key={j}
                                                     className="border-b border-grey-100 px-2 py-1 whitespace-nowrap"
                                                 >
-                                                    {v}
+                                                    {recordUrl(result, j, v) ? (
+                                                        <a
+                                                            href={recordUrl(result, j, v)!}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="font-mono text-digital-blue underline"
+                                                        >
+                                                            {v}
+                                                        </a>
+                                                    ) : (
+                                                        v
+                                                    )}
                                                 </td>
                                             ))}
                                         </tr>
@@ -74,4 +87,11 @@ export function CheckPanel({ result, pending, error, disabled, onCheck }: Props)
             )}
         </section>
     );
+}
+
+// Link auf den Datensatz in der Quell-Org; Salesforce leitet /<Id> auf die passende Seite weiter.
+function recordUrl(result: QueryCheck, column: number, value: string): string | null {
+    const name = result.columns[column];
+    if (!result.recordBaseUrl || !name || !result.idColumns.includes(name)) return null;
+    return SF_ID.test(value) ? `${result.recordBaseUrl}/${value}` : null;
 }

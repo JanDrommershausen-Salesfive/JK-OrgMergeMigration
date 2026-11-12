@@ -3,6 +3,7 @@ import { MAX_COHORT_SIZE } from '@studio/shared';
 import path from 'node:path';
 import type {
     AvailableOrgsResponse,
+    ErrorRecordResponse,
     ImportTodosRequest,
     ImportTodosResponse,
     TodoItem,
@@ -47,8 +48,15 @@ import type {
     RunMode,
     SaveFiltersRequest,
     SetFieldsRequest,
+    SetFieldsResponse,
+    StaticValueRequest,
     SelectOrgsRequest,
-    ValueMappingRequest
+    ValueMappingRequest,
+    ValueMappingSync,
+    ValueMappingSyncRequest,
+    ValueMappingSyncResponse,
+    MappingFilesResponse,
+    SelectMappingFileRequest
 } from '@studio/shared';
 import { badRequest, conflict, notFound } from './errors';
 import { DescribeCache } from './orgs/describe';
@@ -102,6 +110,16 @@ import { ResultStore } from './results/store';
 import { toCsv } from './sfdmu/csv';
 import { listObjects, objectDetail } from './sfdmu/objects';
 import { setFieldExcluded, setFieldMapping, setValueMapping } from './sfdmu/mutations';
+import { setStaticValue } from './sfdmu/staticValue';
+import {
+    MappingFileExistsError,
+    listMappingFiles,
+    saveMappingFile,
+    loadPicklistMapping,
+    planValueMappings,
+    selectMappingFile,
+    selectedMappingFile
+} from './valuemap';
 
 // Einstiegspunkt für den Server: bündelt Konfiguration, Läufe und Org-Zugriffe eines Projekts.
 export class Studio {
@@ -196,6 +214,19 @@ export class Studio {
         return this.object(req.folder, req.parentIndex);
     }
 
+    // Fester Wert für ein Zielfeld ohne Quelle (value null: entfernen), siehe sfdmu/staticValue.ts.
+    async setStaticValue(req: StaticValueRequest): Promise<ObjectDetail> {
+        this.assertIdle();
+        const detail = await this.object(req.folder, req.parentIndex);
+        const { source, target } = this.requireOrgs();
+        const [src, tgt] = await Promise.all([
+            this.describeCache.describe(source.alias, detail.object),
+            this.describeCache.describe(target.alias, detail.object)
+        ]);
+        await setStaticValue(this.config.sfdmuDir, detail, req, src, tgt);
+        return this.object(req.folder, req.parentIndex);
+    }
+
     async setValueMapping(req: ValueMappingRequest): Promise<ObjectDetail> {
         this.assertIdle();
         await setValueMapping(
@@ -204,6 +235,77 @@ export class Studio {
             req
         );
         return this.object(req.folder, req.parentIndex);
+    }
+
+    // Übernimmt Wertemappings aus der Mapping-Datei für die Picklist-Felder eines Eintrags.
+    // only: nur diese Felder (zum Beispiel gerade in die Query aufgenommene). Vorhandene Zeilen bleiben.
+    private async syncFromMappingFile(
+        folder: string,
+        parentIndex: number | undefined,
+        only?: string[]
+    ): Promise<ValueMappingSync> {
+        const mapping = await loadPicklistMapping(this.config.projectDir);
+        if (!mapping) return { file: null, added: [], conflicts: [] };
+        const detail = await this.object(folder, parentIndex);
+        const source = await this.describeCache.describe(
+            this.requireOrgs().source.alias,
+            detail.object
+        );
+        if (!source.ok) throw badRequest(`Quell-Describe fehlgeschlagen: ${source.error}`);
+        const fields = detail.fields
+            .filter((f) => !f.excluded && f.name !== 'Id' && (!only || only.includes(f.name)))
+            .map((f) => f.name);
+        const { added, conflicts } = planValueMappings({
+            object: detail.object,
+            fields,
+            source: source.fields,
+            existing: detail.valueMappings,
+            rows: mapping.rows
+        });
+        for (const field of new Set(added.map((a) => a.field))) {
+            const rows = [...detail.valueMappings, ...added]
+                .filter((r) => r.field === field)
+                .map(({ from, to }) => ({ from, to }));
+            await setValueMapping(this.config.sfdmuDir, detail, { field, rows });
+        }
+        return { file: mapping.file, added, conflicts };
+    }
+
+    async mappingFiles(): Promise<MappingFilesResponse> {
+        const [files, selected] = await Promise.all([
+            listMappingFiles(this.config.projectDir),
+            selectedMappingFile(this.config.projectDir)
+        ]);
+        return { files, selected };
+    }
+
+    async selectMappingFile({ file }: SelectMappingFileRequest): Promise<MappingFilesResponse> {
+        await selectMappingFile(this.config.projectDir, file).catch((e: Error) => {
+            throw badRequest(e.message);
+        });
+        return this.mappingFiles();
+    }
+
+    // Datei aus dem Finder: in Mappings/ ablegen und gleich als Mapping-Datei wählen.
+    async uploadMappingFile(
+        name: string,
+        data: Uint8Array,
+        replace: boolean
+    ): Promise<MappingFilesResponse> {
+        const file = await saveMappingFile(this.config.projectDir, name, data, replace).catch(
+            (e: Error) => {
+                throw e instanceof MappingFileExistsError
+                    ? conflict(e.message)
+                    : badRequest(e.message);
+            }
+        );
+        return this.selectMappingFile({ file });
+    }
+
+    async syncValueMappings(req: ValueMappingSyncRequest): Promise<ValueMappingSyncResponse> {
+        this.assertIdle();
+        const sync = await this.syncFromMappingFile(req.folder, req.parentIndex);
+        return { detail: await this.object(req.folder, req.parentIndex), sync };
     }
 
     // Live-Läufe laufen nur, wenn das Ziel eine Sandbox ist und die Orgs den gepinnten IDs entsprechen.
@@ -373,25 +475,45 @@ export class Studio {
         return this.queryModel(req.folder);
     }
 
-    async changeQueryFields(req: SetFieldsRequest): Promise<QueryModel> {
+    async changeQueryFields(req: SetFieldsRequest): Promise<SetFieldsResponse> {
         this.assertIdle();
         const model = await this.queryModel(req.folder);
         const parent = req.parentIndex === undefined ? null : model.parents[req.parentIndex];
         if (req.parentIndex !== undefined && !parent)
             throw badRequest('Unbekannter Parent-Eintrag.');
         const object = parent ? parent.object : model.object;
+        const carriers = (await this.object(req.folder, req.parentIndex)).fields.filter(
+            (f) => f.staticValue !== undefined && req.remove.includes(f.name)
+        );
+        if (carriers.length) {
+            throw badRequest(
+                `${carriers[0]?.name} trägt den festen Wert für ${carriers[0]?.targetField}. Erst den festen Wert im Mapping entfernen.`
+            );
+        }
         const source = await this.describeCache.describe(this.requireOrgs().source.alias, object);
         await changeFields(this.config.sfdmuDir, req.folder, req, source);
-        return this.queryModel(req.folder);
+        if (!req.add.length) return this.queryModel(req.folder);
+        // Die Feldauswahl ist gespeichert; scheitert das Wertemapping, meldet die Antwort das nur.
+        const valueMappingSync = await this.syncFromMappingFile(
+            req.folder,
+            req.parentIndex,
+            req.add
+        ).catch((e: unknown) => ({
+            file: null,
+            added: [],
+            conflicts: [],
+            error: e instanceof Error ? e.message : String(e)
+        }));
+        return { ...(await this.queryModel(req.folder)), valueMappingSync };
     }
 
     // Describe für ein beliebiges Objekt (zum Beispiel einen Parent), nicht nur das Zielobjekt eines Ordners.
-    async describeObject(object: string): Promise<DescribeResponse> {
+    async describeObject(object: string, refresh = false): Promise<DescribeResponse> {
         if (!/^\w+$/.test(object)) throw badRequest('Ungültiger Objektname.');
         const { source, target } = this.requireOrgs();
         const [src, tgt] = await Promise.all([
-            this.describeCache.describe(source.alias, object),
-            this.describeCache.describe(target.alias, object)
+            this.describeCache.describe(source.alias, object, refresh),
+            this.describeCache.describe(target.alias, object, refresh)
         ]);
         return { source: src, target: tgt };
     }
@@ -408,12 +530,19 @@ export class Studio {
         return runQuickQuery((req.org === 'source' ? orgs.source : orgs.target).alias, req.soql);
     }
 
+    // Basis-URL der Org für Links auf Datensätze; null, wenn sie sich nicht ermitteln lässt.
+    private async instanceUrl(alias: string): Promise<string | null> {
+        const r = await sf(['org', 'display', '-o', alias]);
+        return r.status === 0 ? (r.result?.instanceUrl ?? null) : null;
+    }
+
     // Lesende Prüfung gegen Quelle und Ziel: Treffer, Beispielzeilen, fehlende Parents.
     async checkQuery(folder: string): Promise<QueryCheck> {
         const model = await this.queryModel(folder);
         const { source, target } = this.requireOrgs();
         return checkQuery({
             model,
+            recordBaseUrl: await this.instanceUrl(source.alias),
             sourceAlias: source.alias,
             targetAlias: target.alias,
             sourceDescribe: await this.describeCache.describe(source.alias, model.object)
@@ -671,13 +800,55 @@ export class Studio {
     }
 
     // CSV für Excel (UTF-8 mit BOM) mit allen Fehlern bzw. fehlenden Parents eines Laufs.
-    async exportRun(folder: string, id: string, kind: 'errors' | 'missing-parents') {
-        const { errors, missing } = await this.results.tables(folder, id);
+    // Alle gesendeten Felder einer Fehlerzeile (Position wie in der Fehlerliste des Laufs).
+    async errorRecord(folder: string, id: string, index: number): Promise<ErrorRecordResponse> {
+        const { errorRecords } = await this.results.tables(folder, id);
+        const record = errorRecords[index];
+        if (!record) throw notFound('Fehlerzeile nicht gefunden.');
+        return {
+            fields: Object.fromEntries(Object.entries(record).filter(([k]) => k !== 'Errors'))
+        };
+    }
+
+    async exportRun(
+        folder: string,
+        id: string,
+        kind: 'errors' | 'missing-parents' | 'inserted' | 'updated'
+    ) {
+        const { errors, errorRecords, records, missing } = await this.results.tables(folder, id);
+        if (kind === 'inserted' || kind === 'updated') {
+            // Erfolgreiche Zeilen mit allen Spalten, die SFDMU in die Zieldatei geschrieben hat (ohne "Errors").
+            const wanted = records.filter(
+                (r) => r.row.file === (kind === 'inserted' ? 'insert' : 'update')
+            );
+            const columns = [
+                ...new Set(
+                    wanted.flatMap((r) => Object.keys(r.fields)).filter((k) => k !== 'Errors')
+                )
+            ];
+            const table = [
+                columns.length ? columns : ['Id'],
+                ...wanted.map((r) => columns.map((c) => r.fields[c] ?? ''))
+            ];
+            return { filename: `${folder}_${id}_${kind}.csv`, text: '\uFEFF' + toCsv(table, true) };
+        }
+        // Fehler-Export: die festen Spalten plus alle Felder, die an die Ziel-Org gesendet wurden (für die Fehlersuche).
+        const base = new Set(['Id', 'Old Id', 'Errors']);
+        const fieldNames = [
+            ...new Set(errorRecords.flatMap((r) => Object.keys(r).filter((k) => !base.has(k))))
+        ];
         const rows =
             kind === 'errors'
                 ? [
-                      ['Datei', 'Id', 'Old Id', 'Bezeichnung', 'Fehler'],
-                      ...errors.map((e) => [e.file, e.id, e.oldId, e.label, e.error])
+                      ['Datei', 'Id', 'Old Id', 'Bezeichnung', 'Fehler', ...fieldNames],
+                      ...errors.map((e, i) => [
+                          e.file,
+                          e.id,
+                          e.oldId,
+                          e.label,
+                          e.error,
+                          ...fieldNames.map((f) => errorRecords[i]?.[f] ?? '')
+                      ])
                   ]
                 : [
                       ['Lookup-Feld', 'Parent-Objekt', 'Fehlender Wert', 'Record Id', 'Objekt'],
