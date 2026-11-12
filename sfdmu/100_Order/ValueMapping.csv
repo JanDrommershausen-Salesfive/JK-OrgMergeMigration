@@ -1,0 +1,7 @@
+ObjectName,FieldName,RawValue,Value
+Order,Status,Completed,Draft
+Order,Status,Canceled,Draft
+Order,Status,Pending,Draft
+Order,Status,Scheduled,Draft
+Order,Status,Shipped,Draft
+Order,Status,Installed,Draft

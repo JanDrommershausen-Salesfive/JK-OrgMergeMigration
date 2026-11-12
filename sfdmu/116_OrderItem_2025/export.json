@@ -1,0 +1,52 @@
+{
+  "objects": [
+    {
+      "query": "SELECT Id, Name FROM Product2",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ProductCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, IsActive FROM PricebookEntry",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "PriceBookEntryCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, EffectiveDate FROM Order",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "OrderCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, Product2Id, OrderId, PricebookEntryId, Quantity, UnitPrice, ServiceDate, EndDate, Description, Scheduled_Install_Date__c, Product_Status__c, Description__c, Estimated_Release_Date__c, Invoice_Date__c, Delivery_Contact__c, Forwarding_Agent__c, Total_Cost__c, Item_Category__c, Commission_Group__c, Sales_Admin_Note__c, Profit_Center__c, Reason_for_Order__c, Material_Group__c, SAP_Order_Status__c, SAP_Order__c, Item__c, Product_Name__c, Original_Requested_Ship_Date__c, Scheduled_Ship_Date__c, Invoice__c, Billing_Type__c, Billing_Category__c, Sales_Document_Type__c, Product_Invoiced__c, Warehouse__c FROM OrderItem WHERE Order.EffectiveDate >= 2025-01-01 AND Order.EffectiveDate <= 2025-12-31 ORDER BY OrderId",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "OrderItemCrossOrgTraceID__c"
+        }
+      ]
+    }
+  ]
+}

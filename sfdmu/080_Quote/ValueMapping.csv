@@ -1,0 +1,16 @@
+ObjectName,FieldName,RawValue,Value
+Quote,BillingCountry,usa,United States
+Quote,BillingCountry,USA,United States
+Quote,BillingCountry,UNITED STATES,United States
+Quote,ShippingCountry,USA,United States
+Quote,ShippingCountry,mexico,Mexico
+Quote,BillingState,Fl,FL
+Quote,BillingState,mo,MO
+Quote,BillingState,Co,CO
+Quote,BillingState,Ut,UT
+Quote,BillingState,Ca,CA
+Quote,ShippingState,Tx,TX
+Quote,ShippingState,Ca,CA
+Quote,BillingCountry,CA,Canada
+Quote,BillingCountry,US,United States
+Quote,ShippingCountry,US,United States

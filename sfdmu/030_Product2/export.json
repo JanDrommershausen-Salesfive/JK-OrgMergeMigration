@@ -1,9 +1,13 @@
 {
   "objects": [
     {
-      "query": "SELECT Id, Description, DisplayUrl, ExternalId, Family, IsActive, Name, ProductCode, QuantityUnitOfMeasure, StockKeepingUnit FROM Product2",
+      "query": "SELECT Id, Description, DisplayUrl, ExternalId, Family, IsActive, Name, ProductCode, Product_Reference__c, QuantityUnitOfMeasure, StockKeepingUnit FROM Product2",
       "operation": "Upsert",
-      "externalId": "ProductCode"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "ProductCrossOrgTraceID__c" }
+      ]
     }
   ]
 }

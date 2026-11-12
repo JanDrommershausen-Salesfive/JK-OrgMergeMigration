@@ -1,19 +1,53 @@
 {
   "objects": [
     {
-      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Account",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AccountCrossOrgTraceID__c"
+        }
+      ]
     },
     {
       "query": "SELECT Id, Name FROM Pricebook2",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Pricebook2CrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, Name, StageName, CloseDate, Amount, AccountId, CampaignId, ContractId, Description, ExpectedRevenue, IqScore, IsPrivate, LeadSource, NextStep, Pricebook2Id, Probability, SyncedQuoteId, TotalOpportunityQuantity, Type FROM Opportunity WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Quote",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "QuoteCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, Name, StageName, CloseDate, Amount, AccountId, Description, ExpectedRevenue, IsPrivate, JK_Department__c, LeadSource, NextStep, Pricebook2Id, SyncedQuoteId, Probability, TotalOpportunityQuantity, Type FROM Opportunity",
       "operation": "Upsert",
-      "externalId": "Name;AccountId;CloseDate"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "useValuesMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "OpportunityCrossOrgTraceID__c"
+        }
+      ]
     }
   ]
 }

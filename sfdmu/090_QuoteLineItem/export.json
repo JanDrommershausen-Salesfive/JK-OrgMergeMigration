@@ -1,38 +1,50 @@
 {
+  "concurrencyMode": "Serial",
   "objects": [
     {
-      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Product2",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "ProductCrossOrgTraceID__c" }
+      ]
     },
     {
-      "query": "SELECT Id, ProductCode FROM Product2",
+      "query": "SELECT Id, IsActive FROM PricebookEntry",
       "operation": "Readonly",
-      "externalId": "ProductCode"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "PriceBookEntryCrossOrgTraceID__c" }
+      ]
     },
     {
-      "query": "SELECT Id, Name FROM Pricebook2",
+      "query": "SELECT Id, Name FROM Quote",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "QuoteCrossOrgTraceID__c" }
+      ]
     },
     {
-      "query": "SELECT Id, Product2Id, Pricebook2Id FROM PricebookEntry",
+      "query": "SELECT Id, Quantity FROM OpportunityLineItem",
       "operation": "Readonly",
-      "externalId": "Product2Id;Pricebook2Id"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "OpportunityLineItemCrossOrgTraceID__c" }
+      ]
     },
     {
-      "query": "SELECT Id, Name, AccountId, CloseDate FROM Opportunity WHERE CreatedDate = LAST_N_DAYS:7",
-      "operation": "Readonly",
-      "externalId": "Name;AccountId;CloseDate"
-    },
-    {
-      "query": "SELECT Id, Name, OpportunityId FROM Quote WHERE CreatedDate = LAST_N_DAYS:7",
-      "operation": "Readonly",
-      "externalId": "Name;OpportunityId"
-    },
-    {
-      "query": "SELECT Id, Description, Discount, ListPrice, Product2Id, PricebookEntryId, ProductCode, Quantity, QuoteId, ServiceDate, SortOrder, Subtotal, UnitPrice FROM QuoteLineItem WHERE CreatedDate = LAST_N_DAYS:7",
-      "operation": "Insert"
+      "query": "SELECT Id, Description, Discount, OpportunityLineItemId, PricebookEntryId, Product2Id, Quantity, QuoteId, ServiceDate, SortOrder, UnitPrice FROM QuoteLineItem",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "QuoteLineItemCrossOrgTraceID__c" }
+      ]
     }
   ]
 }

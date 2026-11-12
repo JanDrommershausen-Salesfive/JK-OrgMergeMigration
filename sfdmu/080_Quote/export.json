@@ -1,24 +1,54 @@
 {
+  "concurrencyMode": "Serial",
   "objects": [
     {
-      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Opportunity",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "OpportunityCrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, Email FROM Contact WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Pricebook2",
       "operation": "Readonly",
-      "externalId": "Email"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Pricebook2CrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, Name, AccountId, CloseDate FROM Opportunity WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, LastName FROM Contact",
       "operation": "Readonly",
-      "externalId": "Name;AccountId;CloseDate"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ContactCrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, AccountId, AdditionalAddress, AdditionalName, BillingAddress, BillingName, ContactId, ContractId, Description, Discount, Email, ExpirationDate, Fax, GrandTotal, IsSyncing, LineItemCount, Name, OpportunityId, Phone, QuoteToAddress, QuoteToName, ShippingAddress, ShippingHandling, ShippingName, Status, Subtotal, Tax, TotalPrice FROM Quote WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name, OpportunityId, Pricebook2Id, ContactId, Description, Status, ExpirationDate, Email, Phone, Fax, ShippingHandling, Tax, BillingName, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry, ShippingName, ShippingStreet, ShippingCity, ShippingState, ShippingPostalCode, ShippingCountry FROM Quote",
       "operation": "Upsert",
-      "externalId": "Name;OpportunityId"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "useValuesMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "QuoteCrossOrgTraceID__c"
+        }
+      ]
     }
   ]
 }

@@ -1,19 +1,32 @@
 {
+  "concurrencyMode": "Serial",
   "objects": [
     {
-      "query": "SELECT Id, ProductCode FROM Product2",
+      "query": "SELECT Id, Name FROM Product2",
       "operation": "Readonly",
-      "externalId": "ProductCode"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "ProductCrossOrgTraceID__c" }
+      ]
     },
     {
       "query": "SELECT Id, Name FROM Pricebook2",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "Pricebook2CrossOrgTraceID__c" }
+      ]
     },
     {
-      "query": "SELECT Id, IsActive, Pricebook2Id, Product2Id, ProductCode, StandardPrice, UnitPrice, UseStandardPrice FROM PricebookEntry",
+      "query": "SELECT Id, IsActive, Pricebook2Id, Product2Id, UnitPrice, UseStandardPrice FROM PricebookEntry",
       "operation": "Upsert",
-      "externalId": "Product2Id;Pricebook2Id"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        { "sourceField": "Id", "targetField": "PriceBookEntryCrossOrgTraceID__c" }
+      ]
     }
   ]
 }
