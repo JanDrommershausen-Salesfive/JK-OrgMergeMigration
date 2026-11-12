@@ -162,6 +162,12 @@ if [[ -n "$EXPORT_FILE" ]]; then
   echo ""
 fi
 
+# Große Objekte (z. B. OrderItem mit über 500.000 Datensätzen) brauchen mehr Speicher als der Node-Standard.
+# Eine bereits gesetzte Einstellung (max-old-space-size) bleibt unverändert.
+if [[ "${NODE_OPTIONS:-}" != *max-old-space-size* ]]; then
+  export NODE_OPTIONS="${NODE_OPTIONS:-} --max-old-space-size=12288"
+fi
+
 set +e
 sf sfdmu run \
   --sourceusername "$SOURCE_ALIAS" \

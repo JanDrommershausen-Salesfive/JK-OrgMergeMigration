@@ -24,12 +24,13 @@ export async function setFieldMapping(
     const field = detail.fields.find((f) => f.name === sourceField);
     if (!field) throw badRequest(`Feld ${sourceField} steht nicht in der Query.`);
     if (!FIELD_NAME.test(targetField)) throw badRequest('Ungültiger Zielfeld-Name.');
-    if (field.externalId) {
+    // Id darf umgemappt werden, auch wenn sie als External ID dient: so landet die Quell-Id in einem
+    // Trace-Feld des Ziels (z. B. AccountCrossOrgTraceID__c). Andere External-ID-Felder bleiben gesperrt.
+    if (field.externalId && sourceField !== 'Id') {
         throw badRequest(
             'External-ID-Felder können hier nicht umgemappt werden (die Readonly-Parents in anderen Ordnern würden abweichen).'
         );
     }
-    if (sourceField === 'Id') throw badRequest('Id kann nicht umgemappt werden.');
     if (field.staticValue !== undefined) {
         throw badRequest(
             `${sourceField} trägt einen festen Wert und lässt sich hier nicht umhängen.`

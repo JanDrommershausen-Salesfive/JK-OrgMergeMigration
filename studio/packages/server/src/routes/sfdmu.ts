@@ -11,6 +11,7 @@ import {
     CreateCohortRequestSchema,
     ExcludeRequestSchema,
     LoginRequestSchema,
+    ReloginRequestSchema,
     MappingRequestSchema,
     ParentModeRequestSchema,
     SaveFiltersRequestSchema,
@@ -70,6 +71,7 @@ export const sfdmuRoutes: FastifyPluginAsync<{ studio: Studio }> = async (app, {
     app.get('/orgs', () => studio.orgs());
     app.get('/orgs/available', () => studio.availableOrgs());
     app.post('/orgs/login', (req) => studio.login(LoginRequestSchema.parse(req.body)));
+    app.post('/orgs/relogin', (req) => studio.relogin(ReloginRequestSchema.parse(req.body)));
     app.post('/orgs/select', (req) => studio.selectOrgs(SelectOrgsRequestSchema.parse(req.body)));
 
     app.post('/mapping', (req) => studio.setMapping(MappingRequestSchema.parse(req.body)));

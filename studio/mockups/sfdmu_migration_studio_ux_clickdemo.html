@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Migration Studio – UX Clickdemo</title>
+<style>
+  :root{
+    --navy:#090968;
+    --navy2:#1e1e76;
+    --blue:#1239e6;
+    --cyan:#00c8df;
+    --bg:#f5f6f8;
+    --panel:#ffffff;
+    --line:#dcdfe6;
+    --text:#262a31;
+    --muted:#777d87;
+    --green:#16a66a;
+    --greenbg:#e9f7f0;
+    --chip:#f0f1f3;
+    --shadow:0 1px 2px rgba(15,23,42,.04);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:var(--bg)}
+  button,input{font:inherit}
+  .top{background:var(--navy);color:#fff;padding:18px 24px 24px}
+  .eyebrow{color:#00d8e8;font-size:12px;font-weight:800;margin-bottom:3px}
+  .brand{font-size:28px;letter-spacing:-.7px;margin-bottom:18px}
+  .orgs{display:grid;grid-template-columns:1fr 40px 1fr;gap:10px;align-items:center}
+  .org{border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.09);border-radius:12px;padding:14px 18px;min-height:106px}
+  .orgline{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#35e982;display:inline-block;margin-right:8px}
+  .label{color:#00d8e8;font-weight:800}
+  .orgname{font-size:24px;margin-top:8px}.sub{font-size:13px;color:#d4d5f0}
+  .arrow{text-align:center;color:#00d8e8;font-size:28px}
+  .tabs{height:46px;background:#fff;border-bottom:1px solid var(--line);display:flex;gap:18px;padding-left:24px;align-items:end}
+  .tabs button{border:0;background:none;padding:0 16px 13px;color:#8a8a8a;font-weight:700;cursor:pointer}
+  .tabs .active{color:#0933df;border-bottom:2px solid #0933df}
+  .shell{display:grid;grid-template-columns:240px 1fr;gap:24px;padding:24px}
+  .sidebar,.workspace{background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}
+  .sidebar{padding:16px 8px;min-height:650px}
+  .side-title{font-size:12px;font-weight:800;color:#0a32d4;padding:0 8px 12px}
+  .obj{border-radius:9px;padding:9px 12px;cursor:pointer;margin-bottom:3px}
+  .obj.active{background:#0f0d78;color:#fff}
+  .obj .row{display:flex;gap:9px;align-items:center}.num{width:24px;color:#777}.active .num{color:#00d8e8}
+  .status{font-size:11px;margin-left:33px;color:#148f5f;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .active .status{color:#fff}
+  .workspace{overflow:hidden;min-height:650px}
+  .object-head{padding:18px 24px 14px;border-bottom:1px solid var(--line)}
+  .head-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+  .kicker{font-size:12px;font-weight:800;color:#0a32d4}
+  h1{font-size:28px;margin:2px 0 8px;letter-spacing:-.5px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}.chip{background:var(--chip);padding:3px 10px;border-radius:999px;font-size:12px}.chip.primary{background:#11c7d2;color:#001c23;font-weight:800}
+  .head-actions{display:flex;align-items:center;gap:10px}
+  .ghost{border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer}
+  .primary{border:0;background:var(--blue);color:#fff;border-radius:999px;padding:11px 18px;font-weight:800;cursor:pointer}
+  .flow{display:flex;align-items:center;gap:0;padding:14px 24px 0}
+  .step{display:flex;align-items:center;gap:8px;color:#8c9199;font-weight:700;padding:10px 0;cursor:pointer}
+  .step.active{color:#1239e6}.step.done{color:#30343a}
+  .step .circle{width:24px;height:24px;border-radius:50%;border:1px solid #cfd3da;display:grid;place-items:center;font-size:12px;background:#fff}
+  .step.done .circle{background:var(--greenbg);border-color:#bfe8d2;color:var(--green)}
+  .step.active .circle{background:#1239e6;border-color:#1239e6;color:#fff}
+  .connector{height:1px;background:#d8dbe1;flex:1;margin:0 10px}
+  .content{padding:18px 24px 90px}
+  .overview-grid{display:grid;grid-template-columns:1.45fr .75fr;gap:18px}
+  .card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:18px}
+  .card h3{margin:0 0 5px;font-size:16px}
+  .muted{color:var(--muted)}
+  .checklist{margin-top:14px}
+  .check{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border-top:1px solid #eceef2;padding:13px 0}
+  .check:first-child{border-top:0}
+  .ico{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--greenbg);color:var(--green);font-weight:900}
+  .check .title{font-weight:800}.small{font-size:12px}
+  .linkbtn{border:0;background:none;color:#1239e6;font-weight:800;cursor:pointer}
+  .version-box{background:#fafbfc}
+  .version-current{display:flex;justify-content:space-between;gap:10px;padding:12px;border:1px solid var(--line);border-radius:9px;background:#fff;margin-top:12px}
+  .badge{font-size:11px;background:var(--greenbg);color:#168457;padding:2px 7px;border-radius:999px;font-weight:800}
+  .version-list{margin-top:12px}
+  .ver{padding:10px 0;border-top:1px solid #eceef2}
+  .ver:first-child{border-top:0}
+  .footerbar{position:absolute;left:0;right:0;bottom:0;border-top:1px solid var(--line);background:rgba(255,255,255,.96);padding:12px 24px;display:flex;justify-content:space-between;align-items:center}
+  .workspace{position:relative}
+  .runmeta{font-size:12px;color:var(--muted)}
+  .page{display:none}.page.active{display:block}
+  .field{margin-top:14px}.field label{display:block;font-weight:800;margin-bottom:6px}.field textarea,.field input{width:100%;border:1px solid #cfd3dc;border-radius:9px;padding:11px;background:#fff}
+  textarea{min-height:120px;resize:vertical}
+  .mapping-row{display:grid;grid-template-columns:1fr 46px 1fr;gap:10px;align-items:center;padding:10px 0;border-top:1px solid #eceef2}.mapping-row:first-child{border-top:0}
+  .pill-select{border:1px solid #d6dae2;border-radius:8px;padding:9px;background:#fff}
+  .drawer{position:fixed;top:0;right:-430px;width:410px;height:100vh;background:#fff;box-shadow:-16px 0 50px rgba(0,0,0,.15);z-index:10;transition:.22s ease;padding:24px;overflow:auto}
+  .drawer.open{right:0}.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.18);display:none;z-index:9}.backdrop.show{display:block}
+  .drawerhead{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#f1f2f5;border-radius:50%;width:34px;height:34px;cursor:pointer}
+  .run-panel{position:fixed;inset:0;display:none;place-items:center;background:rgba(6,8,37,.35);z-index:20}.run-panel.show{display:grid}
+  .modal{width:min(560px,92vw);background:#fff;border-radius:16px;padding:24px;box-shadow:0 25px 70px rgba(0,0,0,.25)}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+  @media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{display:none}.orgs{grid-template-columns:1fr}.arrow{display:none}.overview-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <section class="top">
+    <div class="eyebrow">Datenmigration</div>
+    <div class="brand">Migration Studio</div>
+    <div class="orgs">
+      <div class="org">
+        <div class="orgline"><span><span class="dot"></span><span class="label">QUELLE</span></span><span>verbunden</span></div>
+        <div class="orgname">us-prod <span class="sub">Production</span></div>
+        <div class="sub">JK America · USA692 · …DMAS<br>jkgroupus@salesfive.com.us</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="org">
+        <div class="orgline"><span><span class="dot"></span><span class="label">ZIEL</span></span><span>verbunden</span></div>
+        <div class="orgname">CDEV5 <span class="sub">Sandbox</span></div>
+        <div class="sub">JK-Holding GmbH · DEU10S · …XUAP<br>jan.drommershausen@salesfive.com.cdev5</div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button>Übersicht</button><button class="active">Konfiguration</button><button>Kohorten</button><button>Läufe</button><button>Tools</button>
+  </nav>
+
+  <main class="shell">
+    <aside class="sidebar">
+      <div class="side-title">OBJEKTE</div>
+      <div class="obj active"><div class="row"><span class="num">010</span><span>Account</span></div><div class="status">✓ bereit · 26 Felder · 3 Wertemappings</div></div>
+      <div class="obj"><div class="row"><span class="num">020</span><span>Contact</span></div><div class="status">✓ bereit · 3 ohne Parent</div></div>
+      <div class="obj"><div class="row"><span class="num">030</span><span>Product2</span></div><div class="status">✓ bereit</div></div>
+      <div class="obj"><div class="row"><span class="num">040</span><span>Pricebook2</span></div></div>
+      <div class="obj"><div class="row"><span class="num">050</span><span>PricebookEntry</span></div></div>
+      <div class="obj"><div class="row"><span class="num">060</span><span>Opportunity</span></div></div>
+      <div class="obj"><div class="row"><span class="num">070</span><span>OpportunityLineItem</span></div></div>
+      <div class="obj"><div class="row"><span class="num">080</span><span>Quote</span></div></div>
+      <div class="obj"><div class="row"><span class="num">090</span><span>QuoteLineItem</span></div></div>
+      <div class="obj"><div class="row"><span class="num">100</span><span>Order</span></div></div>
+      <div class="obj"><div class="row"><span class="num">110</span><span>OrderItem</span></div></div>
+    </aside>
+
+    <section class="workspace">
+      <header class="object-head">
+        <div class="head-top">
+          <div>
+            <div class="kicker">010 · Objekt</div>
+            <h1>Account</h1>
+            <div class="chips">
+              <span class="chip primary">Upsert</span>
+              <span class="chip">External ID: Name</span>
+              <span class="chip">Readonly-Parents: keine</span>
+              <span class="chip">CreatedDate = LAST_N_DAYS:7</span>
+            </div>
+          </div>
+          <div class="head-actions">
+            <button class="ghost" id="versionBtn">Version: First Test ▾</button>
+          </div>
+        </div>
+
+        <div class="flow">
+          <div class="step done" data-page="overview"><span class="circle">✓</span><span>Übersicht</span></div>
+          <div class="connector"></div>
+          <div class="step active" data-page="query"><span class="circle">1</span><span>Query</span></div>
+          <div class="connector"></div>
+          <div class="step" data-page="mapping"><span class="circle">2</span><span>Mapping</span></div>
+          <div class="connector"></div>
+          <div class="step" data-page="values"><span class="circle">3</span><span>Wertemapping</span></div>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="page" id="overview">
+          <div class="overview-grid">
+            <div class="card">
+              <h3>Konfiguration auf einen Blick</h3>
+              <div class="muted">Nicht vier technische Tabs, sondern ein klarer Setup-Flow mit Status.</div>
+              <div class="checklist">
+                <div class="check"><div class="ico">✓</div><div><div class="title">Query</div><div class="muted small">26 Felder · 1 Filter</div></div><button class="linkbtn" data-go="query">Bearbeiten</button></div>
+                <div class="check"><div class="ico">✓</div><div><div class="title">Mapping</div><div class="muted small">24 automatisch · 2 manuell</div></div><button class="linkbtn" data-go="mapping">Bearbeiten</button></div>
+                <div class="check"><div class="ico">✓</div><div><div class="title">Wertemapping</div><div class="muted small">3 Regeln aktiv</div></div><button class="linkbtn" data-go="values">Bearbeiten</button></div>
+              </div>
+            </div>
+            <div class="card version-box">
+              <h3>Aktiver Stand</h3>
+              <div class="muted">Versionen sind Meta-Funktion – deshalb nicht Teil des Setup-Flows.</div>
+              <div class="version-current"><div><strong>First Test</strong><div class="muted small">05.10.2026 · 12:08</div></div><span class="badge">aktuell</span></div>
+              <div class="version-list">
+                <div class="ver"><strong>Basis Konfig</strong><div class="muted small">Vorheriger Stand</div></div>
+              </div>
+              <button class="ghost" style="width:100%;margin-top:8px" id="openVersions2">Versionen verwalten</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="page active" id="query">
+          <div class="card">
+            <h3>1. Datenauswahl</h3>
+            <div class="muted">Definiere, welche Datensätze und Felder dieses Objekt migriert.</div>
+            <div class="field"><label>WHERE-Bedingung</label><input value="CreatedDate = LAST_N_DAYS:7"></div>
+            <div class="field"><label>Felder</label><textarea>Name, BillingStreet, BillingCity, BillingPostalCode, BillingCountry, OwnerId, RecordTypeId, CreatedDate, LastModifiedDate, ...</textarea></div>
+            <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="primary" data-go="mapping">Weiter zum Mapping →</button></div>
+          </div>
+        </div>
+
+        <div class="page" id="mapping">
+          <div class="card">
+            <h3>2. Feldmapping</h3>
+            <div class="muted">Automatische Treffer zuerst, Abweichungen gezielt korrigieren.</div>
+            <div style="margin-top:14px">
+              <div class="mapping-row"><div class="pill-select">Name</div><div style="text-align:center">→</div><div class="pill-select">Name</div></div>
+              <div class="mapping-row"><div class="pill-select">BillingStreet</div><div style="text-align:center">→</div><div class="pill-select">BillingStreet</div></div>
+              <div class="mapping-row"><div class="pill-select">Custom_Status__c</div><div style="text-align:center">→</div><div class="pill-select">Migration_Status__c</div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:14px"><button class="ghost" data-go="query">← Zurück</button><button class="primary" data-go="values">Weiter zum Wertemapping →</button></div>
+          </div>
+        </div>
+
+        <div class="page" id="values">
+          <div class="card">
+            <h3>3. Wertemapping</h3>
+            <div class="muted">Nur Felder anzeigen, bei denen Werte zwischen Quelle und Ziel übersetzt werden müssen.</div>
+            <div style="margin-top:14px">
+              <div class="mapping-row"><div class="pill-select">Status: Active</div><div style="text-align:center">→</div><div class="pill-select">Aktiv</div></div>
+              <div class="mapping-row"><div class="pill-select">Status: Inactive</div><div style="text-align:center">→</div><div class="pill-select">Inaktiv</div></div>
+              <div class="mapping-row"><div class="pill-select">Country: Germany</div><div style="text-align:center">→</div><div class="pill-select">DE</div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:14px"><button class="ghost" data-go="mapping">← Zurück</button><button class="primary" data-go="overview">Setup abschließen ✓</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footerbar">
+        <div class="runmeta">Letzter Lauf: ✓ Live · 05.10., 10:25 · 6 Fehler · 1 ohne Parent · <strong style="color:#1239e6">Ergebnis</strong></div>
+        <button class="primary" id="runBtn">Account-Lauf starten</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="backdrop" id="backdrop"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawerhead"><div><div class="kicker">VERSIONEN</div><h2 style="margin:3px 0">Stände verwalten</h2></div><button class="close" id="closeDrawer">×</button></div>
+    <p class="muted">Versionen liegen außerhalb des fachlichen Setup-Flows. Hier kannst du benannte Stände speichern, laden und vergleichen.</p>
+    <div class="field"><label>Neuen Stand speichern</label><input placeholder="z. B. Länder gemappt, läuft"></div>
+    <div class="field"><input placeholder="Notiz (optional)"></div>
+    <button class="primary" style="width:100%;margin-top:10px">Aktuellen Stand speichern</button>
+    <hr style="border:0;border-top:1px solid #e3e5ea;margin:22px 0">
+    <div class="version-current"><div><strong>First Test</strong><div class="muted small">05.10.2026 · 12:08</div></div><span class="badge">aktuell</span></div>
+    <div class="version-current"><div><strong>Basis Konfig</strong><div class="muted small">02.10.2026 · 17:31</div></div><button class="ghost">Laden</button></div>
+  </aside>
+
+  <div class="run-panel" id="runPanel">
+    <div class="modal">
+      <div class="kicker">LAUF STARTEN</div>
+      <h2 style="margin:4px 0 8px">Account jetzt migrieren?</h2>
+      <p class="muted">Der Lauf verwendet den aktuell sichtbaren Konfigurationsstand <strong>First Test</strong>.</p>
+      <div class="card" style="background:#fafbfc">
+        <strong>Account · Upsert</strong>
+        <div class="muted small" style="margin-top:4px">26 Felder · Name als External ID · Filter: LAST_N_DAYS:7</div>
+      </div>
+      <div class="modal-actions"><button class="ghost" id="cancelRun">Abbrechen</button><button class="primary">Lauf starten</button></div>
+    </div>
+  </div>
+
+<script>
+  const pages=[...document.querySelectorAll('.page')], steps=[...document.querySelectorAll('.step')];
+  function go(name){
+    pages.forEach(p=>p.classList.toggle('active',p.id===name));
+    const order=['overview','query','mapping','values'];
+    const idx=order.indexOf(name);
+    steps.forEach((s,i)=>{
+      s.classList.remove('active','done');
+      if(i<idx) s.classList.add('done');
+      if(i===idx) s.classList.add('active');
+    });
+  }
+  document.querySelectorAll('[data-page]').forEach(x=>x.onclick=()=>go(x.dataset.page));
+  document.querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>go(x.dataset.go));
+  const drawer=document.getElementById('drawer'),backdrop=document.getElementById('backdrop');
+  function openD(){drawer.classList.add('open');backdrop.classList.add('show')}
+  function closeD(){drawer.classList.remove('open');backdrop.classList.remove('show')}
+  document.getElementById('versionBtn').onclick=openD;
+  document.getElementById('openVersions2').onclick=openD;
+  document.getElementById('closeDrawer').onclick=closeD;backdrop.onclick=closeD;
+  const rp=document.getElementById('runPanel');
+  document.getElementById('runBtn').onclick=()=>rp.classList.add('show');
+  document.getElementById('cancelRun').onclick=()=>rp.classList.remove('show');
+</script>
+</body>
+</html>

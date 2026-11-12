@@ -1,28 +1,65 @@
 {
   "objects": [
     {
-      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Account",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AccountCrossOrgTraceID__c"
+        }
+      ]
     },
     {
       "query": "SELECT Id, Name FROM Pricebook2",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Pricebook2CrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, Name, AccountId, CloseDate FROM Opportunity WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Opportunity",
       "operation": "Readonly",
-      "externalId": "Name;AccountId;CloseDate"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "OpportunityCrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, Name, OpportunityId FROM Quote WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, LastName FROM Contact",
       "operation": "Readonly",
-      "externalId": "Name;OpportunityId"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ContactCrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, AccountId, AccountNumber, ActivatedDate, BillingAddress, BillToContactId, CompanyAuthorizedDate, ContractEndDate, ContractId, ContractName, CustomerAuthorizedDate, Description, EffectiveDate, EndDate, IsReductionOrder, OpportunityId, OrderReferenceNumber, OriginalOrderId, PoDate, PoNumber, Pricebook2Id, QuoteId, ShippingAddress, ShipToContactId, Status, TotalAmount, Type FROM Order WHERE CreatedDate = LAST_N_DAYS:7",
-      "operation": "Insert"
+      "query": "SELECT Id, Description, EffectiveDate, EndDate, OpportunityId, AccountId, Pricebook2Id, PoDate, PoNumber, Status, Type, BillToContactId, ShipToContactId, OrderReferenceNumber, SAP_Order__c, Invoice__c, Distributor_Rep__c, SAP_Created_Date__c, SAP_Created_by__c, Total_Cost__c, Order_Shipping_Street__c, Customer_Status__c, Sales_Admin_Note__c, Survey_Rating__c, Survey_Details__c, Order_Shipping_City__c, Ship_to_Account__c, Order_Billing_Street__c, Shipping_Address_SAP__c, Order_Billing_City__c, Order_Billing_State__c, Order_Shipping_State__c, Order_Billing_ZIP__c, Order_Shipping_ZIP__c, Order_Billing_Country__c, Order_Shipping_Country__c, Order_Terms__c, Division__c, Order_PO__c, Scheduled_Ship_Date__c, Scheduled_Install_Date__c, Targeted_Install_Date__c, Invoice_Date__c, Billing_Type__c, Sales_Document_Type__c, Specials__c, Funding__c, Forecast_Rating__c, Planet_Fitness_Group__c, Forwarding_Agent__c, Delivery_Contact__c, Sales_Manager_Note__c, Sales_Order_Amount__c, Effective_Total_Cost__c, Order_Level_Discount__c, Total_of_Discountable_Item__c, Installer__c, Order_reason__c, Order_reason_details__c, Order_Tax_To_City__c, Order_Tax_To_Country__c, Order_Tax_To_State__c, Order_Tax_To_Street__c, Order_Tax_To_ZIP__c, Tax_to_Account__c FROM Order ORDER BY AccountId",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "useValuesMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "OrderCrossOrgTraceID__c"
+        }
+      ]
     }
   ]
 }

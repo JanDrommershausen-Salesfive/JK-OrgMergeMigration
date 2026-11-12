@@ -1,0 +1,8 @@
+ObjectName,FieldName,RawValue,Value
+Opportunity,StageName,Quoted,Offer
+Opportunity,StageName,Analysis,Needs Analysis
+Opportunity,StageName,Converted,Prospecting
+Opportunity,StageName,Negotiation,Negotiate
+Opportunity,StageName,New,Prospecting
+Opportunity,StageName,Closed,Closed Won
+Opportunity,Type,Repeat Business,Existing Business

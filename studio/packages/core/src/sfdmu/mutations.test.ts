@@ -40,6 +40,13 @@ const targetDescribe: DescribeResult = {
             label: 'L',
             createable: false,
             updateable: false
+        },
+        ContactCrossOrgTraceID__c: {
+            type: 'string(18)',
+            baseType: 'string',
+            label: 'Contact Cross-Org Trace ID',
+            createable: true,
+            updateable: true
         }
     }
 };
@@ -78,6 +85,49 @@ describe('setFieldMapping', () => {
             dir,
             await detail(),
             { sourceField: 'Phone', targetField: 'Phone' },
+            targetDescribe
+        );
+        const obj = (await readExport()).objects[1];
+        expect(obj.fieldMapping).toBeUndefined();
+        expect(obj.useFieldMapping).toBeUndefined();
+    });
+
+    it('mappt die Id auf ein Trace-Feld, auch wenn Id die External ID ist', async () => {
+        const cfg = JSON.parse(JSON.stringify(exportJson));
+        cfg.objects[1].externalId = 'Id';
+        await writeFile(file('020_Contact', 'export.json'), JSON.stringify(cfg));
+        await setFieldMapping(
+            dir,
+            await detail(),
+            { sourceField: 'Id', targetField: 'ContactCrossOrgTraceID__c' },
+            targetDescribe
+        );
+        const obj = (await readExport()).objects[1];
+        expect(obj.externalId).toBe('Id');
+        expect(obj.fieldMapping).toEqual([
+            { sourceField: 'Id', targetField: 'ContactCrossOrgTraceID__c' }
+        ]);
+        expect(obj.useFieldMapping).toBe(true);
+        const id = (await detail()).fields.find((f) => f.name === 'Id');
+        expect(id?.renamed).toBe(true);
+        expect(id?.targetField).toBe('ContactCrossOrgTraceID__c');
+    });
+
+    it('nimmt das Id-Mapping zurück und prüft das Zielfeld', async () => {
+        const d = await detail();
+        await setFieldMapping(
+            dir,
+            d,
+            { sourceField: 'Id', targetField: 'ContactCrossOrgTraceID__c' },
+            targetDescribe
+        );
+        await expect(
+            setFieldMapping(dir, d, { sourceField: 'Id', targetField: 'Locked__c' }, targetDescribe)
+        ).rejects.toThrow(/nicht schreibbar/);
+        await setFieldMapping(
+            dir,
+            await detail(),
+            { sourceField: 'Id', targetField: 'Id' },
             targetDescribe
         );
         const obj = (await readExport()).objects[1];

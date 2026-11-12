@@ -79,6 +79,10 @@ export const LoginRequestSchema = z.object({
 });
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 
+// Abgelaufene Anmeldung der Quelle oder des Ziels erneuern (gleicher Alias, gleiche Org).
+export const ReloginRequestSchema = z.object({ role: z.enum(['source', 'target']) });
+export type ReloginRequest = z.infer<typeof ReloginRequestSchema>;
+
 // Quelle und Ziel für das Projekt festlegen (pinnt die Org-IDs).
 export const SelectOrgsRequestSchema = z.object({
     sourceAlias: OrgAliasSchema,
