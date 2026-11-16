@@ -2,12 +2,27 @@
   "concurrencyMode": "Serial",
   "objects": [
     {
+      "query": "SELECT Id FROM User",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Legacy_User_id__c"
+        }
+      ]
+    },
+    {
       "query": "SELECT Id, Name FROM Product2",
       "operation": "Readonly",
       "externalId": "Id",
       "useFieldMapping": true,
       "fieldMapping": [
-        { "sourceField": "Id", "targetField": "ProductCrossOrgTraceID__c" }
+        {
+          "sourceField": "Id",
+          "targetField": "ProductCrossOrgTraceID__c"
+        }
       ]
     },
     {
@@ -16,7 +31,10 @@
       "externalId": "Id",
       "useFieldMapping": true,
       "fieldMapping": [
-        { "sourceField": "Id", "targetField": "PriceBookEntryCrossOrgTraceID__c" }
+        {
+          "sourceField": "Id",
+          "targetField": "PriceBookEntryCrossOrgTraceID__c"
+        }
       ]
     },
     {
@@ -25,7 +43,10 @@
       "externalId": "Id",
       "useFieldMapping": true,
       "fieldMapping": [
-        { "sourceField": "Id", "targetField": "QuoteCrossOrgTraceID__c" }
+        {
+          "sourceField": "Id",
+          "targetField": "QuoteCrossOrgTraceID__c"
+        }
       ]
     },
     {
@@ -34,16 +55,22 @@
       "externalId": "Id",
       "useFieldMapping": true,
       "fieldMapping": [
-        { "sourceField": "Id", "targetField": "OpportunityLineItemCrossOrgTraceID__c" }
+        {
+          "sourceField": "Id",
+          "targetField": "OpportunityLineItemCrossOrgTraceID__c"
+        }
       ]
     },
     {
-      "query": "SELECT Id, Description, Discount, OpportunityLineItemId, PricebookEntryId, Product2Id, Quantity, QuoteId, ServiceDate, SortOrder, UnitPrice FROM QuoteLineItem",
+      "query": "SELECT Id, Description, Discount, OpportunityLineItemId, PricebookEntryId, Product2Id, Quantity, QuoteId, ServiceDate, SortOrder, UnitPrice, CreatedDate, CreatedById FROM QuoteLineItem",
       "operation": "Upsert",
       "externalId": "Id",
       "useFieldMapping": true,
       "fieldMapping": [
-        { "sourceField": "Id", "targetField": "QuoteLineItemCrossOrgTraceID__c" }
+        {
+          "sourceField": "Id",
+          "targetField": "QuoteLineItemCrossOrgTraceID__c"
+        }
       ]
     }
   ]

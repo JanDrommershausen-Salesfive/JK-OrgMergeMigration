@@ -1,8 +1,50 @@
 {
+  "dataRetrievedAddons": [
+    {
+      "module": "core:RecordsTransform",
+      "args": {
+        "fields": [
+          {
+            "alias": "creator",
+            "sourceObject": "Event",
+            "sourceField": "CreatedById"
+          }
+        ],
+        "transformations": [
+          {
+            "targetObject": "Event",
+            "targetField": "CreatedById",
+            "formula": "[\"005Dn0000047AhIIAU\", \"005Dn0000047AhLIAU\", \"005Dn0000047AhPIAU\", \"005Dn000008FxnwIAC\", \"005VQ00000SBYr5YAH\", \"005Dn000008FyWSIA0\"].includes(formula.creator) ? '005Dn000008FyWSIA0' : formula.creator"
+          }
+        ]
+      }
+    }
+  ],
   "objects": [
     {
-      "query": "SELECT Id, ActivityDate, ActivityDateTime, Attendees, Description, DurationInMinutes, Email, EndDateTime, EventSubtype, IsAllDayEvent, IsPrivate, IsRecurrence2, IsReminderSet, Location, Phone, ShowAs, StartDateTime, Subject, Type, WhatId, WhoId FROM Event WHERE CreatedDate = LAST_N_DAYS:7",
-      "operation": "Insert"
+      "query": "SELECT Id FROM User",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Legacy_User_id__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, Subject, Location, IsAllDayEvent, ActivityDateTime, ActivityDate, DurationInMinutes, StartDateTime, EndDateTime, Description, Type, IsPrivate, ShowAs, CreatedDate, CreatedById, IsRecurrence, RecurrenceStartDateTime, RecurrenceEndDateOnly, RecurrenceTimeZoneSidKey, RecurrenceType, RecurrenceInterval, RecurrenceDayOfWeekMask, RecurrenceDayOfMonth, RecurrenceInstance, RecurrenceMonthOfYear, ReminderDateTime, IsReminderSet, EventSubtype, Recurrence2PatternText, IsRecurrence2Exception FROM Event",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "useValuesMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ActivityCrossOrgTraceID__c"
+        }
+      ]
     }
   ]
 }

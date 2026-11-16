@@ -1,23 +1,65 @@
 {
   "objects": [
     {
-      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id FROM User",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Legacy_User_id__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, Email FROM Contact WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Account",
       "operation": "Readonly",
-      "externalId": "Email"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AccountCrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, ProductCode FROM Product2",
+      "query": "SELECT Id, LastName FROM Contact",
       "operation": "Readonly",
-      "externalId": "ProductCode"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ContactCrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, AccountId, Address, AssetLevel, ConsequenceOfFailure, ContactId, Description, DigitalAssetStatus, ExternalIdentifier, InstallDate, IsCompetitorProduct, IsInternal, LocationId, ManufactureDate, Name, ParentId, Price, Product2Id, ProductCode, ProductDescription, ProductFamily, PurchaseDate, Quantity, RootAssetId, SerialNumber, Status, StatusReason, StockKeepingUnit, UsageEndDate, Uuid FROM Asset WHERE CreatedDate = LAST_N_DAYS:7",
-      "operation": "Insert"
+      "query": "SELECT Id, Name FROM Product2",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ProductCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, Name, AccountId, ContactId, ParentId, Product2Id, Description, DigitalAssetStatus, ExternalIdentifier, InstallDate, IsCompetitorProduct, IsInternal, ManufactureDate, Price, PurchaseDate, Quantity, SerialNumber, Status, StatusReason, UsageEndDate, Street, City, State, PostalCode, Country, AssetProvidedById, AssetServicedById, OwnerId FROM Asset",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "useValuesMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AssetCrossOrgTraceID__c"
+        }
+      ]
     }
   ]
 }

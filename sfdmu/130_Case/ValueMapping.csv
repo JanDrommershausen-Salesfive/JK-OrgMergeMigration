@@ -1,1 +1,6 @@
 ObjectName,FieldName,RawValue,Value
+Case,RecordType.DeveloperName,Zendesk_Ticket_Sync,Support_General
+Case,RecordType.DeveloperName,Accounting,Support_General
+Case,RecordType.DeveloperName,Customer_Support,Support_General
+Case,RecordType.DeveloperName,Service,Support_General
+Case,RecordType.DeveloperName,Sunlync,Support_SunLync

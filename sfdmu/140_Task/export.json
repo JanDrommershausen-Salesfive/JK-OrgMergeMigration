@@ -1,8 +1,50 @@
 {
+  "dataRetrievedAddons": [
+    {
+      "module": "core:RecordsTransform",
+      "args": {
+        "fields": [
+          {
+            "alias": "creator",
+            "sourceObject": "Task",
+            "sourceField": "CreatedById"
+          }
+        ],
+        "transformations": [
+          {
+            "targetObject": "Task",
+            "targetField": "CreatedById",
+            "formula": "[\"005Dn0000047AhIIAU\", \"005Dn0000047AhLIAU\", \"005Dn0000047AhPIAU\", \"005Dn000008FxnwIAC\", \"005VQ00000SBYr5YAH\", \"005Dn000008FyWSIA0\"].includes(formula.creator) ? '005Dn000008FyWSIA0' : formula.creator"
+          }
+        ]
+      }
+    }
+  ],
   "objects": [
     {
-      "query": "SELECT Id, ActivityDate, CallDisposition, CallDurationInSeconds, CallObject, CallType, CompletedDateTime, Description, Email, IsRecurrence, IsReminderSet, Phone, Priority, RecurrenceInterval, RecurrenceRegeneratedType, Status, Subject, TaskSubtype, Type, WhatId, WhoId FROM Task WHERE CreatedDate = LAST_N_DAYS:7",
-      "operation": "Insert"
+      "query": "SELECT Id FROM User",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Legacy_User_id__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, Subject, ActivityDate, Status, Priority, Description, Type, CreatedDate, CreatedById, CallDurationInSeconds, CallType, CallDisposition, CallObject, ReminderDateTime, IsReminderSet, IsRecurrence, RecurrenceStartDateOnly, RecurrenceEndDateOnly, RecurrenceTimeZoneSidKey, RecurrenceType, RecurrenceInterval, RecurrenceDayOfWeekMask, RecurrenceDayOfMonth, RecurrenceInstance, RecurrenceMonthOfYear, RecurrenceRegeneratedType, TaskSubtype FROM Task",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "useValuesMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ActivityCrossOrgTraceID__c"
+        }
+      ]
     }
   ]
 }

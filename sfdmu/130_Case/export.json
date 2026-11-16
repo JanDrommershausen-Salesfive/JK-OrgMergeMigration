@@ -1,18 +1,110 @@
 {
+  "dataRetrievedAddons": [
+    {
+      "module": "core:RecordsTransform",
+      "args": {
+        "fields": [
+          {
+            "alias": "creator",
+            "sourceObject": "Case",
+            "sourceField": "CreatedById"
+          }
+        ],
+        "transformations": [
+          {
+            "targetObject": "Case",
+            "targetField": "CreatedById",
+            "formula": "[\"005Dn0000047AhIIAU\", \"005Dn0000047AhLIAU\", \"005Dn0000047AhPIAU\", \"005Dn000008FxnwIAC\", \"005VQ00000SBYr5YAH\", \"005Dn000008FyWSIA0\"].includes(formula.creator) ? '005Dn000008FyWSIA0' : formula.creator"
+          }
+        ]
+      }
+    }
+  ],
   "objects": [
     {
-      "query": "SELECT Id, Name FROM Account WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id FROM User",
       "operation": "Readonly",
-      "externalId": "Name"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Legacy_User_id__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, Email FROM Contact WHERE CreatedDate = LAST_N_DAYS:7",
+      "query": "SELECT Id, Name FROM Account",
       "operation": "Readonly",
-      "externalId": "Email"
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AccountCrossOrgTraceID__c"
+        }
+      ]
     },
     {
-      "query": "SELECT Id, AccountId, AssetId, BusinessHoursId, ClosedDate, Comments, ContactEmail, ContactFax, ContactId, ContactMobile, ContactPhone, Description, IsClosedOnCreate, IsEscalated, Origin, ParentId, Priority, Reason, SourceId, Status, Subject, SuppliedCompany, SuppliedEmail, SuppliedName, SuppliedPhone, Type FROM Case WHERE CreatedDate = LAST_N_DAYS:7",
-      "operation": "Insert"
+      "query": "SELECT Id, LastName FROM Contact",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "ContactCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, Name FROM Asset",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "AssetCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, Name FROM Opportunity",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "OpportunityCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, OrderNumber FROM Order",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "OrderCrossOrgTraceID__c"
+        }
+      ]
+    },
+    {
+      "query": "SELECT Id, ContactId, AccountId, AssetId, ParentId, SuppliedName, SuppliedEmail, SuppliedPhone, SuppliedCompany, Type, RecordType.DeveloperName, Status, Reason, Origin, Subject, Priority, Description, ClosedDate, IsEscalated, CreatedDate, CreatedById, Comments, SunLync_Software_Version__c, Closed_Status__c, SL_T__c, SunLync_Software_Build__c, SL_Ticket_Status__c, SL_Ticket_Resolution__c, SL__c, Customer_First_Incident_ID__c, SL_Temp_Last_Activity__c, SL_Temp_Open_in_CF__c, Opportunity__c, Interaction_Type__c, Resolution_Status__c, Service_Resolution__c, Parts_Resolution__c, Equpiment_Serial_Number__c, SAP_Ticket_number__c, Order_Number__c, CS_Ticket_Status__c, CS_Queue_Assignment_Test__c, Equipment_is_Operational__c, FDA_Is_the_equipment_operational__c, FDA_act_or_pot_death_fire_or_injury__c, Tech_Appointment_Date_Time__c, Account_Blocked__c, Need_More_Info__c, FDA_Has_been_reviewed__c, FDA_Who_reviewed__c, SunLync_Case_Type__c, Customer_Support_Agent__c, Location_Name__c, Zendesk_Support_Ticket_Assignee_Name__c, Zendesk_Support_Ticket_Brand_Name__c, Zendesk_Support_Ticket_Created_At__c, Zendesk_Support_Ticket_Form_Name__c, Zendesk_Support_Ticket_Group_Name__c, Zendesk_Support_Ticket_ID__c, Zendesk_Support_Ticket_Initial_Assigned__c, Zendesk_Support_Ticket_Organization_Name__c, Zendesk_Support_Ticket_Requester_Email__c, Zendesk_Support_Ticket_Requester_Name__c, Zendesk_Support_Ticket_Resolution_Bus__c, Zendesk_Support_Ticket_Resolution_Cal__c, Zendesk_Support_Ticket_Solved_At__c, Zendesk_Support_Ticket_Tags__c, Zendesk_Support_Ticket_URL__c, Zendesk_Support_Ticket_Updated_At__c, Zendesk_Case_Origin__c, Sunlync_Case_Reason__c, Technician_Assigned__c, Service_Case_Type__c, Service_Case_Reason__c, Service_Case_Escalation__c, Service_Case_Resolution__c, Case_Related_Order__c, Quality_Review__c, Quality_Review_Resolution__c, Quality_Review_Comment__c, Warranty_Status__c, Zendesk_Assignee__c, Complex_Functionality_Instructions__c, Enhancement_Suggestion__c, Enhancement_Suggestion_Status__c, Past_Due_Date__c, Past_Due_Amount__c, Division_Past_Due__c, Accounting_Resolution__c, Notices_Before_Resolution__c, Error_Code__c, MDR_Evaluator__c, MDR_Evaluation__c, Case_Escalation_Date__c, MDR_Decision_Tree_Used__c, MDR_Required__c, MDR_Reference__c, Production_Evaluation_Investigation__c, Device_or_Component_to_be_Returned__c, Did_the_Device_Fail_the_Specification__c, IMDRF_Code__c, Can_the_Production_be_Evaluated__c, Is_there_Sufficient_Evidence_to_Confirm__c, Does_the_Complaint_Need_to_be_Investigat__c, Investigation_Details__c, Root_Cause_Evaluation__c, Risk_Evaluation_Needed__c, Zendesk_Ticket_Tagging__c, Zendesk_Support_Ticket_Status__c, Case_Email__c, JK_Time_Spent_Minutes__c, Unit_Hours__c, Hexaport_Work_Classification__c, Last_Customer_Email__c, Last_JK_Touch__c, Waiting_On__c FROM Case",
+      "operation": "Upsert",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "useValuesMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "CaseCrossOrgTraceID__c"
+        }
+      ]
     }
   ]
 }

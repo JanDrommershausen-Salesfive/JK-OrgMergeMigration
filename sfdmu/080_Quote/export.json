@@ -2,6 +2,18 @@
   "concurrencyMode": "Serial",
   "objects": [
     {
+      "query": "SELECT Id FROM User",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Legacy_User_id__c"
+        }
+      ]
+    },
+    {
       "query": "SELECT Id, Name FROM Opportunity",
       "operation": "Readonly",
       "externalId": "Id",
@@ -38,7 +50,7 @@
       ]
     },
     {
-      "query": "SELECT Id, Name, OpportunityId, Pricebook2Id, ContactId, Description, Status, ExpirationDate, Email, Phone, Fax, ShippingHandling, Tax, BillingName, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry, ShippingName, ShippingStreet, ShippingCity, ShippingState, ShippingPostalCode, ShippingCountry FROM Quote",
+      "query": "SELECT Id, Name, OpportunityId, Pricebook2Id, ContactId, Description, Status, ExpirationDate, Email, Phone, Fax, ShippingHandling, Tax, BillingName, BillingStreet, BillingCity, BillingState, BillingPostalCode, BillingCountry, ShippingName, ShippingStreet, ShippingCity, ShippingState, ShippingPostalCode, ShippingCountry, CreatedDate, CreatedById FROM Quote",
       "operation": "Upsert",
       "externalId": "Id",
       "useFieldMapping": true,

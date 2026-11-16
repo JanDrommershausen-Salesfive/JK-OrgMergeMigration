@@ -1,6 +1,18 @@
 {
   "objects": [
     {
+      "query": "SELECT Id FROM User",
+      "operation": "Readonly",
+      "externalId": "Id",
+      "useFieldMapping": true,
+      "fieldMapping": [
+        {
+          "sourceField": "Id",
+          "targetField": "Legacy_User_id__c"
+        }
+      ]
+    },
+    {
       "query": "SELECT Id, Name FROM Account",
       "operation": "Readonly",
       "externalId": "Id",
@@ -37,7 +49,7 @@
       ]
     },
     {
-      "query": "SELECT Id, Name, StageName, CloseDate, Amount, AccountId, Description, ExpectedRevenue, IsPrivate, JK_Department__c, LeadSource, NextStep, Pricebook2Id, SyncedQuoteId, Probability, TotalOpportunityQuantity, Type FROM Opportunity",
+      "query": "SELECT Id, Name, StageName, CloseDate, Amount, AccountId, Description, ExpectedRevenue, IsPrivate, JK_Department__c, LeadSource, NextStep, Pricebook2Id, SyncedQuoteId, Probability, TotalOpportunityQuantity, Type, CreatedDate, OwnerId, CreatedById FROM Opportunity",
       "operation": "Upsert",
       "externalId": "Id",
       "useFieldMapping": true,
