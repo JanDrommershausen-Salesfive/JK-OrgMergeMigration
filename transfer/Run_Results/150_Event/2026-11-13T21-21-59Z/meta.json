@@ -1,0 +1,102 @@
+{
+  "id": "2026-11-13T21-21-59Z",
+  "folder": "150_Event",
+  "object": "Event",
+  "mode": "live",
+  "startedAt": "2026-11-13T21:21:59.081Z",
+  "endedAt": "2026-11-13T21:22:14.638Z",
+  "durationMs": 15557,
+  "ok": true,
+  "stopped": false,
+  "exitCode": 0,
+  "signal": null,
+  "sourceAlias": "us-prod",
+  "targetAlias": "FullCopy",
+  "counts": {
+    "inserted": 0,
+    "updated": 129,
+    "deleted": 0,
+    "errors": 0,
+    "missingParents": 0,
+    "warnings": 5
+  },
+  "summary": [
+    {
+      "object": "User",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "Event",
+      "processed": 129,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 43,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 43,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 43,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "kind": "other",
+      "message": "{Event.CreatedDate} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "{Event.CreatedById} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "{Event.IsRecurrence} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "{Event.EventSubtype} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "{Event.Recurrence2PatternText} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    }
+  ],
+  "logErrors": [],
+  "cohort": null
+}

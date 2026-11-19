@@ -1,0 +1,29 @@
+{
+  "id": "2026-11-12T21-58-36Z",
+  "folder": "112_OrderItem_2021",
+  "object": "OrderItem",
+  "mode": "live",
+  "startedAt": "2026-11-12T21:58:36.090Z",
+  "endedAt": "2026-11-12T22:03:37.541Z",
+  "durationMs": 301451,
+  "ok": false,
+  "stopped": false,
+  "exitCode": 1,
+  "signal": null,
+  "sourceAlias": "us-prod",
+  "targetAlias": "FullCopy",
+  "counts": {
+    "inserted": 0,
+    "updated": 0,
+    "deleted": 0,
+    "errors": 0,
+    "missingParents": 0,
+    "warnings": 0
+  },
+  "summary": [],
+  "warnings": [],
+  "logErrors": [
+    "Execution of the command has aborted due to unexpected error: Polling time out. Job Id = 7509M00000qmc8JQAQ , batch Id = 7519M00000uGpWpQAK."
+  ],
+  "cohort": null
+}

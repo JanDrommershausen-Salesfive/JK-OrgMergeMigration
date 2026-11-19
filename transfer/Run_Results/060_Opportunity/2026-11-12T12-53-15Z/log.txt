@@ -1,0 +1,443 @@
+$ ./run.sh 060_Opportunity --live
+
+Resolving source org alias 'us-prod'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+Resolving target org alias 'FullCopy'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+
+LIVE RUN — this will write to FullCopy (jk-group--fullcopy.sandbox.my.salesforce.com).
+
+Source: us-prod (00DDn000006CppDMAS)
+Target: FullCopy (00D9M00000VmMXRUA3, jk-group--fullcopy.sandbox.my.salesforce.com)
+Object: 060_Opportunity
+Mode:   live
+
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+[13:53:20.7] ===== MIGRATION JOB STARTED =====
+[13:53:20.10] Execution of the command sfdmu:run has been started.
+[13:53:20.10] Loading and validating the export.json script (/Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/060_Opportunity/export.json)...
+
+
+[13:53:20.502] ===== OBJECT SET #1 STARTED =====
+
+
+[13:53:20.502] SOURCE: us-prod (production).
+[13:53:20.502] TARGET: FullCopy (sandbox).
+
+
+[13:53:20.523] Preparing data migration job ...
+[13:53:20.523] Building the migration strategy ...
+[13:53:20.524] Connecting to the us-prod
+[13:53:20.908] Successfully connected to the us-prod.
+[13:53:20.908] Connecting to the FullCopy
+[13:53:21.33] Successfully connected to the FullCopy.
+[13:53:21.35] Loading Core Add-On Module declarations ...
+[13:53:21.44] {User} Fetching metadata (SOURCE) ...
+[13:53:21.46] {Account} Fetching metadata (SOURCE) ...
+[13:53:21.47] {Pricebook2} Fetching metadata (SOURCE) ...
+[13:53:21.48] {Quote} Fetching metadata (SOURCE) ...
+[13:53:21.49] {Opportunity} Fetching metadata (SOURCE) ...
+[13:53:21.331] {Pricebook2} Fetching metadata (TARGET) ...
+[13:53:21.340] {Quote} Fetching metadata (TARGET) ...
+[13:53:21.369] {Opportunity} Fetching metadata (TARGET) ...
+[13:53:21.434] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[13:53:21.542] {Account} Fetching metadata (TARGET) ...
+[13:53:21.608] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[13:53:21.684] {User} Fetching metadata (TARGET) ...
+[13:53:21.746] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[13:53:21.968] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[13:53:22.415] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[13:53:22.631] Reading the values mapping definition file (ValueMapping.csv) ...
+
+
+[13:53:22.632] ANALYSING DATA...
+[13:53:22.632] {Quote} Processing the object ...
+[13:53:22.633] {Pricebook2} Processing the object ...
+[13:53:22.633] {Account} Processing the object ...
+[13:53:22.633] {User} Processing the object ...
+[13:53:22.634] {Opportunity} Processing the object ...
+[13:53:22.647] {Quote} Using REST API (v68.0) to retrieve the data ...
+[13:53:22.836] {Quote} The original query string of this object is returning 1461 records from the SOURCE org.
+[13:53:22.838] {Quote} Using REST API (v68.0) to retrieve the data ...
+[13:53:22.932] {Quote} The original query string of this object is returning 0 records from the TARGET org.
+[13:53:22.932] {Pricebook2} Using REST API (v68.0) to retrieve the data ...
+[13:53:23.116] {Pricebook2} The original query string of this object is returning 25 records from the SOURCE org.
+[13:53:23.117] {Pricebook2} Using REST API (v68.0) to retrieve the data ...
+[13:53:23.199] {Pricebook2} The original query string of this object is returning 32 records from the TARGET org.
+[13:53:23.200] {Account} Using REST API (v68.0) to retrieve the data ...
+[13:53:23.402] {Account} The original query string of this object is returning 18947 records from the SOURCE org.
+[13:53:23.403] {Account} Using REST API (v68.0) to retrieve the data ...
+[13:53:23.525] {Account} The original query string of this object is returning 95580 records from the TARGET org.
+[13:53:23.526] {User} Using REST API (v68.0) to retrieve the data ...
+[13:53:23.717] {User} The original query string of this object is returning 120 records from the SOURCE org.
+[13:53:23.718] {User} Using REST API (v68.0) to retrieve the data ...
+[13:53:23.807] {User} The original query string of this object is returning 1154 records from the TARGET org.
+[13:53:23.808] {Opportunity} Using REST API (v68.0) to retrieve the data ...
+[13:53:24.0] {Opportunity} The original query string of this object is returning 8149 records from the SOURCE org.
+[13:53:24.2] {Opportunity} Using REST API (v68.0) to retrieve the data ...
+[13:53:24.70] {Opportunity} The original query string of this object is returning 248 records from the TARGET org.
+[13:53:24.70] Preparing of the data migration job has been completed.
+┌─────────────┬──────────────┬──────────────┐
+│ Query Order │ Delete Order │ Update Order │
+├─────────────┼──────────────┼──────────────┤
+│ Quote       │              │ Opportunity  │
+│ Pricebook2  │              │              │
+│ Account     │              │              │
+│ User        │              │              │
+│ Opportunity │              │              │
+└─────────────┴──────────────┴──────────────┘
+
+
+
+[13:53:24.113] Triggering Add-On events ...
+[13:53:24.113] No Add-On modules found to run.
+
+
+[13:53:24.114] Ready to process the data.
+
+
+[13:53:24.114] Deleting old data from the Target ...
+[13:53:24.114] Deleting data was skipped.
+
+
+[13:53:24.114] SOURCE:
+[13:53:24.114] =============
+
+
+[13:53:24.114] ===== Fetching the data (STAGE 1) =====
+[13:53:24.115] {Quote} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[13:53:24.115] {Quote} Query string: SELECT Id, Name FROM Quote.
+[13:53:24.115] {Quote} Using REST API (v68.0) to retrieve the data ...
+[13:53:24.494] {Quote} Data retrieval (SOURCE) has been completed. Got 1461 new records.
+[13:53:24.495] {Pricebook2} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[13:53:24.495] {Pricebook2} Query string: SELECT Id, Name FROM Pricebook2.
+[13:53:24.495] {Pricebook2} Using REST API (v68.0) to retrieve the data ...
+[13:53:24.699] {Pricebook2} Data retrieval (SOURCE) has been completed. Got 25 new records.
+[13:53:24.700] {Account} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[13:53:24.700] {Account} Query string: SELECT Id, Name FROM Account.
+[13:53:24.701] {Account} Using REST API (v68.0) to retrieve the data ...
+[13:53:25.178] In progress... Completed 2000 records.
+[13:53:25.574] In progress... Completed 4000 records.
+[13:53:25.947] In progress... Completed 6000 records.
+[13:53:26.344] In progress... Completed 8000 records.
+[13:53:26.721] In progress... Completed 10000 records.
+[13:53:27.130] In progress... Completed 12000 records.
+[13:53:27.512] In progress... Completed 14000 records.
+[13:53:27.906] In progress... Completed 16000 records.
+[13:53:28.277] In progress... Completed 18000 records.
+[13:53:28.638] In progress... Completed 18947 records.
+[13:53:28.658] {Account} Data retrieval (SOURCE) has been completed. Got 18947 new records.
+[13:53:28.659] {User} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[13:53:28.659] {User} Query string: SELECT Id FROM User.
+[13:53:28.659] {User} Using REST API (v68.0) to retrieve the data ...
+[13:53:28.864] {User} Data retrieval (SOURCE) has been completed. Got 120 new records.
+[13:53:28.865] {Opportunity} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[13:53:28.865] {Opportunity} Query string: SELECT Id, Name, StageName, CloseDate, Amount, AccountId, Description, ExpectedRevenue, IsPrivate, JK_Department__c, LeadSource, NextStep, Pricebook2Id, SyncedQuoteId, Probability, TotalOpportunityQuantity, Type, CreatedDate, OwnerId, CreatedById, Ac... FROM Opportunity.
+[13:53:28.865] {Opportunity} Using REST API (v68.0) to retrieve the data ...
+[13:53:30.346] In progress... Completed 2000 records.
+[13:53:31.705] In progress... Completed 4000 records.
+[13:53:33.136] In progress... Completed 6000 records.
+[13:53:34.700] In progress... Completed 8000 records.
+[13:53:35.70] In progress... Completed 8149 records.
+[13:53:35.113] {Opportunity} Data retrieval (SOURCE) has been completed. Got 8149 new records.
+[13:53:35.113] Data retrieval (STAGE 1) has been completed.
+
+
+[13:53:35.113] ===== Fetching the data (STAGE 2) =====
+[13:53:35.113] PASS 1
+[13:53:35.113] =============
+[13:53:35.114] No records
+
+
+[13:53:35.114] PASS 2
+[13:53:35.114] =============
+[13:53:35.114] No records
+
+
+[13:53:35.114] PASS 3
+[13:53:35.114] =============
+[13:53:35.114] No records
+
+
+[13:53:35.114] PASS 4
+[13:53:35.114] =============
+[13:53:35.114] No records
+
+
+[13:53:35.114] TARGET:
+[13:53:35.114] =============
+[13:53:35.115] {Quote} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[13:53:35.115] {Quote} Query string: SELECT QuoteCrossOrgTraceID__c, Name, Id FROM Quote.
+[13:53:35.115] {Quote} Using REST API (v68.0) to retrieve the data ...
+[13:53:35.259] {Quote} Data retrieval (TARGET) has been completed. Got 0 new records.
+[13:53:35.260] {Pricebook2} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[13:53:35.260] {Pricebook2} Query string: SELECT Pricebook2CrossOrgTraceID__c, Name, Id FROM Pricebook2.
+[13:53:35.260] {Pricebook2} Using REST API (v68.0) to retrieve the data ...
+[13:53:35.333] {Pricebook2} Data retrieval (TARGET) has been completed. Got 32 new records.
+[13:53:35.334] {Account} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[13:53:35.334] {Account} Query string: SELECT AccountCrossOrgTraceID__c, Name, Id FROM Account.
+[13:53:35.335] {Account} Using Bulk API Query (v68.0) to retrieve the data ...
+[13:53:42.689] In progress... Completed 2000 records.
+[13:53:42.700] In progress... Completed 4000 records.
+[13:53:42.706] In progress... Completed 6000 records.
+[13:53:42.715] In progress... Completed 8000 records.
+[13:53:42.730] In progress... Completed 10000 records.
+[13:53:42.735] In progress... Completed 12000 records.
+[13:53:42.739] In progress... Completed 14000 records.
+[13:53:42.746] In progress... Completed 16000 records.
+[13:53:42.752] In progress... Completed 18000 records.
+[13:53:42.760] In progress... Completed 20000 records.
+[13:53:42.764] In progress... Completed 22000 records.
+[13:53:42.771] In progress... Completed 24000 records.
+[13:53:42.778] In progress... Completed 26000 records.
+[13:53:42.782] In progress... Completed 28000 records.
+[13:53:42.790] In progress... Completed 30000 records.
+[13:53:42.795] In progress... Completed 32000 records.
+[13:53:42.800] In progress... Completed 34000 records.
+[13:53:42.804] In progress... Completed 36000 records.
+[13:53:42.808] In progress... Completed 38000 records.
+[13:53:42.812] In progress... Completed 40000 records.
+[13:53:42.816] In progress... Completed 42000 records.
+[13:53:42.819] In progress... Completed 44000 records.
+[13:53:42.825] In progress... Completed 46000 records.
+[13:53:42.828] In progress... Completed 48000 records.
+[13:53:42.832] In progress... Completed 50000 records.
+[13:53:42.835] In progress... Completed 52000 records.
+[13:53:42.839] In progress... Completed 54000 records.
+[13:53:42.843] In progress... Completed 56000 records.
+[13:53:42.853] In progress... Completed 58000 records.
+[13:53:42.859] In progress... Completed 60000 records.
+[13:53:42.865] In progress... Completed 62000 records.
+[13:53:42.869] In progress... Completed 64000 records.
+[13:53:42.880] In progress... Completed 66000 records.
+[13:53:42.883] In progress... Completed 68000 records.
+[13:53:42.886] In progress... Completed 70000 records.
+[13:53:42.890] In progress... Completed 72000 records.
+[13:53:42.893] In progress... Completed 74000 records.
+[13:53:42.897] In progress... Completed 76000 records.
+[13:53:42.901] In progress... Completed 78000 records.
+[13:53:42.906] In progress... Completed 80000 records.
+[13:53:42.909] In progress... Completed 82000 records.
+[13:53:42.912] In progress... Completed 84000 records.
+[13:53:42.916] In progress... Completed 86000 records.
+[13:53:42.919] In progress... Completed 88000 records.
+[13:53:42.923] In progress... Completed 90000 records.
+[13:53:42.929] In progress... Completed 92000 records.
+[13:53:42.932] In progress... Completed 94000 records.
+[13:53:42.941] In progress... Completed 95580 records.
+[13:53:43.10] {Account} Data retrieval (TARGET) has been completed. Got 95580 new records.
+[13:53:43.11] {User} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[13:53:43.11] {User} Query string: SELECT Legacy_User_id__c, Id FROM User.
+[13:53:43.11] {User} Using REST API (v68.0) to retrieve the data ...
+[13:53:43.101] {User} Data retrieval (TARGET) has been completed. Got 1154 new records.
+[13:53:43.102] {Opportunity} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[13:53:43.102] {Opportunity} Query string: SELECT OpportunityCrossOrgTraceID__c, Name, StageName, CloseDate, Amount, AccountId, Description, ExpectedRevenue, IsPrivate, JK_Department__c, LeadSource, NextStep, Pricebook2Id, SyncedQuoteId, Probability, TotalOpportunityQuantity, Type, CreatedDat... FROM Opportunity.
+[13:53:43.102] {Opportunity} Using REST API (v68.0) to retrieve the data ...
+[13:53:43.309] {Opportunity} Data retrieval (TARGET) has been completed. Got 248 new records.
+[13:53:43.310] Data retrieval (STAGE 2) has been completed.
+
+
+[13:53:43.310] Triggering Add-On events ...
+[13:53:43.311] No Add-On modules found to run.
+
+
+[13:53:43.312] ===== DATA RETRIEVAL SUMMARY =====
+[13:53:43.312] {Quote} The total amount of the retrieved records from SOURCE by 1 queries: 1461.
+[13:53:43.312] {Quote} The total amount of the retrieved records from TARGET by 1 queries: 0.
+[13:53:43.313] {Pricebook2} The total amount of the retrieved records from SOURCE by 1 queries: 25.
+[13:53:43.313] {Pricebook2} The total amount of the retrieved records from TARGET by 1 queries: 32.
+[13:53:43.313] {Account} The total amount of the retrieved records from SOURCE by 1 queries: 18947.
+[13:53:43.314] {Account} The total amount of the retrieved records from TARGET by 1 queries: 95580.
+[13:53:43.314] {User} The total amount of the retrieved records from SOURCE by 1 queries: 120.
+[13:53:43.314] {User} The total amount of the retrieved records from TARGET by 1 queries: 1154.
+[13:53:43.314] {Opportunity} The total amount of the retrieved records from SOURCE by 1 queries: 8149.
+[13:53:43.314] {Opportunity} The total amount of the retrieved records from TARGET by 1 queries: 248.
+
+
+
+
+[13:53:43.316] ===== Updating the Target (STAGE 1) =====
+[13:53:43.377] {Opportunity} Applying the value mapping ... Fields: StageName, Type.
+[13:53:43.406] Writing to /Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/060_Opportunity/reports/MissingParentRecordsReport.csv ...
+Warning: [13:53:43.410] [WARNING] {Opportunity} 894 missing parent lookup records were found. See MissingParentRecordsReport.csv file for the details.
+Warning: [13:53:43.411] [WARNING] [13:53:43.411] Continue the job (y/n) ? y
+Warning: [13:53:43.411] [WARNING] [WARNING] {Opportunity.CreatedDate} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [13:53:43.411] [WARNING] [WARNING] {Opportunity.CreatedById} Field is in query but is not updateable for Update operation and will be excluded from DML.
+[13:53:43.415] {Opportunity} Amount of records to Insert: 8149.
+[13:53:43.416] {Opportunity} Using BULK API V2 (API v68.0) to execute Insert ...
+[13:53:43.416] {Opportunity} The Insert API operation has been started using BULK API V2.
+[13:53:43.978] [Job# 7509M00000qktV3QAI:Insert] {Opportunity} The job has been created. Uploading data ...
+[13:53:43.978] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} The batch has been created. Uploading data ...
+[13:53:45.905] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} The data has been uploaded. Processing ...
+[13:54:02.828] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 200 records processed, 0 records failed.
+[13:54:08.326] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 400 records processed, 0 records failed.
+[13:54:13.856] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 600 records processed, 0 records failed.
+[13:54:19.379] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 800 records processed, 0 records failed.
+[13:54:30.186] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 1000 records processed, 0 records failed.
+[13:54:35.567] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 1200 records processed, 0 records failed.
+[13:54:41.120] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 1400 records processed, 0 records failed.
+[13:54:46.624] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 1600 records processed, 0 records failed.
+[13:54:52.113] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 1800 records processed, 0 records failed.
+[13:54:57.626] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 2000 records processed, 0 records failed.
+[13:55:03.72] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 2200 records processed, 0 records failed.
+[13:55:08.537] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 2400 records processed, 0 records failed.
+[13:55:14.28] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 2600 records processed, 0 records failed.
+[13:55:19.394] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 2800 records processed, 0 records failed.
+[13:55:24.923] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 3000 records processed, 0 records failed.
+[13:55:30.358] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 3200 records processed, 0 records failed.
+[13:55:35.806] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 3400 records processed, 0 records failed.
+[13:55:41.236] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 3600 records processed, 0 records failed.
+[13:55:46.687] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 3800 records processed, 0 records failed.
+[13:55:52.202] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 4000 records processed, 0 records failed.
+[13:55:57.985] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 4200 records processed, 0 records failed.
+[13:56:03.437] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 4400 records processed, 0 records failed.
+[13:56:08.858] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 4600 records processed, 0 records failed.
+[13:56:14.381] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 4800 records processed, 0 records failed.
+[13:56:19.807] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 5000 records processed, 0 records failed.
+[13:56:25.275] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 5200 records processed, 0 records failed.
+[13:56:30.741] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 5400 records processed, 0 records failed.
+[13:56:36.193] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 5600 records processed, 0 records failed.
+[13:56:41.664] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 5800 records processed, 0 records failed.
+[13:56:47.77] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 6000 records processed, 0 records failed.
+[13:56:57.796] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 6200 records processed, 0 records failed.
+[13:57:03.271] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 6400 records processed, 0 records failed.
+[13:57:08.754] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 6600 records processed, 0 records failed.
+[13:57:14.285] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 6800 records processed, 0 records failed.
+[13:57:19.770] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 7000 records processed, 0 records failed.
+[13:57:25.150] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 7200 records processed, 0 records failed.
+[13:57:30.604] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 7400 records processed, 0 records failed.
+[13:57:36.98] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 7600 records processed, 0 records failed.
+[13:57:41.627] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 7800 records processed, 0 records failed.
+[13:57:47.302] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 8000 records processed, 0 records failed.
+[13:57:52.871] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Processing ... 8149 records processed, 0 records failed.
+[13:57:59.170] [Batch# 7509M00000qktV3QAI:Insert] {Opportunity} Completed. 8149 records processed, 0 records failed.
+[13:57:59.170] {Opportunity} The Insert API operation has been completed.
+[13:57:59.256] {Opportunity} The Target has been updated. Totally processed 8149 records.
+
+
+
+
+[13:57:59.257] The Target (STAGE 1) has been updated. Totally processed 8149 records.
+
+
+[13:57:59.257] ===== Updating the Target (STAGE 2) =====
+
+
+[13:57:59.257] PASS 1
+[13:57:59.257] =============
+[13:57:59.297] Writing to /Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/060_Opportunity/reports/MissingParentRecordsReport.csv ...
+Warning: [13:57:59.307] [WARNING] {Opportunity} 894 missing parent lookup records were found. See MissingParentRecordsReport.csv file for the details.
+[13:57:59.312] {Opportunity} Amount of records to Update: 8149.
+[13:57:59.313] {Opportunity} Using BULK API V2 (API v68.0) to execute Update ...
+[13:57:59.313] {Opportunity} The Update API operation has been started using BULK API V2.
+[13:57:59.627] [Job# 7509M00000qlAveQAE:Update] {Opportunity} The job has been created. Uploading data ...
+[13:57:59.628] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} The batch has been created. Uploading data ...
+[13:58:00.743] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} The data has been uploaded. Processing ...
+[13:58:11.954] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 400 records processed, 0 records failed.
+[13:58:17.478] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 600 records processed, 0 records failed.
+[13:58:22.921] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 1000 records processed, 0 records failed.
+[13:58:28.368] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 1400 records processed, 0 records failed.
+[13:58:33.881] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 1800 records processed, 0 records failed.
+[13:58:39.314] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 2200 records processed, 0 records failed.
+[13:58:44.866] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 2600 records processed, 0 records failed.
+[13:58:50.265] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 2800 records processed, 0 records failed.
+[13:58:55.611] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 3200 records processed, 0 records failed.
+[13:59:01.73] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 3600 records processed, 0 records failed.
+[13:59:06.836] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 4000 records processed, 0 records failed.
+[13:59:12.305] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 4400 records processed, 0 records failed.
+[13:59:17.752] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 4800 records processed, 0 records failed.
+[13:59:23.244] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 5200 records processed, 0 records failed.
+[13:59:28.575] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 5600 records processed, 0 records failed.
+[13:59:34.367] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 6000 records processed, 0 records failed.
+[13:59:39.840] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 6200 records processed, 0 records failed.
+[13:59:45.281] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 6600 records processed, 0 records failed.
+[13:59:50.808] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 7000 records processed, 0 records failed.
+[13:59:56.296] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 7400 records processed, 0 records failed.
+[14:00:01.827] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 7800 records processed, 0 records failed.
+[14:00:07.316] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Processing ... 8149 records processed, 0 records failed.
+[14:00:13.466] [Batch# 7509M00000qlAveQAE:Update] {Opportunity} Completed. 8149 records processed, 0 records failed.
+[14:00:13.466] {Opportunity} The Update API operation has been completed.
+[14:00:13.524] {Opportunity} The Target has been updated. Totally processed 8149 records.
+
+
+
+
+[14:00:13.525] PASS 2
+[14:00:13.525] =============
+[14:00:13.573] Writing to /Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/060_Opportunity/reports/MissingParentRecordsReport.csv ...
+Warning: [14:00:13.577] [WARNING] {Opportunity} 894 missing parent lookup records were found. See MissingParentRecordsReport.csv file for the details.
+[14:00:13.583] {Opportunity} Amount of records to Update: 8149.
+[14:00:13.584] {Opportunity} Using BULK API V2 (API v68.0) to execute Update ...
+[14:00:13.584] {Opportunity} The Update API operation has been started using BULK API V2.
+[14:00:13.903] [Job# 7509M00000ql6NPQAY:Update] {Opportunity} The job has been created. Uploading data ...
+[14:00:13.904] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} The batch has been created. Uploading data ...
+[14:00:15.382] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} The data has been uploaded. Processing ...
+[14:00:31.985] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 200 records processed, 0 records failed.
+[14:00:37.445] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 400 records processed, 0 records failed.
+[14:00:42.875] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 800 records processed, 0 records failed.
+[14:00:48.352] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 1200 records processed, 0 records failed.
+[14:00:53.983] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 1600 records processed, 0 records failed.
+[14:00:59.519] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 2000 records processed, 0 records failed.
+[14:01:05.49] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 2400 records processed, 0 records failed.
+[14:01:10.486] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 2800 records processed, 0 records failed.
+[14:01:15.938] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 3000 records processed, 0 records failed.
+[14:01:21.444] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 3400 records processed, 0 records failed.
+[14:01:26.886] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 3800 records processed, 0 records failed.
+[14:01:32.365] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 4200 records processed, 0 records failed.
+[14:01:37.879] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 4600 records processed, 0 records failed.
+[14:01:43.272] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 5000 records processed, 0 records failed.
+[14:01:48.788] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 5400 records processed, 0 records failed.
+[14:01:54.204] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 5800 records processed, 0 records failed.
+[14:01:59.661] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 6000 records processed, 0 records failed.
+[14:02:05.162] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 6400 records processed, 0 records failed.
+[14:02:10.639] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 6800 records processed, 0 records failed.
+[14:02:16.116] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 7200 records processed, 0 records failed.
+[14:02:21.600] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 7600 records processed, 0 records failed.
+[14:02:27.50] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 8000 records processed, 0 records failed.
+[14:02:32.416] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Processing ... 8149 records processed, 0 records failed.
+[14:02:32.951] [Batch# 7509M00000ql6NPQAY:Update] {Opportunity} Completed. 8149 records processed, 0 records failed.
+[14:02:32.951] {Opportunity} The Update API operation has been completed.
+[14:02:32.983] {Opportunity} The Target has been updated. Totally processed 8149 records.
+
+
+
+
+[14:02:32.983] The Target (STAGE 2) has been updated. Totally processed 16298 records.
+
+
+[14:02:32.983] Triggering Add-On events ...
+[14:02:32.988] No Add-On modules found to run.
+
+
+[14:02:32.988] ===== DATA PROCESSING SUMMARY =====
+[14:02:32.988] {Quote} Totally processed 0 records:
+[14:02:32.988] PASS 1: None.
+[14:02:32.988] PASS 2: None.
+[14:02:32.989] PASS 3: None.
+[14:02:32.989] {Pricebook2} Totally processed 0 records:
+[14:02:32.989] PASS 1: None.
+[14:02:32.989] PASS 2: None.
+[14:02:32.989] PASS 3: None.
+[14:02:32.989] {Account} Totally processed 0 records:
+[14:02:32.989] PASS 1: None.
+[14:02:32.989] PASS 2: None.
+[14:02:32.989] PASS 3: None.
+[14:02:32.989] {User} Totally processed 0 records:
+[14:02:32.989] PASS 1: None.
+[14:02:32.989] PASS 2: None.
+[14:02:32.989] PASS 3: None.
+[14:02:32.989] {Opportunity} Totally processed 24447 records:
+[14:02:32.989] PASS 1: Updated 0, Deleted 0, Inserted 8149.
+[14:02:32.989] PASS 2: Updated 8149, Deleted 0, Inserted 0.
+[14:02:32.989] PASS 3: Updated 8149, Deleted 0, Inserted 0.
+
+
+[14:02:32.990] Writing to /Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/060_Opportunity/reports/MissingParentRecordsReport.csv ...
+
+
+[14:02:33.11] ===== MIGRATION JOB ENDED =====
+[14:02:33.11] Command succeeded.
+[14:02:33.11] Execution of the command sfdmu:run has been completed. Exit code 0 (SUCCESS).
+[14:02:33.11] Total time elapsed: 00h 09m 13s 004ms .
+
+--- beendet (Exit-Code 0) ---

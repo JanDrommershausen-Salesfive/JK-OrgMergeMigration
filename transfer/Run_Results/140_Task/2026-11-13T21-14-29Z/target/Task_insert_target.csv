@@ -1,0 +1,238 @@
+﻿"ActivityCrossOrgTraceID__c","Subject","ActivityDate","Status","Priority","Description","Type","CreatedDate","CreatedById","CallDurationInSeconds","CallType","CallDisposition","CallObject","ReminderDateTime","IsReminderSet","IsRecurrence","RecurrenceStartDateOnly","RecurrenceEndDateOnly","RecurrenceTimeZoneSidKey","RecurrenceType","RecurrenceInterval","RecurrenceDayOfWeekMask","RecurrenceDayOfMonth","RecurrenceInstance","RecurrenceMonthOfYear","RecurrenceRegeneratedType","TaskSubtype","Errors"
+"00TVQ000008hnfM2AQ","Run open quotes","#N/A","Open","High","Compare to open orders in SF, if possible","#N/A","2024-05-02T22:16:31.000Z","0059M000011nGR7QAM","#N/A","#N/A","#N/A","#N/A","#N/A","false","true","2024-06-17","2024-06-17","America/Los_Angeles","RecursDaily","1","#N/A","#N/A","#N/A","#N/A","#N/A","Task","Apex Task trigger cannot handle batch operations on recurring tasks."
+"00TVQ00000bVagL2AS","Other","#N/A","Open","Normal","#N/A","#N/A","2025-08-15T20:47:25.000Z","0059M000011nGR6QAM","#N/A","#N/A","#N/A","#N/A","#N/A","false","true","2025-08-25","2025-08-25","America/Chicago","RecursDaily","1","#N/A","#N/A","#N/A","#N/A","#N/A","Task","Apex Task trigger cannot handle batch operations on recurring tasks."
+"00TVQ00000w8zpi2AA","Call","#N/A","Open","Normal","V10 Upgrade Reports","#N/A","2026-04-06T13:21:45.000Z","0059M000011n0tfQAA","#N/A","#N/A","#N/A","#N/A","2026-04-06T12:00:00.000Z","true","true","2026-04-10","2026-04-13","America/Chicago","RecursWeekly","1","32","#N/A","#N/A","#N/A","#N/A","Task","Apex Task trigger cannot handle batch operations on recurring tasks."
+"00TVQ00001MY3RX2A1","PT OR#2780273 - WO 240397","2026-11-13","Completed","Normal","Could we place on order for our Washington, PA location? PO: WO 240391
+
+Asset information and parts needed are listed in the work order summary below. Please let us know if more information is needed to proceed with this request!
+
+Thank you!
+
+logo
+Matthew Crow | Technician Supervisor
+United FP Support Center
+O: (512) 531-5487
+mcrow@unitedfp.com
+5316 W. Hwy 290 | Suite 400 Austin, TX 78735
+
+From: Woven <no_reply@woven.team>
+Sent: Wednesday, November 11, 2026 10:03 AM
+To: Matthew Crow <mcrow@unitedfp.com>
+Subject: Work Order #240397: Work Order Assigned to You
+ 
+External: This email originated outside unitedfp . Be alert for phishing attempts. Never share passwords, sensitive information, or approve payments without verification first.
+
+Work Order #240397
+Planet Fitness
+
+United FP
+
+
+Work Order #240397
+Location:	Washington, PA (#8232)
+Address:	900 Wildflower Cir Ste 901 Washington PA 15301
+Primary Phone:	(724) 338-2430
+Created:	11/10/2026 (about 1 day ago)
+Status:	Open
+Priority:	Critical
+Assigned to:	Matthew Crow
+Asset Details:	Tag #8232-273, Serial #1262887, Room #4, Equipment, Tanning/TBE, Laydown Tanning Bed, JK/Ergoline, Affinity 700, Affinity 700
+Reason:	Acrylic Replacement - Bench","Order","2026-11-13T21:09:10.000Z","005Jz00000NJZssIAH","#N/A","#N/A","#N/A","#N/A","#N/A","false","false","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","Task","Apex Task trigger cannot handle batch operations on recurring tasks."
+"00TVQ00001MYhIN2A1","Email: Sunlync Support - Case #00047816: MCP Report Help","2026-11-13","Completed","Normal","Additional To: laura@5dollartan.com
+CC: 
+BCC: 
+Attachment: image.png, image.png, image.png
+
+Subject: Sunlync Support - Case #00047816: MCP Report Help
+Body:
+Good afternoon.  I just realized that I forgot to get the Scheduler logs during our call yesterday.  Are you able to attach them in your reply?  Yesterday's log should be called slservice20261112.err and today's should be called slservice20261113.err.  They will both be in the following location on the computer that runs the Scheduler service:
+C:\ProgramData\SunLync\Logs\
+Please let us know if you have any questions or concerns.
+
+Thanks,
+Jeremy
+
+--------------- Original Message ---------------
+From: laura 5dollartan.com [laura@5dollartan.com]
+Sent: 11/12/2026, 7:39 AM
+To: support@sunlync.com
+Subject: Re: MCP Report Help
+
+Good morning!
+
+ 
+
+I am open today but also have some driving to do. As long as I know in advance, I can plan to be available.
+
+ 
+
+What times do you have open today?
+
+ 
+
+Thank you!
+
+ 
+
+ 
+
+Laura Johnson |Chief Executive Officer
+
+laura@5dollartan.com |612-200-6949
+
+ 
+
+ 
+
+From: Sunlync <support@sunlync.com>
+Sent: Wednesday, November 11, 2026 3:35 PM
+To: laura 5dollartan.com <laura@5dollartan.com>
+Subject: RE: MCP Report Help
+
+ 
+
+Hi Laura,
+
+Thank you for contacting SunLync Support. We tried to give you a call yesterday, but you were not available. When are you available for a call tomorrow morning?
+
+Thank you!
+
+--------------- Original Message ---------------
+From: laura 5dollartan.com [laura@5dollartan.com]
+Sent: 11/10/2026, 2:01 PM
+To: support@sunlync.com
+Subject: MCP Report Help
+ 
+
+Hello,
+
+ 
+
+We are running a MCP contest this month and an employee brought something to my attention. When I was trying to look into in, I also noticed a few things that seem off. 
+
+ 
+
+When I pull the MCP management report for a single salon (Savage) ,it gives me no data. When I pull it for all salons, the data for Savage appears...
+
+ 
+
+I also noticed an employee created a new account for a customer and did not run a session or anything on the account. It showed up as a ""missed opportunity"". Is this set up to do that?
+
+ 
+
+Thank you so much! 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Laura Johnson |Chief Executive Officer
+
+laura@5dollartan.com |612-200-6949
+
+ 
+
+thread::ODuKEtunJ4W-DmHHJH-okTQ::","Email","2026-11-13T21:13:21.000Z","0059M000011n0swQAA","#N/A","#N/A","#N/A","#N/A","#N/A","false","false","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","Email","Apex Task trigger cannot handle batch operations on recurring tasks."
+"00TVQ00001MYlli2AD","Call","2026-11-13","Completed","Normal","Attaching my notes from yesterday
+
+Called client back
+Laura
+612-200-6949
+
+Remoted into workstation
+
+She realized why it was not pulling the data
+She was selecting ""Savage"" for the location
+when she needed to select ""Savage 2""
+
+Other issue
+What counts as a missed opportunity?
+There was an issue with a customer's account
+So the employee created a second account
+and it was a missed opportunity because no
+Let her know that is how it works
+It creates an opportunity when the customer is inserted
+then is missed if no MCP eligible service is sold
+
+Other question
+This is the issue from 31118
+Will document it here since the other case
+is already closed and doesn't have much info
+
+MCP Monthly Store Ranking on the SunLync Desktop
+Should have more info than it does
+It has Savage 2 with StoreMCP of 100
+and Apple Valley Pilot with StoreMCP of 50
+She is currently logged into Inver Grove
+Which isn't an active store
+She switched to Eden Prarie
+Still only shows Savage 2 and Apple Valley Pilot
+And MCP Monthly Employee Ranking is only showing employees
+at 0, 50, or 100%
+
+She also mentioned that some employees show twice
+in the MCP Monthly Employee Ranking
+For example, in the screenshot I took
+5dollar20261112a.png
+Amanda Noerenberg shows on the second and third line
+with different rankings
+On #31118 we had determined that is due to
+the employee having sales at more than one store
+
+She ran the Employee MCP-PPCA - Management report
+All stores for 11/01 - 11/12
+15 salons
+but only the two are showing on the desktop
+
+Looked at SunLync Desktop Settings
+MCP Goals
+it just shows Default Settings and has Track MCP Goal checked
+and the Daily MCP Goal is set to 0.00
+
+SELECT * FROM storegoalmcp;
+just the storecode 9999999999
+trackdailymcpgoal is 1 and dailymcpgoal is 0.00
+
+SELECT * FROM storegoalmcptiers;
+no records
+
+USE sunlync;
+SELECT s.storelocation, CONCAT(e.firstname, ' ', e.lastname) AS employeename, r.*
+FROM storefiguresmonthlyranking r
+LEFT JOIN stores s ON s.StoreCode = r.storecode
+LEFT JOIN employees e ON r.employeeno = e.employeenumber;
+Apple Valley Pilot and Savage 2
+have StoreMCP of 100.0
+The rest all have StoreMCP of 0
+Apple Valley Pilot has 7 different employees
+Savage 2 has 9 different employees
+exported to storefiguresmonthlyranking.csv
+
+SELECT s.storelocation, CONCAT(e.firstname, ' ', e.lastname) AS employeename, f.*
+FROM storefiguresmonthly f
+LEFT JOIN stores s ON s.StoreCode = f.storecode
+LEFT JOIN employees e ON f.employeeno = e.employeenumber
+exported to storefiguresmonthly.csv
+
+Generated Employee MCP\PPCA Management Report
+for Apple Valley Pilot, Savage 2,
+Eden Prarie, and Shakopee
+along with all the stores together
+exported to:
+employee mcp-ppca management (apple valley pilot).pdf
+employee mcp-ppca management (savage 2).pdf
+employee mcp-ppca management (eden prairie).pdf
+employee mcp-ppca management (shakopee).pdf
+employee mcp-ppca management (all).pdf
+
+Apple Valley Pilot is storecode 4
+Eden Prairie is storecode 8
+Savage 2 is storedcode 18
+Shakopee is storecode 1","Phone","2026-11-13T21:08:08.000Z","0059M000011n0swQAA","#N/A","#N/A","#N/A","#N/A","#N/A","false","false","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","Call","Apex Task trigger cannot handle batch operations on recurring tasks."
+"00TVQ00001MYn5y2AD","Outbound Call to +16122006949","2026-11-13","Completed","Normal","UII: 202611131608338510000740535038","#N/A","2026-11-13T21:10:09.000Z","0059M000011n0swQAA","64","Outbound","#N/A","005VQ0000001XbVYAU-202611131608338510000740535038","#N/A","false","false","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","#N/A","Call","Apex Task trigger cannot handle batch operations on recurring tasks."

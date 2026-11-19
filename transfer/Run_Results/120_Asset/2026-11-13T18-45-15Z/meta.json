@@ -1,0 +1,164 @@
+{
+  "id": "2026-11-13T18-45-15Z",
+  "folder": "120_Asset",
+  "object": "Asset",
+  "mode": "live",
+  "startedAt": "2026-11-13T18:45:15.854Z",
+  "endedAt": "2026-11-13T18:53:02.848Z",
+  "durationMs": 466994,
+  "ok": true,
+  "stopped": false,
+  "exitCode": 0,
+  "signal": null,
+  "sourceAlias": "us-prod",
+  "targetAlias": "FullCopy",
+  "counts": {
+    "inserted": 45141,
+    "updated": 70170,
+    "deleted": 0,
+    "errors": 45141,
+    "missingParents": 0,
+    "warnings": 3
+  },
+  "summary": [
+    {
+      "object": "Product2",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "Contact",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "Account",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "User",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "Asset",
+      "processed": 115311,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 45141
+        },
+        {
+          "pass": 2,
+          "updated": 35085,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 35085,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "kind": "other",
+      "message": "[Batch# 7509M00000qqY67QAE:Insert] {Asset} Completed. 45141 records processed, 10056 records failed.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "[Batch# 7509M00000qqaxYQAQ:Update] {Asset} Completed. 35085 records processed, 35085 records failed.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "[Batch# 7509M00000qqnLFQAY:Update] {Asset} Completed. 35085 records processed, 35085 records failed.",
+      "count": 1
+    }
+  ],
+  "logErrors": [],
+  "cohort": null
+}

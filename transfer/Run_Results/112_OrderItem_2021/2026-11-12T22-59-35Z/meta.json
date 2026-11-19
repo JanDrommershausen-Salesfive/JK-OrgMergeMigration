@@ -1,0 +1,189 @@
+{
+  "id": "2026-11-12T22-59-35Z",
+  "folder": "112_OrderItem_2021",
+  "object": "OrderItem",
+  "mode": "live",
+  "startedAt": "2026-11-12T22:59:35.933Z",
+  "endedAt": "2026-11-12T23:26:42.806Z",
+  "durationMs": 1626873,
+  "ok": true,
+  "stopped": false,
+  "exitCode": 0,
+  "signal": null,
+  "sourceAlias": "us-prod",
+  "targetAlias": "FullCopy",
+  "counts": {
+    "inserted": 21893,
+    "updated": 159583,
+    "deleted": 0,
+    "errors": 2664,
+    "missingParents": 0,
+    "warnings": 8
+  },
+  "summary": [
+    {
+      "object": "Order",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "PricebookEntry",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "Product2",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "User",
+      "processed": 0,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 2,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 0,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    },
+    {
+      "object": "OrderItem",
+      "processed": 181476,
+      "passes": [
+        {
+          "pass": 1,
+          "updated": 39975,
+          "deleted": 0,
+          "inserted": 21893
+        },
+        {
+          "pass": 2,
+          "updated": 59804,
+          "deleted": 0,
+          "inserted": 0
+        },
+        {
+          "pass": 3,
+          "updated": 59804,
+          "deleted": 0,
+          "inserted": 0
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "kind": "other",
+      "message": "{OrderItem.Product2Id} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "{OrderItem.OrderId} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "{OrderItem.PricebookEntryId} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "{OrderItem.CreatedDate} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "{OrderItem.CreatedById} Field is in query but is not updateable for Update operation and will be excluded from DML.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "[00:12:40.9] [WARNING] [Batch# 7509M00000qn4R8QAI:Insert] {OrderItem} Completed. 21893 records processed, 2064 records failed.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "[Batch# 7509M00000qnHEfQAM:Update] {OrderItem} Completed. 59804 records processed, 800 records failed.",
+      "count": 1
+    },
+    {
+      "kind": "other",
+      "message": "[Batch# 7509M00000qnJOXQA2:Update] {OrderItem} Completed. 59804 records processed, 600 records failed.",
+      "count": 1
+    }
+  ],
+  "logErrors": [],
+  "cohort": null
+}

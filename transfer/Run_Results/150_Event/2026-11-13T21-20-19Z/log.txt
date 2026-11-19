@@ -1,0 +1,226 @@
+$ ./run.sh 150_Event --live
+
+Resolving source org alias 'us-prod'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+Resolving target org alias 'FullCopy'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+
+LIVE RUN — this will write to FullCopy (jk-group--fullcopy.sandbox.my.salesforce.com).
+
+Source: us-prod (00DDn000006CppDMAS)
+Target: FullCopy (00D9M00000VmMXRUA3, jk-group--fullcopy.sandbox.my.salesforce.com)
+Object: 150_Event
+Mode:   live
+
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+[22:20:24.15] ===== MIGRATION JOB STARTED =====
+[22:20:24.18] Execution of the command sfdmu:run has been started.
+[22:20:24.18] Loading and validating the export.json script (/Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/150_Event/export.json)...
+
+
+[22:20:24.661] ===== OBJECT SET #1 STARTED =====
+
+
+[22:20:24.662] SOURCE: us-prod (production).
+[22:20:24.662] TARGET: FullCopy (sandbox).
+
+
+[22:20:24.669] Preparing data migration job ...
+[22:20:24.670] Building the migration strategy ...
+[22:20:24.670] Connecting to the us-prod
+[22:20:25.137] Successfully connected to the us-prod.
+[22:20:25.138] Connecting to the FullCopy
+[22:20:25.313] Successfully connected to the FullCopy.
+[22:20:25.315] Loading Core Add-On Module declarations ...
+[22:20:25.318] Loading Add-On module core:RecordsTransform ...
+[22:20:25.339] {User} Fetching metadata (SOURCE) ...
+[22:20:25.341] {Event} Fetching metadata (SOURCE) ...
+[22:20:25.802] {Event} Fetching metadata (TARGET) ...
+[22:20:26.27] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[22:20:26.34] {User} Fetching metadata (TARGET) ...
+[22:20:26.786] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+
+
+[22:20:27.310] ANALYSING DATA...
+[22:20:27.310] {User} Processing the object ...
+[22:20:27.311] {Event} Processing the object ...
+[22:20:27.319] {User} Using REST API (v68.0) to retrieve the data ...
+[22:20:27.553] {User} The original query string of this object is returning 120 records from the SOURCE org.
+[22:20:27.555] {User} Using REST API (v68.0) to retrieve the data ...
+[22:20:27.637] {User} The original query string of this object is returning 1155 records from the TARGET org.
+[22:20:27.637] {Event} Using REST API (v68.0) to retrieve the data ...
+[22:20:27.843] {Event} The original query string of this object is returning 43 records from the SOURCE org.
+[22:20:27.845] {Event} Using REST API (v68.0) to retrieve the data ...
+[22:20:27.961] {Event} The original query string of this object is returning 2265 records from the TARGET org.
+[22:20:27.962] Preparing of the data migration job has been completed.
+┌─────────────┬──────────────┬──────────────┐
+│ Query Order │ Delete Order │ Update Order │
+├─────────────┼──────────────┼──────────────┤
+│ User        │              │ Event        │
+│ Event       │              │              │
+└─────────────┴──────────────┴──────────────┘
+
+
+
+[22:20:28.2] Triggering Add-On events ...
+[22:20:28.2] No Add-On modules found to run.
+
+
+[22:20:28.2] Ready to process the data.
+
+
+[22:20:28.2] Deleting old data from the Target ...
+[22:20:28.2] Deleting data was skipped.
+
+
+[22:20:28.2] SOURCE:
+[22:20:28.2] =============
+
+
+[22:20:28.2] ===== Fetching the data (STAGE 1) =====
+[22:20:28.3] {User} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:20:28.3] {User} Query string: SELECT Id FROM User.
+[22:20:28.3] {User} Using REST API (v68.0) to retrieve the data ...
+[22:20:28.212] {User} Data retrieval (SOURCE) has been completed. Got 120 new records.
+[22:20:28.212] {Event} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:20:28.213] {Event} Query string: SELECT Id, Subject, Location, IsAllDayEvent, ActivityDateTime, ActivityDate, DurationInMinutes, StartDateTime, EndDateTime, Description, Type, IsPrivate, ShowAs, CreatedDate, CreatedById, IsRecurrence, RecurrenceStartDateTime, RecurrenceEndDateOnly, ... FROM Event.
+[22:20:28.213] {Event} Using REST API (v68.0) to retrieve the data ...
+[22:20:28.512] {Event} Data retrieval (SOURCE) has been completed. Got 43 new records.
+[22:20:28.513] Data retrieval (STAGE 1) has been completed.
+
+
+[22:20:28.513] ===== Fetching the data (STAGE 2) =====
+[22:20:28.513] PASS 1
+[22:20:28.513] =============
+[22:20:28.514] No records
+
+
+[22:20:28.514] PASS 2
+[22:20:28.515] =============
+[22:20:28.516] No records
+
+
+[22:20:28.516] PASS 3
+[22:20:28.516] =============
+[22:20:28.517] No records
+
+
+[22:20:28.518] PASS 4
+[22:20:28.518] =============
+[22:20:28.518] No records
+
+
+[22:20:28.519] TARGET:
+[22:20:28.519] =============
+[22:20:28.521] {User} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:20:28.521] {User} Query string: SELECT Legacy_User_id__c, Id FROM User.
+[22:20:28.521] {User} Using REST API (v68.0) to retrieve the data ...
+[22:20:28.667] {User} Data retrieval (TARGET) has been completed. Got 1155 new records.
+[22:20:28.669] {Event} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:20:28.670] {Event} Query string: SELECT ActivityCrossOrgTraceID__c, Subject, Location, IsAllDayEvent, ActivityDateTime, ActivityDate, DurationInMinutes, StartDateTime, EndDateTime, Description, Type, IsPrivate, ShowAs, CreatedDate, CreatedById, IsRecurrence, RecurrenceStartDateTime,... FROM Event.
+[22:20:28.670] {Event} Using REST API (v68.0) to retrieve the data ...
+[22:20:29.477] In progress... Completed 2000 records.
+[22:20:29.616] In progress... Completed 2265 records.
+[22:20:29.622] {Event} Data retrieval (TARGET) has been completed. Got 2265 new records.
+[22:20:29.622] Data retrieval (STAGE 2) has been completed.
+
+
+[22:20:29.622] Triggering Add-On events ...
+[22:20:29.622] No Add-On modules found to run.
+
+
+[22:20:29.622] ===== DATA RETRIEVAL SUMMARY =====
+[22:20:29.622] {User} The total amount of the retrieved records from SOURCE by 1 queries: 120.
+[22:20:29.622] {User} The total amount of the retrieved records from TARGET by 1 queries: 1155.
+[22:20:29.622] {Event} The total amount of the retrieved records from SOURCE by 1 queries: 43.
+[22:20:29.623] {Event} The total amount of the retrieved records from TARGET by 1 queries: 2265.
+[22:20:29.623] {Global} Add-On event:onDataRetrieved has been triggered.
+[22:20:29.623] [core:RecordsTransform] {Global} The Add-On module has started ...
+[22:20:29.623] [core:RecordsTransform] {Global} Checking the args ...
+[22:20:29.623] [core:RecordsTransform] {Global} Creating the transformation map ...
+[22:20:29.623] [core:RecordsTransform] {Global} Transforming records ...
+[22:20:29.624] [core:RecordsTransform] {Global} Totally transformed 43 records.
+[22:20:29.624] [core:RecordsTransform] {Global} The Add-On module has stopped.
+[22:20:29.624] {Global} Add-On event:onDataRetrieved has been completed.
+
+
+
+
+[22:20:29.625] ===== Updating the Target (STAGE 1) =====
+Warning: [22:20:29.627] [WARNING] [WARNING] {Event.CreatedDate} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:20:29.627] [WARNING] [WARNING] {Event.CreatedById} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:20:29.627] [WARNING] [WARNING] {Event.IsRecurrence} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:20:29.627] [WARNING] [WARNING] {Event.EventSubtype} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:20:29.627] [WARNING] [WARNING] {Event.Recurrence2PatternText} Field is in query but is not updateable for Update operation and will be excluded from DML.
+[22:20:29.628] {Event} Amount of records to Insert: 43.
+[22:20:29.628] {Event} Using REST API (API v68.0) to execute Insert ...
+[22:20:29.628] {Event} The Insert API operation has been started using REST API.
+[22:20:29.628] [Job# REST:Insert] {Event} The job has been created. Uploading data ...
+[22:20:29.629] [Batch# REST:Insert] {Event} The batch has been created. Uploading data ...
+[22:20:30.875] [Batch# REST:Insert] {Event} Completed. 43 records processed, 0 records failed.
+[22:20:30.876] {Event} The Insert API operation has been completed.
+[22:20:30.882] {Event} The Target has been updated. Totally processed 43 records.
+
+
+
+
+[22:20:30.883] The Target (STAGE 1) has been updated. Totally processed 43 records.
+
+
+[22:20:30.883] ===== Updating the Target (STAGE 2) =====
+
+
+[22:20:30.883] PASS 1
+[22:20:30.883] =============
+[22:20:30.884] {Event} Amount of records to Update: 43.
+[22:20:30.885] {Event} Using REST API (API v68.0) to execute Update ...
+[22:20:30.885] {Event} The Update API operation has been started using REST API.
+[22:20:30.885] [Job# REST:Update] {Event} The job has been created. Uploading data ...
+[22:20:30.885] [Batch# REST:Update] {Event} The batch has been created. Uploading data ...
+[22:20:32.222] [Batch# REST:Update] {Event} Completed. 43 records processed, 0 records failed.
+[22:20:32.223] {Event} The Update API operation has been completed.
+[22:20:32.225] {Event} The Target has been updated. Totally processed 43 records.
+
+
+
+
+[22:20:32.226] PASS 2
+[22:20:32.227] =============
+[22:20:32.230] {Event} Amount of records to Update: 43.
+[22:20:32.230] {Event} Using REST API (API v68.0) to execute Update ...
+[22:20:32.230] {Event} The Update API operation has been started using REST API.
+[22:20:32.230] [Job# REST:Update] {Event} The job has been created. Uploading data ...
+[22:20:32.231] [Batch# REST:Update] {Event} The batch has been created. Uploading data ...
+[22:20:33.768] [Batch# REST:Update] {Event} Completed. 43 records processed, 0 records failed.
+[22:20:33.768] {Event} The Update API operation has been completed.
+[22:20:33.770] {Event} The Target has been updated. Totally processed 43 records.
+
+
+
+
+[22:20:33.770] The Target (STAGE 2) has been updated. Totally processed 86 records.
+
+
+[22:20:33.770] Triggering Add-On events ...
+[22:20:33.770] No Add-On modules found to run.
+
+
+[22:20:33.771] ===== DATA PROCESSING SUMMARY =====
+[22:20:33.771] {User} Totally processed 0 records:
+[22:20:33.771] PASS 1: None.
+[22:20:33.772] PASS 2: None.
+[22:20:33.772] PASS 3: None.
+[22:20:33.772] {Event} Totally processed 129 records:
+[22:20:33.772] PASS 1: Updated 0, Deleted 0, Inserted 43.
+[22:20:33.772] PASS 2: Updated 43, Deleted 0, Inserted 0.
+[22:20:33.772] PASS 3: Updated 43, Deleted 0, Inserted 0.
+
+
+
+
+[22:20:33.775] ===== MIGRATION JOB ENDED =====
+[22:20:33.775] Command succeeded.
+[22:20:33.776] Execution of the command sfdmu:run has been completed. Exit code 0 (SUCCESS).
+[22:20:33.776] Total time elapsed: 00h 00m 09s 761ms .
+
+--- beendet (Exit-Code 0) ---

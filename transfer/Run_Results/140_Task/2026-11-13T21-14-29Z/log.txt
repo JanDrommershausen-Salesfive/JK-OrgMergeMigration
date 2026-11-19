@@ -1,0 +1,327 @@
+$ ./run.sh 140_Task --live
+
+Resolving source org alias 'us-prod'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+Resolving target org alias 'FullCopy'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+
+LIVE RUN — this will write to FullCopy (jk-group--fullcopy.sandbox.my.salesforce.com).
+
+Source: us-prod (00DDn000006CppDMAS)
+Target: FullCopy (00D9M00000VmMXRUA3, jk-group--fullcopy.sandbox.my.salesforce.com)
+Object: 140_Task
+Mode:   live
+
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+[22:14:34.711] ===== MIGRATION JOB STARTED =====
+[22:14:34.713] Execution of the command sfdmu:run has been started.
+[22:14:34.714] Loading and validating the export.json script (/Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/140_Task/export.json)...
+
+
+[22:14:35.329] ===== OBJECT SET #1 STARTED =====
+
+
+[22:14:35.330] SOURCE: us-prod (production).
+[22:14:35.330] TARGET: FullCopy (sandbox).
+
+
+[22:14:35.335] Preparing data migration job ...
+[22:14:35.335] Building the migration strategy ...
+[22:14:35.335] Connecting to the us-prod
+[22:14:35.764] Successfully connected to the us-prod.
+[22:14:35.764] Connecting to the FullCopy
+[22:14:35.974] Successfully connected to the FullCopy.
+[22:14:35.976] Loading Core Add-On Module declarations ...
+[22:14:35.978] Loading Add-On module core:RecordsTransform ...
+[22:14:36.0] {User} Fetching metadata (SOURCE) ...
+[22:14:36.3] {Task} Fetching metadata (SOURCE) ...
+[22:14:36.557] {Task} Fetching metadata (TARGET) ...
+[22:14:36.694] {User} Fetching metadata (TARGET) ...
+[22:14:36.838] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[22:14:37.934] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+
+
+[22:14:38.205] ANALYSING DATA...
+[22:14:38.205] {User} Processing the object ...
+[22:14:38.206] {Task} Processing the object ...
+[22:14:38.213] {User} Using REST API (v68.0) to retrieve the data ...
+[22:14:38.442] {User} The original query string of this object is returning 120 records from the SOURCE org.
+[22:14:38.444] {User} Using REST API (v68.0) to retrieve the data ...
+[22:14:38.563] {User} The original query string of this object is returning 1155 records from the TARGET org.
+[22:14:38.564] {Task} Using REST API (v68.0) to retrieve the data ...
+[22:14:39.427] {Task} The original query string of this object is returning 48547 records from the SOURCE org.
+[22:14:39.431] {Task} Using REST API (v68.0) to retrieve the data ...
+[22:14:40.195] {Task} The original query string of this object is returning 77984 records from the TARGET org.
+[22:14:40.196] Preparing of the data migration job has been completed.
+┌─────────────┬──────────────┬──────────────┐
+│ Query Order │ Delete Order │ Update Order │
+├─────────────┼──────────────┼──────────────┤
+│ User        │              │ Task         │
+│ Task        │              │              │
+└─────────────┴──────────────┴──────────────┘
+
+
+
+[22:14:40.224] Triggering Add-On events ...
+[22:14:40.224] No Add-On modules found to run.
+
+
+[22:14:40.224] Ready to process the data.
+
+
+[22:14:40.224] Deleting old data from the Target ...
+[22:14:40.224] Deleting data was skipped.
+
+
+[22:14:40.224] SOURCE:
+[22:14:40.224] =============
+
+
+[22:14:40.224] ===== Fetching the data (STAGE 1) =====
+[22:14:40.225] {User} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:14:40.225] {User} Query string: SELECT Id FROM User.
+[22:14:40.225] {User} Using REST API (v68.0) to retrieve the data ...
+[22:14:40.459] {User} Data retrieval (SOURCE) has been completed. Got 120 new records.
+[22:14:40.460] {Task} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:14:40.460] {Task} Query string: SELECT Id, Subject, ActivityDate, Status, Priority, Description, Type, CreatedDate, CreatedById, CallDurationInSeconds, CallType, CallDisposition, CallObject, ReminderDateTime, IsReminderSet, IsRecurrence, RecurrenceStartDateOnly, RecurrenceEndDateOn... FROM Task.
+[22:14:40.462] {Task} Using Bulk API Query (v68.0) to retrieve the data ...
+[22:14:49.298] In progress... Completed 2000 records.
+[22:14:49.432] In progress... Completed 4000 records.
+[22:14:49.624] In progress... Completed 6000 records.
+[22:14:49.719] In progress... Completed 8000 records.
+[22:14:49.776] In progress... Completed 10000 records.
+[22:14:49.865] In progress... Completed 12000 records.
+[22:14:49.920] In progress... Completed 14000 records.
+[22:14:49.982] In progress... Completed 16000 records.
+[22:14:50.66] In progress... Completed 18000 records.
+[22:14:50.125] In progress... Completed 20000 records.
+[22:14:50.214] In progress... Completed 22000 records.
+[22:14:50.278] In progress... Completed 24000 records.
+[22:14:50.330] In progress... Completed 26000 records.
+[22:14:50.386] In progress... Completed 28000 records.
+[22:14:50.438] In progress... Completed 30000 records.
+[22:14:50.483] In progress... Completed 32000 records.
+[22:14:50.537] In progress... Completed 34000 records.
+[22:14:50.587] In progress... Completed 36000 records.
+[22:14:50.673] In progress... Completed 38000 records.
+[22:14:50.847] In progress... Completed 40000 records.
+[22:14:51.0] In progress... Completed 42000 records.
+[22:14:51.139] In progress... Completed 44000 records.
+[22:14:51.266] In progress... Completed 46000 records.
+[22:14:51.440] In progress... Completed 48000 records.
+[22:14:51.614] In progress... Completed 48547 records.
+[22:14:51.918] {Task} Data retrieval (SOURCE) has been completed. Got 48547 new records.
+[22:14:51.918] Data retrieval (STAGE 1) has been completed.
+
+
+[22:14:51.918] ===== Fetching the data (STAGE 2) =====
+[22:14:51.918] PASS 1
+[22:14:51.918] =============
+[22:14:51.918] No records
+
+
+[22:14:51.918] PASS 2
+[22:14:51.918] =============
+[22:14:51.918] No records
+
+
+[22:14:51.919] PASS 3
+[22:14:51.919] =============
+[22:14:51.919] No records
+
+
+[22:14:51.919] PASS 4
+[22:14:51.919] =============
+[22:14:51.919] No records
+
+
+[22:14:51.919] TARGET:
+[22:14:51.919] =============
+[22:14:51.919] {User} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:14:51.920] {User} Query string: SELECT Legacy_User_id__c, Id FROM User.
+[22:14:51.920] {User} Using REST API (v68.0) to retrieve the data ...
+[22:14:52.149] {User} Data retrieval (TARGET) has been completed. Got 1155 new records.
+[22:14:52.150] {Task} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:14:52.150] {Task} Query string: SELECT ActivityCrossOrgTraceID__c, Subject, ActivityDate, Status, Priority, Description, Type, CreatedDate, CreatedById, CallDurationInSeconds, CallType, CallDisposition, CallObject, ReminderDateTime, IsReminderSet, IsRecurrence, RecurrenceStartDateO... FROM Task.
+[22:14:52.151] {Task} Using Bulk API Query (v68.0) to retrieve the data ...
+[22:15:25.56] In progress... Completed 2000 records.
+[22:15:25.372] In progress... Completed 4000 records.
+[22:15:26.471] In progress... Completed 6000 records.
+[22:15:27.177] In progress... Completed 8000 records.
+[22:15:27.555] In progress... Completed 10000 records.
+[22:15:28.237] In progress... Completed 12000 records.
+[22:15:28.666] In progress... Completed 14000 records.
+[22:15:29.115] In progress... Completed 16000 records.
+[22:15:29.402] In progress... Completed 18000 records.
+[22:15:29.641] In progress... Completed 20000 records.
+[22:15:29.782] In progress... Completed 22000 records.
+[22:15:29.927] In progress... Completed 24000 records.
+[22:15:30.50] In progress... Completed 26000 records.
+[22:15:30.550] In progress... Completed 28000 records.
+[22:15:31.242] In progress... Completed 30000 records.
+[22:15:31.709] In progress... Completed 32000 records.
+[22:15:32.62] In progress... Completed 34000 records.
+[22:15:32.320] In progress... Completed 36000 records.
+[22:15:32.918] In progress... Completed 38000 records.
+[22:15:33.682] In progress... Completed 40000 records.
+[22:15:34.443] In progress... Completed 42000 records.
+[22:15:35.21] In progress... Completed 44000 records.
+[22:15:35.663] In progress... Completed 46000 records.
+[22:15:36.396] In progress... Completed 48000 records.
+[22:15:37.751] In progress... Completed 50000 records.
+[22:15:39.47] In progress... Completed 52000 records.
+[22:15:40.376] In progress... Completed 54000 records.
+[22:15:40.785] In progress... Completed 56000 records.
+[22:15:41.71] In progress... Completed 58000 records.
+[22:15:42.60] In progress... Completed 60000 records.
+[22:15:44.564] In progress... Completed 62000 records.
+[22:15:45.704] In progress... Completed 64000 records.
+[22:15:46.242] In progress... Completed 66000 records.
+[22:15:46.487] In progress... Completed 68000 records.
+[22:15:46.658] In progress... Completed 70000 records.
+[22:15:46.965] In progress... Completed 72000 records.
+[22:15:47.155] In progress... Completed 74000 records.
+[22:15:48.612] In progress... Completed 76000 records.
+[22:15:49.216] In progress... Completed 77984 records.
+[22:15:49.705] {Task} Data retrieval (TARGET) has been completed. Got 77984 new records.
+[22:15:49.706] Data retrieval (STAGE 2) has been completed.
+
+
+[22:15:49.706] Triggering Add-On events ...
+[22:15:49.706] No Add-On modules found to run.
+
+
+[22:15:49.706] ===== DATA RETRIEVAL SUMMARY =====
+[22:15:49.706] {User} The total amount of the retrieved records from SOURCE by 1 queries: 120.
+[22:15:49.706] {User} The total amount of the retrieved records from TARGET by 1 queries: 1155.
+[22:15:49.706] {Task} The total amount of the retrieved records from SOURCE by 1 queries: 48547.
+[22:15:49.706] {Task} The total amount of the retrieved records from TARGET by 1 queries: 77984.
+[22:15:49.706] {Global} Add-On event:onDataRetrieved has been triggered.
+[22:15:49.706] [core:RecordsTransform] {Global} The Add-On module has started ...
+[22:15:49.707] [core:RecordsTransform] {Global} Checking the args ...
+[22:15:49.707] [core:RecordsTransform] {Global} Creating the transformation map ...
+[22:15:49.712] [core:RecordsTransform] {Global} Transforming records ...
+[22:16:01.564] [core:RecordsTransform] {Global} Totally transformed 48547 records.
+[22:16:01.564] [core:RecordsTransform] {Global} The Add-On module has stopped.
+[22:16:01.565] {Global} Add-On event:onDataRetrieved has been completed.
+
+
+
+
+[22:16:01.565] ===== Updating the Target (STAGE 1) =====
+Warning: [22:16:02.61] [WARNING] [WARNING] {Task.CreatedDate} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:16:02.62] [WARNING] [WARNING] {Task.CreatedById} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:16:02.62] [WARNING] [WARNING] {Task.IsRecurrence} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:16:02.62] [WARNING] [WARNING] {Task.TaskSubtype} Field is in query but is not updateable for Update operation and will be excluded from DML.
+[22:16:02.120] {Task} Amount of records to Insert: 7.
+[22:16:02.121] {Task} Using REST API (API v68.0) to execute Insert ...
+[22:16:02.121] {Task} The Insert API operation has been started using REST API.
+[22:16:02.121] [Job# REST:Insert] {Task} The job has been created. Uploading data ...
+[22:16:02.121] [Batch# REST:Insert] {Task} The batch has been created. Uploading data ...
+Warning: [22:16:02.410] [WARNING] [Batch# REST:Insert] {Task} Completed. 7 records processed, 7 records failed.
+[22:16:02.411] {Task} The Insert API operation has been completed.
+[22:16:02.416] {Task} Amount of records to Update: 48540.
+[22:16:02.438] {Task} Using BULK API V2 (API v68.0) to execute Update ...
+[22:16:02.439] {Task} The Update API operation has been started using BULK API V2.
+[22:16:02.898] [Job# 7509M00000qqhkZQAQ:Update] {Task} The job has been created. Uploading data ...
+[22:16:02.898] [Batch# 7509M00000qqhkZQAQ:Update] {Task} The batch has been created. Uploading data ...
+[22:16:20.835] [Batch# 7509M00000qqhkZQAQ:Update] {Task} The data has been uploaded. Processing ...
+[22:16:27.161] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 1000 records processed, 0 records failed.
+[22:16:32.908] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 6400 records processed, 0 records failed.
+[22:16:38.404] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 12400 records processed, 0 records failed.
+[22:16:43.858] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 18000 records processed, 0 records failed.
+[22:16:49.333] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 23200 records processed, 0 records failed.
+[22:16:54.755] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 28600 records processed, 0 records failed.
+[22:17:00.437] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 34200 records processed, 0 records failed.
+[22:17:06.249] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 39800 records processed, 0 records failed.
+[22:17:12.287] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 43740 records processed, 0 records failed.
+[22:17:18.0] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 47540 records processed, 0 records failed.
+[22:17:23.497] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Processing ... 48540 records processed, 0 records failed.
+[22:17:44.527] [Batch# 7509M00000qqhkZQAQ:Update] {Task} Completed. 48540 records processed, 0 records failed.
+[22:17:44.527] {Task} The Update API operation has been completed.
+[22:17:44.932] {Task} The Target has been updated. Totally processed 48547 records.
+
+
+
+
+[22:17:44.932] The Target (STAGE 1) has been updated. Totally processed 48547 records.
+
+
+[22:17:44.932] ===== Updating the Target (STAGE 2) =====
+
+
+[22:17:44.933] PASS 1
+[22:17:44.933] =============
+[22:17:45.281] {Task} Amount of records to Update: 48540.
+[22:17:45.283] {Task} Using BULK API V2 (API v68.0) to execute Update ...
+[22:17:45.284] {Task} The Update API operation has been started using BULK API V2.
+[22:17:45.597] [Job# 7509M00000qr8j4QAA:Update] {Task} The job has been created. Uploading data ...
+[22:17:45.598] [Batch# 7509M00000qr8j4QAA:Update] {Task} The batch has been created. Uploading data ...
+[22:17:47.544] [Batch# 7509M00000qr8j4QAA:Update] {Task} The data has been uploaded. Processing ...
+[22:17:53.482] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 4200 records processed, 0 records failed.
+[22:17:58.976] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 10200 records processed, 0 records failed.
+[22:18:04.387] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 16000 records processed, 0 records failed.
+[22:18:09.970] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 22400 records processed, 0 records failed.
+[22:18:15.404] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 28400 records processed, 0 records failed.
+[22:18:23.111] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 36140 records processed, 0 records failed.
+[22:18:28.541] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 40940 records processed, 0 records failed.
+[22:18:34.136] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 45540 records processed, 0 records failed.
+[22:18:40.12] [Batch# 7509M00000qr8j4QAA:Update] {Task} Processing ... 48540 records processed, 0 records failed.
+[22:18:48.759] [Batch# 7509M00000qr8j4QAA:Update] {Task} Completed. 48540 records processed, 0 records failed.
+[22:18:48.759] {Task} The Update API operation has been completed.
+[22:18:48.887] {Task} The Target has been updated. Totally processed 48540 records.
+
+
+
+
+[22:18:48.887] PASS 2
+[22:18:48.887] =============
+[22:18:49.295] {Task} Amount of records to Update: 48540.
+[22:18:49.299] {Task} Using BULK API V2 (API v68.0) to execute Update ...
+[22:18:49.299] {Task} The Update API operation has been started using BULK API V2.
+[22:18:49.673] [Job# 7509M00000qqn6sQAA:Update] {Task} The job has been created. Uploading data ...
+[22:18:49.674] [Batch# 7509M00000qqn6sQAA:Update] {Task} The batch has been created. Uploading data ...
+[22:18:51.397] [Batch# 7509M00000qqn6sQAA:Update] {Task} The data has been uploaded. Processing ...
+[22:18:57.200] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 2600 records processed, 0 records failed.
+[22:19:02.985] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 8200 records processed, 0 records failed.
+[22:19:08.435] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 14600 records processed, 0 records failed.
+[22:19:13.829] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 21000 records processed, 0 records failed.
+[22:19:19.310] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 26800 records processed, 0 records failed.
+[22:19:24.926] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 32200 records processed, 0 records failed.
+[22:19:30.520] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 38200 records processed, 0 records failed.
+[22:19:36.87] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 44340 records processed, 0 records failed.
+[22:19:41.528] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 48140 records processed, 0 records failed.
+[22:19:47.76] [Batch# 7509M00000qqn6sQAA:Update] {Task} Processing ... 48540 records processed, 0 records failed.
+[22:19:48.91] [Batch# 7509M00000qqn6sQAA:Update] {Task} Completed. 48540 records processed, 0 records failed.
+[22:19:48.92] {Task} The Update API operation has been completed.
+[22:19:48.213] {Task} The Target has been updated. Totally processed 48540 records.
+
+
+
+
+[22:19:48.213] The Target (STAGE 2) has been updated. Totally processed 97080 records.
+
+
+[22:19:48.213] Triggering Add-On events ...
+[22:19:48.214] No Add-On modules found to run.
+
+
+[22:19:48.214] ===== DATA PROCESSING SUMMARY =====
+[22:19:48.214] {User} Totally processed 0 records:
+[22:19:48.214] PASS 1: None.
+[22:19:48.215] PASS 2: None.
+[22:19:48.215] PASS 3: None.
+[22:19:48.215] {Task} Totally processed 145627 records:
+[22:19:48.215] PASS 1: Updated 48540, Deleted 0, Inserted 7.
+[22:19:48.215] PASS 2: Updated 48540, Deleted 0, Inserted 0.
+[22:19:48.215] PASS 3: Updated 48540, Deleted 0, Inserted 0.
+
+
+
+
+[22:19:48.216] ===== MIGRATION JOB ENDED =====
+[22:19:48.216] Command succeeded.
+[22:19:48.216] Execution of the command sfdmu:run has been completed. Exit code 0 (SUCCESS).
+[22:19:48.216] Total time elapsed: 00h 05m 13s 505ms .
+
+--- beendet (Exit-Code 0) ---

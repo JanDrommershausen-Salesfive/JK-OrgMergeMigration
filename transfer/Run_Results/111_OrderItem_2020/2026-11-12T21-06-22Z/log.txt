@@ -1,0 +1,722 @@
+$ ./run.sh 111_OrderItem_2020 --live
+
+Resolving source org alias 'us-prod'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+Resolving target org alias 'FullCopy'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+
+LIVE RUN — this will write to FullCopy (jk-group--fullcopy.sandbox.my.salesforce.com).
+
+Source: us-prod (00DDn000006CppDMAS)
+Target: FullCopy (00D9M00000VmMXRUA3, jk-group--fullcopy.sandbox.my.salesforce.com)
+Object: 111_OrderItem_2020
+Mode:   live
+
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+[22:06:33.695] ===== MIGRATION JOB STARTED =====
+[22:06:33.698] Execution of the command sfdmu:run has been started.
+[22:06:33.699] Loading and validating the export.json script (/Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/111_OrderItem_2020/export.json)...
+
+
+[22:06:34.318] ===== OBJECT SET #1 STARTED =====
+
+
+[22:06:34.319] SOURCE: us-prod (production).
+[22:06:34.319] TARGET: FullCopy (sandbox).
+
+
+[22:06:34.327] Preparing data migration job ...
+[22:06:34.328] Building the migration strategy ...
+[22:06:34.328] Connecting to the us-prod
+[22:06:34.757] Successfully connected to the us-prod.
+[22:06:34.758] Connecting to the FullCopy
+[22:06:34.908] Successfully connected to the FullCopy.
+[22:06:34.911] Loading Core Add-On Module declarations ...
+[22:06:34.931] {User} Fetching metadata (SOURCE) ...
+[22:06:34.934] {Product2} Fetching metadata (SOURCE) ...
+[22:06:34.936] {PricebookEntry} Fetching metadata (SOURCE) ...
+[22:06:34.937] {Order} Fetching metadata (SOURCE) ...
+[22:06:34.938] {OrderItem} Fetching metadata (SOURCE) ...
+[22:06:35.193] {PricebookEntry} Fetching metadata (TARGET) ...
+[22:06:35.224] {OrderItem} Fetching metadata (TARGET) ...
+[22:06:35.268] {Order} Fetching metadata (TARGET) ...
+[22:06:35.373] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[22:06:35.450] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[22:06:35.566] {User} Fetching metadata (TARGET) ...
+[22:06:35.604] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[22:06:35.689] {Product2} Fetching metadata (TARGET) ...
+[22:06:36.16] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[22:06:36.366] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+
+
+[22:06:36.602] ANALYSING DATA...
+[22:06:36.602] {Order} Processing the object ...
+[22:06:36.603] {PricebookEntry} Processing the object ...
+[22:06:36.603] {Product2} Processing the object ...
+[22:06:36.604] {User} Processing the object ...
+[22:06:36.604] {OrderItem} Processing the object ...
+[22:06:36.620] {Order} Using REST API (v68.0) to retrieve the data ...
+[22:06:37.162] {Order} The original query string of this object is returning 147013 records from the SOURCE org.
+[22:06:37.164] {Order} Using REST API (v68.0) to retrieve the data ...
+[22:06:37.587] {Order} The original query string of this object is returning 158810 records from the TARGET org.
+[22:06:37.588] {PricebookEntry} Using REST API (v68.0) to retrieve the data ...
+[22:06:37.877] {PricebookEntry} The original query string of this object is returning 27419 records from the SOURCE org.
+[22:06:37.879] {PricebookEntry} Using REST API (v68.0) to retrieve the data ...
+[22:06:38.23] {PricebookEntry} The original query string of this object is returning 102810 records from the TARGET org.
+[22:06:38.24] {Product2} Using REST API (v68.0) to retrieve the data ...
+[22:06:38.239] {Product2} The original query string of this object is returning 6250 records from the SOURCE org.
+[22:06:38.241] {Product2} Using REST API (v68.0) to retrieve the data ...
+[22:06:38.595] {Product2} The original query string of this object is returning 40383 records from the TARGET org.
+[22:06:38.596] {User} Using REST API (v68.0) to retrieve the data ...
+[22:06:38.801] {User} The original query string of this object is returning 120 records from the SOURCE org.
+[22:06:38.803] {User} Using REST API (v68.0) to retrieve the data ...
+[22:06:38.897] {User} The original query string of this object is returning 1154 records from the TARGET org.
+[22:06:38.902] {OrderItem} Using REST API (v68.0) to retrieve the data ...
+[22:06:40.333] {OrderItem} The original query string of this object is returning 64480 records from the SOURCE org.
+[22:06:40.337] {OrderItem} Using REST API (v68.0) to retrieve the data ...
+[22:06:41.413] {OrderItem} The original query string of this object is returning 58230 records from the TARGET org.
+[22:06:41.414] Preparing of the data migration job has been completed.
+┌────────────────┬──────────────┬──────────────┐
+│ Query Order    │ Delete Order │ Update Order │
+├────────────────┼──────────────┼──────────────┤
+│ Order          │              │ OrderItem    │
+│ PricebookEntry │              │              │
+│ Product2       │              │              │
+│ User           │              │              │
+│ OrderItem      │              │              │
+└────────────────┴──────────────┴──────────────┘
+
+
+
+[22:06:41.459] Triggering Add-On events ...
+[22:06:41.459] No Add-On modules found to run.
+
+
+[22:06:41.459] Ready to process the data.
+
+
+[22:06:41.460] Deleting old data from the Target ...
+[22:06:41.460] Deleting data was skipped.
+
+
+[22:06:41.460] SOURCE:
+[22:06:41.460] =============
+
+
+[22:06:41.460] ===== Fetching the data (STAGE 1) =====
+[22:06:41.460] {Order} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:06:41.460] {Order} Query string: SELECT Id, EffectiveDate FROM Order.
+[22:06:41.461] {Order} Using Bulk API Query (v68.0) to retrieve the data ...
+[22:06:49.73] In progress... Completed 2000 records.
+[22:06:49.81] In progress... Completed 4000 records.
+[22:06:49.85] In progress... Completed 6000 records.
+[22:06:49.88] In progress... Completed 8000 records.
+[22:06:49.92] In progress... Completed 10000 records.
+[22:06:49.165] In progress... Completed 12000 records.
+[22:06:49.174] In progress... Completed 14000 records.
+[22:06:49.178] In progress... Completed 16000 records.
+[22:06:49.181] In progress... Completed 18000 records.
+[22:06:49.184] In progress... Completed 20000 records.
+[22:06:49.187] In progress... Completed 22000 records.
+[22:06:49.190] In progress... Completed 24000 records.
+[22:06:49.195] In progress... Completed 26000 records.
+[22:06:49.198] In progress... Completed 28000 records.
+[22:06:49.200] In progress... Completed 30000 records.
+[22:06:49.203] In progress... Completed 32000 records.
+[22:06:49.302] In progress... Completed 34000 records.
+[22:06:49.306] In progress... Completed 36000 records.
+[22:06:49.310] In progress... Completed 38000 records.
+[22:06:49.316] In progress... Completed 40000 records.
+[22:06:49.320] In progress... Completed 42000 records.
+[22:06:49.323] In progress... Completed 44000 records.
+[22:06:49.326] In progress... Completed 46000 records.
+[22:06:49.329] In progress... Completed 48000 records.
+[22:06:49.332] In progress... Completed 50000 records.
+[22:06:49.337] In progress... Completed 52000 records.
+[22:06:49.341] In progress... Completed 54000 records.
+[22:06:49.344] In progress... Completed 56000 records.
+[22:06:49.347] In progress... Completed 58000 records.
+[22:06:49.350] In progress... Completed 60000 records.
+[22:06:49.443] In progress... Completed 62000 records.
+[22:06:49.447] In progress... Completed 64000 records.
+[22:06:49.451] In progress... Completed 66000 records.
+[22:06:49.454] In progress... Completed 68000 records.
+[22:06:49.458] In progress... Completed 70000 records.
+[22:06:49.461] In progress... Completed 72000 records.
+[22:06:49.464] In progress... Completed 74000 records.
+[22:06:49.467] In progress... Completed 76000 records.
+[22:06:49.472] In progress... Completed 78000 records.
+[22:06:49.475] In progress... Completed 80000 records.
+[22:06:49.477] In progress... Completed 82000 records.
+[22:06:49.480] In progress... Completed 84000 records.
+[22:06:49.482] In progress... Completed 86000 records.
+[22:06:49.485] In progress... Completed 88000 records.
+[22:06:49.491] In progress... Completed 90000 records.
+[22:06:49.494] In progress... Completed 92000 records.
+[22:06:49.496] In progress... Completed 94000 records.
+[22:06:49.499] In progress... Completed 96000 records.
+[22:06:49.501] In progress... Completed 98000 records.
+[22:06:49.503] In progress... Completed 100000 records.
+[22:06:49.506] In progress... Completed 102000 records.
+[22:06:49.510] In progress... Completed 104000 records.
+[22:06:49.512] In progress... Completed 106000 records.
+[22:06:49.514] In progress... Completed 108000 records.
+[22:06:49.517] In progress... Completed 110000 records.
+[22:06:49.519] In progress... Completed 112000 records.
+[22:06:49.521] In progress... Completed 114000 records.
+[22:06:49.524] In progress... Completed 116000 records.
+[22:06:49.529] In progress... Completed 118000 records.
+[22:06:49.532] In progress... Completed 120000 records.
+[22:06:49.535] In progress... Completed 122000 records.
+[22:06:49.538] In progress... Completed 124000 records.
+[22:06:49.540] In progress... Completed 126000 records.
+[22:06:49.585] In progress... Completed 128000 records.
+[22:06:49.587] In progress... Completed 130000 records.
+[22:06:49.590] In progress... Completed 132000 records.
+[22:06:49.592] In progress... Completed 134000 records.
+[22:06:49.595] In progress... Completed 136000 records.
+[22:06:49.597] In progress... Completed 138000 records.
+[22:06:49.600] In progress... Completed 140000 records.
+[22:06:49.602] In progress... Completed 142000 records.
+[22:06:49.606] In progress... Completed 144000 records.
+[22:06:49.608] In progress... Completed 146000 records.
+[22:06:49.611] In progress... Completed 147013 records.
+[22:06:49.707] {Order} Data retrieval (SOURCE) has been completed. Got 147013 new records.
+[22:06:49.707] {PricebookEntry} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:06:49.707] {PricebookEntry} Query string: SELECT Id, IsActive FROM PricebookEntry.
+[22:06:49.707] {PricebookEntry} Using REST API (v68.0) to retrieve the data ...
+[22:06:50.143] In progress... Completed 2000 records.
+[22:06:50.523] In progress... Completed 4000 records.
+[22:06:50.987] In progress... Completed 6000 records.
+[22:06:51.401] In progress... Completed 8000 records.
+[22:06:51.810] In progress... Completed 10000 records.
+[22:06:52.197] In progress... Completed 12000 records.
+[22:06:52.577] In progress... Completed 14000 records.
+[22:06:52.959] In progress... Completed 16000 records.
+[22:06:53.337] In progress... Completed 18000 records.
+[22:06:53.585] In progress... Completed 20000 records.
+[22:06:53.846] In progress... Completed 22000 records.
+[22:06:54.369] In progress... Completed 24000 records.
+[22:06:54.632] In progress... Completed 26000 records.
+[22:06:55.292] In progress... Completed 27419 records.
+[22:06:55.310] {PricebookEntry} Data retrieval (SOURCE) has been completed. Got 27419 new records.
+[22:06:55.311] {Product2} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:06:55.311] {Product2} Query string: SELECT Id, Name FROM Product2.
+[22:06:55.311] {Product2} Using REST API (v68.0) to retrieve the data ...
+[22:06:55.726] In progress... Completed 2000 records.
+[22:06:56.151] In progress... Completed 4000 records.
+[22:06:56.597] In progress... Completed 6000 records.
+[22:06:56.797] In progress... Completed 6250 records.
+[22:06:56.809] {Product2} Data retrieval (SOURCE) has been completed. Got 6250 new records.
+[22:06:56.810] {User} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:06:56.811] {User} Query string: SELECT Id FROM User.
+[22:06:56.811] {User} Using REST API (v68.0) to retrieve the data ...
+[22:06:57.39] {User} Data retrieval (SOURCE) has been completed. Got 120 new records.
+[22:06:57.40] {OrderItem} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[22:06:57.41] {OrderItem} Query string: SELECT Id, Product2Id, OrderId, PricebookEntryId, Quantity, UnitPrice, ServiceDate, EndDate, Description, Scheduled_Install_Date__c, Product_Status__c, Description__c, Estimated_Release_Date__c, Invoice_Date__c, Delivery_Contact__c, Forwarding_Agent_... FROM OrderItem WHERE Order.EffectiveDate >= 2020-01-01 AND Order.EffectiveDate <= 2020-12-31 ORDER BY OrderId.
+[22:06:57.42] {OrderItem} Using Bulk API Query (v68.0) to retrieve the data ...
+[22:07:10.298] In progress... Completed 2000 records.
+[22:07:10.350] In progress... Completed 4000 records.
+[22:07:10.492] In progress... Completed 6000 records.
+[22:07:10.527] In progress... Completed 8000 records.
+[22:07:10.608] In progress... Completed 10000 records.
+[22:07:10.643] In progress... Completed 12000 records.
+[22:07:10.676] In progress... Completed 14000 records.
+[22:07:10.708] In progress... Completed 16000 records.
+[22:07:10.741] In progress... Completed 18000 records.
+[22:07:10.774] In progress... Completed 20000 records.
+[22:07:10.807] In progress... Completed 22000 records.
+[22:07:10.839] In progress... Completed 24000 records.
+[22:07:10.871] In progress... Completed 26000 records.
+[22:07:10.912] In progress... Completed 28000 records.
+[22:07:10.945] In progress... Completed 30000 records.
+[22:07:10.979] In progress... Completed 32000 records.
+[22:07:11.11] In progress... Completed 34000 records.
+[22:07:11.43] In progress... Completed 36000 records.
+[22:07:11.76] In progress... Completed 38000 records.
+[22:07:11.110] In progress... Completed 40000 records.
+[22:07:11.143] In progress... Completed 42000 records.
+[22:07:11.176] In progress... Completed 44000 records.
+[22:07:11.209] In progress... Completed 46000 records.
+[22:07:11.241] In progress... Completed 48000 records.
+[22:07:11.274] In progress... Completed 50000 records.
+[22:07:11.307] In progress... Completed 52000 records.
+[22:07:11.340] In progress... Completed 54000 records.
+[22:07:11.374] In progress... Completed 56000 records.
+[22:07:11.407] In progress... Completed 58000 records.
+[22:07:11.453] In progress... Completed 60000 records.
+[22:07:11.487] In progress... Completed 62000 records.
+[22:07:11.520] In progress... Completed 64000 records.
+[22:07:11.555] In progress... Completed 64480 records.
+[22:07:11.938] {OrderItem} Data retrieval (SOURCE) has been completed. Got 64480 new records.
+[22:07:11.938] Data retrieval (STAGE 1) has been completed.
+
+
+[22:07:11.938] ===== Fetching the data (STAGE 2) =====
+[22:07:11.938] PASS 1
+[22:07:11.938] =============
+[22:07:11.939] No records
+
+
+[22:07:11.939] PASS 2
+[22:07:11.939] =============
+[22:07:11.939] No records
+
+
+[22:07:11.939] PASS 3
+[22:07:11.939] =============
+[22:07:11.939] No records
+
+
+[22:07:11.939] PASS 4
+[22:07:11.939] =============
+[22:07:11.939] No records
+
+
+[22:07:11.939] TARGET:
+[22:07:11.939] =============
+[22:07:11.940] {Order} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:07:11.940] {Order} Query string: SELECT OrderCrossOrgTraceID__c, EffectiveDate, Id FROM Order.
+[22:07:11.940] {Order} Using Bulk API Query (v68.0) to retrieve the data ...
+[22:09:12.81] In progress... Completed 2000 records.
+[22:09:12.88] In progress... Completed 4000 records.
+[22:09:12.94] In progress... Completed 6000 records.
+[22:09:12.100] In progress... Completed 8000 records.
+[22:09:12.106] In progress... Completed 10000 records.
+[22:09:12.112] In progress... Completed 12000 records.
+[22:09:12.128] In progress... Completed 14000 records.
+[22:09:12.133] In progress... Completed 16000 records.
+[22:09:12.138] In progress... Completed 18000 records.
+[22:09:12.145] In progress... Completed 20000 records.
+[22:09:12.152] In progress... Completed 22000 records.
+[22:09:12.157] In progress... Completed 24000 records.
+[22:09:12.164] In progress... Completed 26000 records.
+[22:09:12.169] In progress... Completed 28000 records.
+[22:09:12.177] In progress... Completed 30000 records.
+[22:09:12.183] In progress... Completed 32000 records.
+[22:09:12.188] In progress... Completed 34000 records.
+[22:09:12.193] In progress... Completed 36000 records.
+[22:09:12.198] In progress... Completed 38000 records.
+[22:09:12.204] In progress... Completed 40000 records.
+[22:09:12.208] In progress... Completed 42000 records.
+[22:09:12.212] In progress... Completed 44000 records.
+[22:09:12.219] In progress... Completed 46000 records.
+[22:09:12.226] In progress... Completed 48000 records.
+[22:09:12.232] In progress... Completed 50000 records.
+[22:09:12.240] In progress... Completed 52000 records.
+[22:09:12.248] In progress... Completed 54000 records.
+[22:09:12.257] In progress... Completed 56000 records.
+[22:09:12.270] In progress... Completed 58000 records.
+[22:09:12.274] In progress... Completed 60000 records.
+[22:09:12.280] In progress... Completed 62000 records.
+[22:09:12.285] In progress... Completed 64000 records.
+[22:09:12.293] In progress... Completed 66000 records.
+[22:09:12.297] In progress... Completed 68000 records.
+[22:09:12.301] In progress... Completed 70000 records.
+[22:09:12.304] In progress... Completed 72000 records.
+[22:09:12.308] In progress... Completed 74000 records.
+[22:09:12.312] In progress... Completed 76000 records.
+[22:09:12.315] In progress... Completed 78000 records.
+[22:09:12.321] In progress... Completed 80000 records.
+[22:09:12.325] In progress... Completed 82000 records.
+[22:09:12.328] In progress... Completed 84000 records.
+[22:09:12.332] In progress... Completed 86000 records.
+[22:09:12.335] In progress... Completed 88000 records.
+[22:09:12.341] In progress... Completed 90000 records.
+[22:09:12.344] In progress... Completed 92000 records.
+[22:09:12.348] In progress... Completed 94000 records.
+[22:09:12.351] In progress... Completed 96000 records.
+[22:09:12.355] In progress... Completed 98000 records.
+[22:09:12.358] In progress... Completed 100000 records.
+[22:09:12.363] In progress... Completed 102000 records.
+[22:09:12.366] In progress... Completed 104000 records.
+[22:09:12.370] In progress... Completed 106000 records.
+[22:09:12.373] In progress... Completed 108000 records.
+[22:09:12.377] In progress... Completed 110000 records.
+[22:09:12.381] In progress... Completed 112000 records.
+[22:09:12.387] In progress... Completed 114000 records.
+[22:09:12.390] In progress... Completed 116000 records.
+[22:09:12.394] In progress... Completed 118000 records.
+[22:09:12.397] In progress... Completed 120000 records.
+[22:09:12.401] In progress... Completed 122000 records.
+[22:09:12.404] In progress... Completed 124000 records.
+[22:09:12.410] In progress... Completed 126000 records.
+[22:09:12.413] In progress... Completed 128000 records.
+[22:09:12.417] In progress... Completed 130000 records.
+[22:09:12.421] In progress... Completed 132000 records.
+[22:09:12.424] In progress... Completed 134000 records.
+[22:09:12.428] In progress... Completed 136000 records.
+[22:09:12.433] In progress... Completed 138000 records.
+[22:09:12.437] In progress... Completed 140000 records.
+[22:09:12.440] In progress... Completed 142000 records.
+[22:09:12.444] In progress... Completed 144000 records.
+[22:09:12.448] In progress... Completed 146000 records.
+[22:09:12.452] In progress... Completed 148000 records.
+[22:09:12.455] In progress... Completed 150000 records.
+[22:09:12.458] In progress... Completed 152000 records.
+[22:09:12.461] In progress... Completed 154000 records.
+[22:09:12.464] In progress... Completed 156000 records.
+[22:09:12.467] In progress... Completed 158000 records.
+[22:09:12.472] In progress... Completed 158810 records.
+[22:09:12.703] {Order} Data retrieval (TARGET) has been completed. Got 158810 new records.
+[22:09:12.704] {PricebookEntry} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:09:12.704] {PricebookEntry} Query string: SELECT PriceBookEntryCrossOrgTraceID__c, IsActive, Id FROM PricebookEntry.
+[22:09:12.704] {PricebookEntry} Using Bulk API Query (v68.0) to retrieve the data ...
+[22:09:20.20] In progress... Completed 2000 records.
+[22:09:20.26] In progress... Completed 4000 records.
+[22:09:20.30] In progress... Completed 6000 records.
+[22:09:20.35] In progress... Completed 8000 records.
+[22:09:20.39] In progress... Completed 10000 records.
+[22:09:20.44] In progress... Completed 12000 records.
+[22:09:20.52] In progress... Completed 14000 records.
+[22:09:20.57] In progress... Completed 16000 records.
+[22:09:20.61] In progress... Completed 18000 records.
+[22:09:20.66] In progress... Completed 20000 records.
+[22:09:20.69] In progress... Completed 22000 records.
+[22:09:20.77] In progress... Completed 24000 records.
+[22:09:20.80] In progress... Completed 26000 records.
+[22:09:20.84] In progress... Completed 28000 records.
+[22:09:20.88] In progress... Completed 30000 records.
+[22:09:20.91] In progress... Completed 32000 records.
+[22:09:20.95] In progress... Completed 34000 records.
+[22:09:20.102] In progress... Completed 36000 records.
+[22:09:20.104] In progress... Completed 38000 records.
+[22:09:20.107] In progress... Completed 40000 records.
+[22:09:20.110] In progress... Completed 42000 records.
+[22:09:20.112] In progress... Completed 44000 records.
+[22:09:20.115] In progress... Completed 46000 records.
+[22:09:20.118] In progress... Completed 48000 records.
+[22:09:20.123] In progress... Completed 50000 records.
+[22:09:20.126] In progress... Completed 52000 records.
+[22:09:20.129] In progress... Completed 54000 records.
+[22:09:20.131] In progress... Completed 56000 records.
+[22:09:20.134] In progress... Completed 58000 records.
+[22:09:20.137] In progress... Completed 60000 records.
+[22:09:20.141] In progress... Completed 62000 records.
+[22:09:20.144] In progress... Completed 64000 records.
+[22:09:20.147] In progress... Completed 66000 records.
+[22:09:20.150] In progress... Completed 68000 records.
+[22:09:20.153] In progress... Completed 70000 records.
+[22:09:20.155] In progress... Completed 72000 records.
+[22:09:20.160] In progress... Completed 74000 records.
+[22:09:20.162] In progress... Completed 76000 records.
+[22:09:20.165] In progress... Completed 78000 records.
+[22:09:20.168] In progress... Completed 80000 records.
+[22:09:20.171] In progress... Completed 82000 records.
+[22:09:20.173] In progress... Completed 84000 records.
+[22:09:20.176] In progress... Completed 86000 records.
+[22:09:20.180] In progress... Completed 88000 records.
+[22:09:20.183] In progress... Completed 90000 records.
+[22:09:20.185] In progress... Completed 92000 records.
+[22:09:20.188] In progress... Completed 94000 records.
+[22:09:20.191] In progress... Completed 96000 records.
+[22:09:20.193] In progress... Completed 98000 records.
+[22:09:20.196] In progress... Completed 100000 records.
+[22:09:20.200] In progress... Completed 102000 records.
+[22:09:20.203] In progress... Completed 102810 records.
+[22:09:20.265] {PricebookEntry} Data retrieval (TARGET) has been completed. Got 102810 new records.
+[22:09:20.265] {Product2} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:09:20.265] {Product2} Query string: SELECT ProductCrossOrgTraceID__c, Name, Id FROM Product2.
+[22:09:20.265] {Product2} Using Bulk API Query (v68.0) to retrieve the data ...
+[22:09:37.386] In progress... Completed 2000 records.
+[22:09:37.394] In progress... Completed 4000 records.
+[22:09:37.401] In progress... Completed 6000 records.
+[22:09:37.407] In progress... Completed 8000 records.
+[22:09:37.411] In progress... Completed 10000 records.
+[22:09:37.423] In progress... Completed 12000 records.
+[22:09:37.428] In progress... Completed 14000 records.
+[22:09:37.436] In progress... Completed 16000 records.
+[22:09:37.444] In progress... Completed 18000 records.
+[22:09:37.449] In progress... Completed 20000 records.
+[22:09:37.457] In progress... Completed 22000 records.
+[22:09:37.468] In progress... Completed 24000 records.
+[22:09:37.474] In progress... Completed 26000 records.
+[22:09:37.479] In progress... Completed 28000 records.
+[22:09:37.485] In progress... Completed 30000 records.
+[22:09:37.490] In progress... Completed 32000 records.
+[22:09:37.497] In progress... Completed 34000 records.
+[22:09:37.503] In progress... Completed 36000 records.
+[22:09:37.508] In progress... Completed 38000 records.
+[22:09:37.514] In progress... Completed 40000 records.
+[22:09:37.517] In progress... Completed 40383 records.
+[22:09:37.544] {Product2} Data retrieval (TARGET) has been completed. Got 40383 new records.
+[22:09:37.544] {User} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:09:37.545] {User} Query string: SELECT Legacy_User_id__c, Id FROM User.
+[22:09:37.545] {User} Using REST API (v68.0) to retrieve the data ...
+[22:09:37.655] {User} Data retrieval (TARGET) has been completed. Got 1154 new records.
+[22:09:37.657] {OrderItem} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[22:09:37.657] {OrderItem} Query string: SELECT OrderItemCrossOrgTraceID__c, Product2Id, OrderId, PricebookEntryId, Quantity, UnitPrice, ServiceDate, EndDate, Description, Scheduled_Install_Date__c, Product_Status__c, Description__c, Estimated_Release_Date__c, Invoice_Date__c, Delivery_Cont... FROM OrderItem WHERE Order.EffectiveDate >= 2020-01-01 AND Order.EffectiveDate <= 2020-12-31 ORDER BY OrderId.
+[22:09:37.657] {OrderItem} Using Bulk API Query (v68.0) to retrieve the data ...
+[22:09:50.518] In progress... Completed 2000 records.
+[22:09:50.555] In progress... Completed 4000 records.
+[22:09:50.593] In progress... Completed 6000 records.
+[22:09:50.626] In progress... Completed 8000 records.
+[22:09:50.659] In progress... Completed 10000 records.
+[22:09:50.691] In progress... Completed 12000 records.
+[22:09:50.725] In progress... Completed 14000 records.
+[22:09:50.760] In progress... Completed 16000 records.
+[22:09:50.799] In progress... Completed 18000 records.
+[22:09:50.844] In progress... Completed 20000 records.
+[22:09:50.877] In progress... Completed 22000 records.
+[22:09:50.911] In progress... Completed 24000 records.
+[22:09:50.945] In progress... Completed 26000 records.
+[22:09:50.979] In progress... Completed 28000 records.
+[22:09:51.11] In progress... Completed 30000 records.
+[22:09:51.44] In progress... Completed 32000 records.
+[22:09:51.77] In progress... Completed 34000 records.
+[22:09:51.111] In progress... Completed 36000 records.
+[22:09:51.144] In progress... Completed 38000 records.
+[22:09:51.176] In progress... Completed 40000 records.
+[22:09:51.208] In progress... Completed 42000 records.
+[22:09:51.241] In progress... Completed 44000 records.
+[22:09:51.273] In progress... Completed 46000 records.
+[22:09:51.306] In progress... Completed 48000 records.
+[22:09:51.338] In progress... Completed 50000 records.
+[22:09:51.371] In progress... Completed 52000 records.
+[22:09:51.403] In progress... Completed 54000 records.
+[22:09:51.436] In progress... Completed 56000 records.
+[22:09:51.468] In progress... Completed 58000 records.
+[22:09:51.496] In progress... Completed 58230 records.
+[22:09:52.93] {OrderItem} Data retrieval (TARGET) has been completed. Got 58230 new records.
+[22:09:52.93] Data retrieval (STAGE 2) has been completed.
+
+
+[22:09:52.93] Triggering Add-On events ...
+[22:09:52.94] No Add-On modules found to run.
+
+
+[22:09:52.94] ===== DATA RETRIEVAL SUMMARY =====
+[22:09:52.94] {Order} The total amount of the retrieved records from SOURCE by 1 queries: 147013.
+[22:09:52.94] {Order} The total amount of the retrieved records from TARGET by 1 queries: 158810.
+[22:09:52.94] {PricebookEntry} The total amount of the retrieved records from SOURCE by 1 queries: 27419.
+[22:09:52.94] {PricebookEntry} The total amount of the retrieved records from TARGET by 1 queries: 102810.
+[22:09:52.94] {Product2} The total amount of the retrieved records from SOURCE by 1 queries: 6250.
+[22:09:52.94] {Product2} The total amount of the retrieved records from TARGET by 1 queries: 40383.
+[22:09:52.94] {User} The total amount of the retrieved records from SOURCE by 1 queries: 120.
+[22:09:52.94] {User} The total amount of the retrieved records from TARGET by 1 queries: 1154.
+[22:09:52.94] {OrderItem} The total amount of the retrieved records from SOURCE by 1 queries: 64480.
+[22:09:52.94] {OrderItem} The total amount of the retrieved records from TARGET by 1 queries: 58230.
+
+
+
+
+[22:09:52.94] ===== Updating the Target (STAGE 1) =====
+Warning: [22:09:52.855] [WARNING] [WARNING] {OrderItem.Product2Id} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:09:52.856] [WARNING] [WARNING] {OrderItem.OrderId} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:09:52.856] [WARNING] [WARNING] {OrderItem.PricebookEntryId} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:09:52.856] [WARNING] [WARNING] {OrderItem.CreatedDate} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [22:09:52.856] [WARNING] [WARNING] {OrderItem.CreatedById} Field is in query but is not updateable for Update operation and will be excluded from DML.
+[22:09:53.27] {OrderItem} Amount of records to Insert: 6250.
+[22:09:53.28] {OrderItem} Using BULK API V2 (API v68.0) to execute Insert ...
+[22:09:53.28] {OrderItem} The Insert API operation has been started using BULK API V2.
+[22:09:53.489] [Job# 7509M00000qmrSJQAY:Insert] {OrderItem} The job has been created. Uploading data ...
+[22:09:53.489] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} The batch has been created. Uploading data ...
+[22:09:54.847] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} The data has been uploaded. Processing ...
+[22:10:00.835] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 800 records processed, 800 records failed.
+[22:10:06.342] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 1200 records processed, 1061 records failed.
+[22:10:11.786] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 1400 records processed, 1068 records failed.
+[22:10:17.232] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 1800 records processed, 1247 records failed.
+[22:10:22.701] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 2000 records processed, 1248 records failed.
+[22:10:28.55] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 2200 records processed, 1263 records failed.
+[22:10:33.912] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 2600 records processed, 1263 records failed.
+[22:10:39.458] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 3000 records processed, 1272 records failed.
+[22:10:44.881] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 3200 records processed, 1356 records failed.
+[22:10:50.240] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 3800 records processed, 1778 records failed.
+[22:10:55.597] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 4000 records processed, 1793 records failed.
+[22:11:01.151] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 4400 records processed, 1959 records failed.
+[22:11:06.532] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 4800 records processed, 2329 records failed.
+[22:11:12.106] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 5000 records processed, 2330 records failed.
+[22:11:17.570] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 5400 records processed, 2348 records failed.
+[22:11:22.949] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 5600 records processed, 2354 records failed.
+[22:11:28.492] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 5800 records processed, 2398 records failed.
+[22:11:33.851] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 6000 records processed, 2411 records failed.
+[22:11:39.347] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Processing ... 6250 records processed, 2495 records failed.
+Warning: [22:11:45.530] [WARNING] [Batch# 7509M00000qmrSJQAY:Insert] {OrderItem} Completed. 6250 records processed, 2495 records failed.
+[22:11:45.530] {OrderItem} The Insert API operation has been completed.
+[22:11:45.631] {OrderItem} Amount of records to Update: 58230.
+[22:11:45.661] {OrderItem} Using BULK API V2 (API v68.0) to execute Update ...
+[22:11:45.661] {OrderItem} The Update API operation has been started using BULK API V2.
+[22:11:46.146] [Job# 7509M00000qmld2QAA:Update] {OrderItem} The job has been created. Uploading data ...
+[22:11:46.147] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} The batch has been created. Uploading data ...
+[22:11:51.370] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} The data has been uploaded. Processing ...
+[22:11:57.266] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 2800 records processed, 0 records failed.
+[22:12:02.643] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 5600 records processed, 0 records failed.
+[22:12:08.123] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 8000 records processed, 0 records failed.
+[22:12:13.548] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 10600 records processed, 0 records failed.
+[22:12:19.78] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 13000 records processed, 0 records failed.
+[22:12:24.454] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 15800 records processed, 0 records failed.
+[22:12:29.960] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 17200 records processed, 200 records failed.
+[22:12:35.462] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 18800 records processed, 200 records failed.
+[22:12:40.789] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 20400 records processed, 200 records failed.
+[22:12:46.212] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 22600 records processed, 200 records failed.
+[22:12:51.640] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 25000 records processed, 200 records failed.
+[22:12:57.74] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 27000 records processed, 200 records failed.
+[22:13:02.493] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 29000 records processed, 200 records failed.
+[22:13:08.1] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 31400 records processed, 200 records failed.
+[22:13:13.466] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 33600 records processed, 200 records failed.
+[22:13:18.983] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 35800 records processed, 200 records failed.
+[22:13:24.614] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 38200 records processed, 200 records failed.
+[22:13:30.197] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 39400 records processed, 200 records failed.
+[22:13:35.645] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 40600 records processed, 200 records failed.
+[22:13:40.997] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 41800 records processed, 200 records failed.
+[22:13:46.425] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 43000 records processed, 200 records failed.
+[22:13:51.931] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 44200 records processed, 200 records failed.
+[22:13:57.380] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 45200 records processed, 200 records failed.
+[22:14:02.801] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 46200 records processed, 200 records failed.
+[22:14:08.179] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 47200 records processed, 200 records failed.
+[22:14:13.680] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 48200 records processed, 200 records failed.
+[22:14:19.92] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 49800 records processed, 200 records failed.
+[22:14:24.499] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 51200 records processed, 200 records failed.
+[22:14:29.918] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 52200 records processed, 200 records failed.
+[22:14:35.372] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 53200 records processed, 200 records failed.
+[22:14:40.772] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 54000 records processed, 200 records failed.
+[22:14:46.228] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 55030 records processed, 200 records failed.
+[22:14:51.648] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 56030 records processed, 200 records failed.
+[22:14:57.82] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 56830 records processed, 200 records failed.
+[22:15:02.613] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 57830 records processed, 200 records failed.
+[22:15:08.62] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Processing ... 58230 records processed, 200 records failed.
+Warning: [22:15:15.843] [WARNING] [Batch# 7509M00000qmld2QAA:Update] {OrderItem} Completed. 58230 records processed, 200 records failed.
+[22:15:15.843] {OrderItem} The Update API operation has been completed.
+[22:15:16.420] {OrderItem} The Target has been updated. Totally processed 64480 records.
+
+
+
+
+[22:15:16.420] The Target (STAGE 1) has been updated. Totally processed 64480 records.
+
+
+[22:15:16.420] ===== Updating the Target (STAGE 2) =====
+
+
+[22:15:16.421] PASS 1
+[22:15:16.421] =============
+[22:15:17.234] {OrderItem} Amount of records to Update: 61985.
+[22:15:17.242] {OrderItem} Using BULK API V2 (API v68.0) to execute Update ...
+[22:15:17.242] {OrderItem} The Update API operation has been started using BULK API V2.
+[22:15:17.598] [Job# 7509M00000qmpjuQAA:Update] {OrderItem} The job has been created. Uploading data ...
+[22:15:17.599] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} The batch has been created. Uploading data ...
+[22:15:19.608] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} The data has been uploaded. Processing ...
+[22:15:25.549] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 1400 records processed, 0 records failed.
+[22:15:30.944] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 2800 records processed, 0 records failed.
+[22:15:36.337] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 4200 records processed, 0 records failed.
+[22:15:42.26] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 8000 records processed, 200 records failed.
+[22:15:47.388] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 9600 records processed, 200 records failed.
+[22:15:52.809] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 12400 records processed, 200 records failed.
+[22:15:58.146] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 14000 records processed, 200 records failed.
+[22:16:03.592] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 15400 records processed, 200 records failed.
+[22:16:09.125] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 17200 records processed, 200 records failed.
+[22:16:14.701] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 19800 records processed, 400 records failed.
+[22:16:20.94] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 21385 records processed, 400 records failed.
+[22:16:25.660] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 22585 records processed, 400 records failed.
+[22:16:31.18] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 26185 records processed, 600 records failed.
+[22:16:36.461] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 30385 records processed, 600 records failed.
+[22:16:41.865] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 34185 records processed, 600 records failed.
+[22:16:47.318] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 38585 records processed, 600 records failed.
+[22:16:52.691] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 40785 records processed, 600 records failed.
+[22:16:58.184] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 42985 records processed, 600 records failed.
+[22:17:03.606] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 44185 records processed, 600 records failed.
+[22:17:09.20] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 46185 records processed, 600 records failed.
+[22:17:14.818] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 48585 records processed, 600 records failed.
+[22:17:20.196] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 49585 records processed, 600 records failed.
+[22:17:25.561] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 50585 records processed, 600 records failed.
+[22:17:30.929] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 51985 records processed, 600 records failed.
+[22:17:36.418] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 53185 records processed, 600 records failed.
+[22:17:42.463] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 54185 records processed, 600 records failed.
+[22:17:47.909] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 54985 records processed, 600 records failed.
+[22:17:53.290] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 56185 records processed, 600 records failed.
+[22:17:58.631] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 57185 records processed, 600 records failed.
+[22:18:04.47] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 58185 records processed, 600 records failed.
+[22:18:09.488] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 59385 records processed, 600 records failed.
+[22:18:14.890] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 60385 records processed, 600 records failed.
+[22:18:20.348] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 61585 records processed, 600 records failed.
+[22:18:25.730] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Processing ... 61985 records processed, 600 records failed.
+Warning: [22:18:32.474] [WARNING] [Batch# 7509M00000qmpjuQAA:Update] {OrderItem} Completed. 61985 records processed, 600 records failed.
+[22:18:32.475] {OrderItem} The Update API operation has been completed.
+[22:18:32.689] {OrderItem} The Target has been updated. Totally processed 61985 records.
+
+
+
+
+[22:18:32.689] PASS 2
+[22:18:32.689] =============
+[22:18:33.703] {OrderItem} Amount of records to Update: 61985.
+[22:18:33.713] {OrderItem} Using BULK API V2 (API v68.0) to execute Update ...
+[22:18:33.713] {OrderItem} The Update API operation has been started using BULK API V2.
+[22:18:34.9] [Job# 7509M00000qmtieQAA:Update] {OrderItem} The job has been created. Uploading data ...
+[22:18:34.10] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} The batch has been created. Uploading data ...
+[22:18:36.627] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} The data has been uploaded. Processing ...
+[22:18:42.448] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 800 records processed, 0 records failed.
+[22:18:47.794] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 3000 records processed, 0 records failed.
+[22:18:53.143] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 4800 records processed, 0 records failed.
+[22:18:58.600] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 9600 records processed, 200 records failed.
+[22:19:03.966] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 12400 records processed, 200 records failed.
+[22:19:09.390] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 14400 records processed, 200 records failed.
+[22:19:15.17] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 16400 records processed, 400 records failed.
+[22:19:20.559] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 18000 records processed, 400 records failed.
+[22:19:26.52] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 20600 records processed, 400 records failed.
+[22:19:31.520] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 22785 records processed, 400 records failed.
+[22:19:37.252] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 24385 records processed, 400 records failed.
+[22:19:42.668] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 27385 records processed, 400 records failed.
+[22:19:48.205] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 30385 records processed, 400 records failed.
+[22:19:53.637] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 33585 records processed, 400 records failed.
+[22:19:59.61] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 37185 records processed, 400 records failed.
+[22:20:04.621] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 39385 records processed, 400 records failed.
+[22:20:09.980] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 42985 records processed, 400 records failed.
+[22:20:15.371] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 44985 records processed, 400 records failed.
+[22:20:20.860] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 47785 records processed, 400 records failed.
+[22:20:26.262] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 49385 records processed, 400 records failed.
+[22:20:31.829] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 50585 records processed, 400 records failed.
+[22:20:37.204] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 51785 records processed, 400 records failed.
+[22:20:42.739] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 53185 records processed, 400 records failed.
+[22:20:48.146] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 54585 records processed, 400 records failed.
+[22:20:53.859] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 55785 records processed, 400 records failed.
+[22:20:59.284] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 57185 records processed, 400 records failed.
+[22:21:04.633] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 58385 records processed, 400 records failed.
+[22:21:10.57] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 59785 records processed, 400 records failed.
+[22:21:15.433] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 61185 records processed, 400 records failed.
+[22:21:20.982] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Processing ... 61985 records processed, 400 records failed.
+Warning: [22:21:22.196] [WARNING] [Batch# 7509M00000qmtieQAA:Update] {OrderItem} Completed. 61985 records processed, 400 records failed.
+[22:21:22.197] {OrderItem} The Update API operation has been completed.
+[22:21:22.348] {OrderItem} The Target has been updated. Totally processed 61985 records.
+
+
+
+
+[22:21:22.348] The Target (STAGE 2) has been updated. Totally processed 123970 records.
+
+
+[22:21:22.349] Triggering Add-On events ...
+[22:21:22.349] No Add-On modules found to run.
+
+
+[22:21:22.349] ===== DATA PROCESSING SUMMARY =====
+[22:21:22.350] {Order} Totally processed 0 records:
+[22:21:22.350] PASS 1: None.
+[22:21:22.350] PASS 2: None.
+[22:21:22.350] PASS 3: None.
+[22:21:22.350] {PricebookEntry} Totally processed 0 records:
+[22:21:22.350] PASS 1: None.
+[22:21:22.350] PASS 2: None.
+[22:21:22.350] PASS 3: None.
+[22:21:22.350] {Product2} Totally processed 0 records:
+[22:21:22.350] PASS 1: None.
+[22:21:22.350] PASS 2: None.
+[22:21:22.350] PASS 3: None.
+[22:21:22.350] {User} Totally processed 0 records:
+[22:21:22.350] PASS 1: None.
+[22:21:22.350] PASS 2: None.
+[22:21:22.350] PASS 3: None.
+[22:21:22.350] {OrderItem} Totally processed 188450 records:
+[22:21:22.350] PASS 1: Updated 58230, Deleted 0, Inserted 6250.
+[22:21:22.350] PASS 2: Updated 61985, Deleted 0, Inserted 0.
+[22:21:22.351] PASS 3: Updated 61985, Deleted 0, Inserted 0.
+
+
+
+
+[22:21:22.353] ===== MIGRATION JOB ENDED =====
+[22:21:22.353] Command succeeded.
+[22:21:22.353] Execution of the command sfdmu:run has been completed. Exit code 0 (SUCCESS).
+[22:21:22.353] Total time elapsed: 00h 14m 48s 657ms .
+
+--- beendet (Exit-Code 0) ---

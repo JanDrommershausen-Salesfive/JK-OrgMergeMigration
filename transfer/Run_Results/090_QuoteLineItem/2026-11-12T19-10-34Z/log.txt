@@ -1,0 +1,441 @@
+$ ./run.sh 090_QuoteLineItem --live
+
+Resolving source org alias 'us-prod'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+Resolving target org alias 'FullCopy'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+
+LIVE RUN — this will write to FullCopy (jk-group--fullcopy.sandbox.my.salesforce.com).
+
+Source: us-prod (00DDn000006CppDMAS)
+Target: FullCopy (00D9M00000VmMXRUA3, jk-group--fullcopy.sandbox.my.salesforce.com)
+Object: 090_QuoteLineItem
+Mode:   live
+
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+[20:10:38.543] ===== MIGRATION JOB STARTED =====
+[20:10:38.546] Execution of the command sfdmu:run has been started.
+[20:10:38.546] Loading and validating the export.json script (/Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/090_QuoteLineItem/export.json)...
+
+
+[20:10:39.535] ===== OBJECT SET #1 STARTED =====
+
+
+[20:10:39.537] SOURCE: us-prod (production).
+[20:10:39.537] TARGET: FullCopy (sandbox).
+
+
+[20:10:39.544] Preparing data migration job ...
+[20:10:39.545] Building the migration strategy ...
+[20:10:39.545] Connecting to the us-prod
+[20:10:39.933] Successfully connected to the us-prod.
+[20:10:39.934] Connecting to the FullCopy
+[20:10:40.102] Successfully connected to the FullCopy.
+[20:10:40.104] Loading Core Add-On Module declarations ...
+[20:10:40.123] {User} Fetching metadata (SOURCE) ...
+[20:10:40.125] {Product2} Fetching metadata (SOURCE) ...
+[20:10:40.127] {PricebookEntry} Fetching metadata (SOURCE) ...
+[20:10:40.128] {Quote} Fetching metadata (SOURCE) ...
+[20:10:40.129] {OpportunityLineItem} Fetching metadata (SOURCE) ...
+[20:10:40.130] {QuoteLineItem} Fetching metadata (SOURCE) ...
+[20:10:40.398] {PricebookEntry} Fetching metadata (TARGET) ...
+[20:10:40.401] {OpportunityLineItem} Fetching metadata (TARGET) ...
+[20:10:40.423] {QuoteLineItem} Fetching metadata (TARGET) ...
+[20:10:40.429] {Quote} Fetching metadata (TARGET) ...
+[20:10:40.455] {Product2} Fetching metadata (TARGET) ...
+[20:10:40.530] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[20:10:40.568] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[20:10:40.585] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[20:10:40.657] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[20:10:40.783] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[20:10:40.790] {User} Fetching metadata (TARGET) ...
+[20:10:41.478] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+
+
+[20:10:41.687] ANALYSING DATA...
+[20:10:41.687] {OpportunityLineItem} Processing the object ...
+[20:10:41.688] {Quote} Processing the object ...
+[20:10:41.688] {PricebookEntry} Processing the object ...
+[20:10:41.689] {Product2} Processing the object ...
+[20:10:41.689] {User} Processing the object ...
+[20:10:41.690] {QuoteLineItem} Processing the object ...
+[20:10:41.701] {OpportunityLineItem} Using REST API (v68.0) to retrieve the data ...
+[20:10:41.900] {OpportunityLineItem} The original query string of this object is returning 3082 records from the SOURCE org.
+[20:10:41.904] {OpportunityLineItem} Using REST API (v68.0) to retrieve the data ...
+[20:10:41.972] {OpportunityLineItem} The original query string of this object is returning 3079 records from the TARGET org.
+[20:10:41.973] {Quote} Using REST API (v68.0) to retrieve the data ...
+[20:10:42.178] {Quote} The original query string of this object is returning 1463 records from the SOURCE org.
+[20:10:42.178] {Quote} Using REST API (v68.0) to retrieve the data ...
+[20:10:42.232] {Quote} The original query string of this object is returning 1461 records from the TARGET org.
+[20:10:42.232] {PricebookEntry} Using REST API (v68.0) to retrieve the data ...
+[20:10:42.874] {PricebookEntry} The original query string of this object is returning 27419 records from the SOURCE org.
+[20:10:42.877] {PricebookEntry} Using REST API (v68.0) to retrieve the data ...
+[20:10:42.978] {PricebookEntry} The original query string of this object is returning 102810 records from the TARGET org.
+[20:10:42.979] {Product2} Using REST API (v68.0) to retrieve the data ...
+[20:10:43.170] {Product2} The original query string of this object is returning 6250 records from the SOURCE org.
+[20:10:43.172] {Product2} Using REST API (v68.0) to retrieve the data ...
+[20:10:43.254] {Product2} The original query string of this object is returning 40383 records from the TARGET org.
+[20:10:43.255] {User} Using REST API (v68.0) to retrieve the data ...
+[20:10:43.448] {User} The original query string of this object is returning 120 records from the SOURCE org.
+[20:10:43.450] {User} Using REST API (v68.0) to retrieve the data ...
+[20:10:43.536] {User} The original query string of this object is returning 1154 records from the TARGET org.
+[20:10:43.537] {QuoteLineItem} Using REST API (v68.0) to retrieve the data ...
+[20:10:43.734] {QuoteLineItem} The original query string of this object is returning 3367 records from the SOURCE org.
+[20:10:43.737] {QuoteLineItem} Using REST API (v68.0) to retrieve the data ...
+[20:10:43.787] {QuoteLineItem} The original query string of this object is returning 0 records from the TARGET org.
+[20:10:43.788] Preparing of the data migration job has been completed.
+┌─────────────────────┬──────────────┬───────────────┐
+│ Query Order         │ Delete Order │ Update Order  │
+├─────────────────────┼──────────────┼───────────────┤
+│ OpportunityLineItem │              │ QuoteLineItem │
+│ Quote               │              │               │
+│ PricebookEntry      │              │               │
+│ Product2            │              │               │
+│ User                │              │               │
+│ QuoteLineItem       │              │               │
+└─────────────────────┴──────────────┴───────────────┘
+
+
+
+[20:10:43.837] Triggering Add-On events ...
+[20:10:43.837] No Add-On modules found to run.
+
+
+[20:10:43.837] Ready to process the data.
+
+
+[20:10:43.838] Deleting old data from the Target ...
+[20:10:43.838] Deleting data was skipped.
+
+
+[20:10:43.838] SOURCE:
+[20:10:43.838] =============
+
+
+[20:10:43.838] ===== Fetching the data (STAGE 1) =====
+[20:10:43.838] {OpportunityLineItem} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[20:10:43.838] {OpportunityLineItem} Query string: SELECT Id, Quantity FROM OpportunityLineItem.
+[20:10:43.839] {OpportunityLineItem} Using REST API (v68.0) to retrieve the data ...
+[20:10:44.581] In progress... Completed 2000 records.
+[20:10:44.802] In progress... Completed 3082 records.
+[20:10:44.811] {OpportunityLineItem} Data retrieval (SOURCE) has been completed. Got 3082 new records.
+[20:10:44.812] {Quote} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[20:10:44.813] {Quote} Query string: SELECT Id, Name FROM Quote.
+[20:10:44.813] {Quote} Using REST API (v68.0) to retrieve the data ...
+[20:10:45.183] {Quote} Data retrieval (SOURCE) has been completed. Got 1463 new records.
+[20:10:45.185] {PricebookEntry} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[20:10:45.185] {PricebookEntry} Query string: SELECT Id, IsActive FROM PricebookEntry.
+[20:10:45.185] {PricebookEntry} Using REST API (v68.0) to retrieve the data ...
+[20:10:45.661] In progress... Completed 2000 records.
+[20:10:46.68] In progress... Completed 4000 records.
+[20:10:46.333] In progress... Completed 6000 records.
+[20:10:46.698] In progress... Completed 8000 records.
+[20:10:47.167] In progress... Completed 10000 records.
+[20:10:47.545] In progress... Completed 12000 records.
+[20:10:47.913] In progress... Completed 14000 records.
+[20:10:48.323] In progress... Completed 16000 records.
+[20:10:48.731] In progress... Completed 18000 records.
+[20:10:48.981] In progress... Completed 20000 records.
+[20:10:49.226] In progress... Completed 22000 records.
+[20:10:49.922] In progress... Completed 24000 records.
+[20:10:50.365] In progress... Completed 26000 records.
+[20:10:50.624] In progress... Completed 27419 records.
+[20:10:50.645] {PricebookEntry} Data retrieval (SOURCE) has been completed. Got 27419 new records.
+[20:10:50.645] {Product2} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[20:10:50.645] {Product2} Query string: SELECT Id, Name FROM Product2.
+[20:10:50.645] {Product2} Using REST API (v68.0) to retrieve the data ...
+[20:10:51.40] In progress... Completed 2000 records.
+[20:10:51.460] In progress... Completed 4000 records.
+[20:10:51.884] In progress... Completed 6000 records.
+[20:10:52.84] In progress... Completed 6250 records.
+[20:10:52.96] {Product2} Data retrieval (SOURCE) has been completed. Got 6250 new records.
+[20:10:52.97] {User} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[20:10:52.97] {User} Query string: SELECT Id FROM User.
+[20:10:52.97] {User} Using REST API (v68.0) to retrieve the data ...
+[20:10:52.299] {User} Data retrieval (SOURCE) has been completed. Got 120 new records.
+[20:10:52.300] {QuoteLineItem} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[20:10:52.300] {QuoteLineItem} Query string: SELECT Id, Description, Discount, OpportunityLineItemId, PricebookEntryId, Product2Id, Quantity, QuoteId, ServiceDate, SortOrder, UnitPrice, CreatedDate, CreatedById, OpportunityLineItem.Id, PricebookEntry.Id, Product2.Id, Quote.Id, CreatedBy.Id FROM QuoteLineItem.
+[20:10:52.301] {QuoteLineItem} Using REST API (v68.0) to retrieve the data ...
+[20:10:53.105] In progress... Completed 2000 records.
+[20:10:53.729] In progress... Completed 3367 records.
+[20:10:53.743] {QuoteLineItem} Data retrieval (SOURCE) has been completed. Got 3367 new records.
+[20:10:53.743] Data retrieval (STAGE 1) has been completed.
+
+
+[20:10:53.744] ===== Fetching the data (STAGE 2) =====
+[20:10:53.744] PASS 1
+[20:10:53.744] =============
+[20:10:53.744] No records
+
+
+[20:10:53.744] PASS 2
+[20:10:53.744] =============
+[20:10:53.744] No records
+
+
+[20:10:53.744] PASS 3
+[20:10:53.744] =============
+[20:10:53.744] No records
+
+
+[20:10:53.744] PASS 4
+[20:10:53.744] =============
+[20:10:53.744] No records
+
+
+[20:10:53.744] TARGET:
+[20:10:53.745] =============
+[20:10:53.745] {OpportunityLineItem} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[20:10:53.745] {OpportunityLineItem} Query string: SELECT OpportunityLineItemCrossOrgTraceID__c, Quantity, Id FROM OpportunityLineItem.
+[20:10:53.745] {OpportunityLineItem} Using REST API (v68.0) to retrieve the data ...
+[20:10:54.38] In progress... Completed 2000 records.
+[20:10:54.156] In progress... Completed 3079 records.
+[20:10:54.170] {OpportunityLineItem} Data retrieval (TARGET) has been completed. Got 3079 new records.
+[20:10:54.171] {Quote} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[20:10:54.172] {Quote} Query string: SELECT QuoteCrossOrgTraceID__c, Name, Id FROM Quote.
+[20:10:54.172] {Quote} Using REST API (v68.0) to retrieve the data ...
+[20:10:54.422] {Quote} Data retrieval (TARGET) has been completed. Got 1461 new records.
+[20:10:54.423] {PricebookEntry} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[20:10:54.424] {PricebookEntry} Query string: SELECT PriceBookEntryCrossOrgTraceID__c, IsActive, Id FROM PricebookEntry.
+[20:10:54.428] {PricebookEntry} Using Bulk API Query (v68.0) to retrieve the data ...
+[20:11:01.99] In progress... Completed 2000 records.
+[20:11:01.106] In progress... Completed 4000 records.
+[20:11:01.112] In progress... Completed 6000 records.
+[20:11:01.117] In progress... Completed 8000 records.
+[20:11:01.123] In progress... Completed 10000 records.
+[20:11:01.145] In progress... Completed 12000 records.
+[20:11:01.151] In progress... Completed 14000 records.
+[20:11:01.155] In progress... Completed 16000 records.
+[20:11:01.159] In progress... Completed 18000 records.
+[20:11:01.163] In progress... Completed 20000 records.
+[20:11:01.166] In progress... Completed 22000 records.
+[20:11:01.169] In progress... Completed 24000 records.
+[20:11:01.177] In progress... Completed 26000 records.
+[20:11:01.181] In progress... Completed 28000 records.
+[20:11:01.184] In progress... Completed 30000 records.
+[20:11:01.190] In progress... Completed 32000 records.
+[20:11:01.194] In progress... Completed 34000 records.
+[20:11:01.197] In progress... Completed 36000 records.
+[20:11:01.202] In progress... Completed 38000 records.
+[20:11:01.205] In progress... Completed 40000 records.
+[20:11:01.208] In progress... Completed 42000 records.
+[20:11:01.211] In progress... Completed 44000 records.
+[20:11:01.214] In progress... Completed 46000 records.
+[20:11:01.216] In progress... Completed 48000 records.
+[20:11:01.224] In progress... Completed 50000 records.
+[20:11:01.228] In progress... Completed 52000 records.
+[20:11:01.231] In progress... Completed 54000 records.
+[20:11:01.234] In progress... Completed 56000 records.
+[20:11:01.237] In progress... Completed 58000 records.
+[20:11:01.239] In progress... Completed 60000 records.
+[20:11:01.242] In progress... Completed 62000 records.
+[20:11:01.247] In progress... Completed 64000 records.
+[20:11:01.250] In progress... Completed 66000 records.
+[20:11:01.253] In progress... Completed 68000 records.
+[20:11:01.256] In progress... Completed 70000 records.
+[20:11:01.258] In progress... Completed 72000 records.
+[20:11:01.262] In progress... Completed 74000 records.
+[20:11:01.268] In progress... Completed 76000 records.
+[20:11:01.273] In progress... Completed 78000 records.
+[20:11:01.276] In progress... Completed 80000 records.
+[20:11:01.284] In progress... Completed 82000 records.
+[20:11:01.293] In progress... Completed 84000 records.
+[20:11:01.296] In progress... Completed 86000 records.
+[20:11:01.299] In progress... Completed 88000 records.
+[20:11:01.301] In progress... Completed 90000 records.
+[20:11:01.304] In progress... Completed 92000 records.
+[20:11:01.307] In progress... Completed 94000 records.
+[20:11:01.310] In progress... Completed 96000 records.
+[20:11:01.314] In progress... Completed 98000 records.
+[20:11:01.316] In progress... Completed 100000 records.
+[20:11:01.319] In progress... Completed 102000 records.
+[20:11:01.322] In progress... Completed 102810 records.
+[20:11:01.390] {PricebookEntry} Data retrieval (TARGET) has been completed. Got 102810 new records.
+[20:11:01.391] {Product2} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[20:11:01.391] {Product2} Query string: SELECT ProductCrossOrgTraceID__c, Name, Id FROM Product2.
+[20:11:01.391] {Product2} Using Bulk API Query (v68.0) to retrieve the data ...
+[20:11:08.25] In progress... Completed 2000 records.
+[20:11:08.32] In progress... Completed 4000 records.
+[20:11:08.39] In progress... Completed 6000 records.
+[20:11:08.44] In progress... Completed 8000 records.
+[20:11:08.48] In progress... Completed 10000 records.
+[20:11:08.54] In progress... Completed 12000 records.
+[20:11:08.58] In progress... Completed 14000 records.
+[20:11:08.63] In progress... Completed 16000 records.
+[20:11:08.67] In progress... Completed 18000 records.
+[20:11:08.71] In progress... Completed 20000 records.
+[20:11:08.83] In progress... Completed 22000 records.
+[20:11:08.87] In progress... Completed 24000 records.
+[20:11:08.91] In progress... Completed 26000 records.
+[20:11:08.95] In progress... Completed 28000 records.
+[20:11:08.99] In progress... Completed 30000 records.
+[20:11:08.103] In progress... Completed 32000 records.
+[20:11:08.110] In progress... Completed 34000 records.
+[20:11:08.114] In progress... Completed 36000 records.
+[20:11:08.117] In progress... Completed 38000 records.
+[20:11:08.121] In progress... Completed 40000 records.
+[20:11:08.124] In progress... Completed 40383 records.
+[20:11:08.149] {Product2} Data retrieval (TARGET) has been completed. Got 40383 new records.
+[20:11:08.150] {User} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[20:11:08.150] {User} Query string: SELECT Legacy_User_id__c, Id FROM User.
+[20:11:08.150] {User} Using REST API (v68.0) to retrieve the data ...
+[20:11:08.224] {User} Data retrieval (TARGET) has been completed. Got 1154 new records.
+[20:11:08.225] {QuoteLineItem} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[20:11:08.225] {QuoteLineItem} Query string: SELECT QuoteLineItemCrossOrgTraceID__c, Description, Discount, OpportunityLineItemId, PricebookEntryId, Product2Id, Quantity, QuoteId, ServiceDate, SortOrder, UnitPrice, CreatedDate, CreatedById, OpportunityLineItem.OpportunityLineItemCrossOrgTraceID... FROM QuoteLineItem.
+[20:11:08.225] {QuoteLineItem} Using REST API (v68.0) to retrieve the data ...
+[20:11:08.284] {QuoteLineItem} Data retrieval (TARGET) has been completed. Got 0 new records.
+[20:11:08.284] Data retrieval (STAGE 2) has been completed.
+
+
+[20:11:08.284] Triggering Add-On events ...
+[20:11:08.284] No Add-On modules found to run.
+
+
+[20:11:08.284] ===== DATA RETRIEVAL SUMMARY =====
+[20:11:08.284] {OpportunityLineItem} The total amount of the retrieved records from SOURCE by 1 queries: 3082.
+[20:11:08.284] {OpportunityLineItem} The total amount of the retrieved records from TARGET by 1 queries: 3079.
+[20:11:08.285] {Quote} The total amount of the retrieved records from SOURCE by 1 queries: 1463.
+[20:11:08.285] {Quote} The total amount of the retrieved records from TARGET by 1 queries: 1461.
+[20:11:08.285] {PricebookEntry} The total amount of the retrieved records from SOURCE by 1 queries: 27419.
+[20:11:08.285] {PricebookEntry} The total amount of the retrieved records from TARGET by 1 queries: 102810.
+[20:11:08.285] {Product2} The total amount of the retrieved records from SOURCE by 1 queries: 6250.
+[20:11:08.285] {Product2} The total amount of the retrieved records from TARGET by 1 queries: 40383.
+[20:11:08.285] {User} The total amount of the retrieved records from SOURCE by 1 queries: 120.
+[20:11:08.285] {User} The total amount of the retrieved records from TARGET by 1 queries: 1154.
+[20:11:08.285] {QuoteLineItem} The total amount of the retrieved records from SOURCE by 1 queries: 3367.
+[20:11:08.285] {QuoteLineItem} The total amount of the retrieved records from TARGET by 1 queries: 0.
+
+
+
+
+[20:11:08.286] ===== Updating the Target (STAGE 1) =====
+[20:11:08.320] Writing to /Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/090_QuoteLineItem/reports/MissingParentRecordsReport.csv ...
+Warning: [20:11:08.322] [WARNING] {QuoteLineItem} 6 missing parent lookup records were found. See MissingParentRecordsReport.csv file for the details.
+Warning: [20:11:08.322] [WARNING] [20:11:08.322] Continue the job (y/n) ? y
+Warning: [20:11:08.322] [WARNING] [WARNING] {QuoteLineItem.OpportunityLineItemId} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [20:11:08.322] [WARNING] [WARNING] {QuoteLineItem.PricebookEntryId} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [20:11:08.322] [WARNING] [WARNING] {QuoteLineItem.Product2Id} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [20:11:08.323] [WARNING] [WARNING] {QuoteLineItem.QuoteId} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [20:11:08.323] [WARNING] [WARNING] {QuoteLineItem.CreatedDate} Field is in query but is not updateable for Update operation and will be excluded from DML.
+Warning: [20:11:08.323] [WARNING] [WARNING] {QuoteLineItem.CreatedById} Field is in query but is not updateable for Update operation and will be excluded from DML.
+[20:11:08.325] {QuoteLineItem} Amount of records to Insert: 3367.
+[20:11:08.326] {QuoteLineItem} Using BULK API V2 (API v68.0) to execute Insert ...
+[20:11:08.327] {QuoteLineItem} The Insert API operation has been started using BULK API V2.
+[20:11:08.562] [Job# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} The job has been created. Uploading data ...
+[20:11:08.563] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} The batch has been created. Uploading data ...
+[20:11:09.600] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} The data has been uploaded. Processing ...
+[20:11:26.197] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 200 records processed, 0 records failed.
+[20:11:31.627] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 400 records processed, 0 records failed.
+[20:11:37.43] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 800 records processed, 0 records failed.
+[20:11:42.484] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 1000 records processed, 0 records failed.
+[20:11:47.907] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 1200 records processed, 0 records failed.
+[20:11:53.379] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 1400 records processed, 0 records failed.
+[20:11:58.889] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 1800 records processed, 0 records failed.
+[20:12:04.393] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 2000 records processed, 0 records failed.
+[20:12:09.765] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 2200 records processed, 0 records failed.
+[20:12:15.227] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 2600 records processed, 0 records failed.
+[20:12:20.680] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 2800 records processed, 0 records failed.
+[20:12:26.134] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 3200 records processed, 0 records failed.
+[20:12:31.632] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Processing ... 3367 records processed, 3 records failed.
+Warning: [20:12:37.707] [WARNING] [Batch# 7509M00000qmUM1QAM:Insert] {QuoteLineItem} Completed. 3367 records processed, 3 records failed.
+[20:12:37.707] {QuoteLineItem} The Insert API operation has been completed.
+[20:12:37.780] {QuoteLineItem} The Target has been updated. Totally processed 3367 records.
+
+
+
+
+[20:12:37.781] The Target (STAGE 1) has been updated. Totally processed 3367 records.
+
+
+[20:12:37.781] ===== Updating the Target (STAGE 2) =====
+
+
+[20:12:37.781] PASS 1
+[20:12:37.781] =============
+[20:12:37.816] Writing to /Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/090_QuoteLineItem/reports/MissingParentRecordsReport.csv ...
+Warning: [20:12:37.823] [WARNING] {QuoteLineItem} 6 missing parent lookup records were found. See MissingParentRecordsReport.csv file for the details.
+[20:12:37.831] {QuoteLineItem} Amount of records to Update: 3364.
+[20:12:37.831] {QuoteLineItem} Using BULK API V2 (API v68.0) to execute Update ...
+[20:12:37.831] {QuoteLineItem} The Update API operation has been started using BULK API V2.
+[20:12:38.187] [Job# 7509M00000qmTY2QAM:Update] {QuoteLineItem} The job has been created. Uploading data ...
+[20:12:38.188] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} The batch has been created. Uploading data ...
+[20:12:38.950] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} The data has been uploaded. Processing ...
+[20:12:44.725] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} Processing ... 400 records processed, 0 records failed.
+[20:12:50.95] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} Processing ... 1000 records processed, 0 records failed.
+[20:12:55.536] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} Processing ... 1600 records processed, 0 records failed.
+[20:13:00.853] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} Processing ... 2200 records processed, 0 records failed.
+[20:13:06.190] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} Processing ... 3000 records processed, 0 records failed.
+[20:13:11.563] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} Processing ... 3364 records processed, 0 records failed.
+[20:13:12.97] [Batch# 7509M00000qmTY2QAM:Update] {QuoteLineItem} Completed. 3364 records processed, 0 records failed.
+[20:13:12.97] {QuoteLineItem} The Update API operation has been completed.
+[20:13:12.110] {QuoteLineItem} The Target has been updated. Totally processed 3364 records.
+
+
+
+
+[20:13:12.110] PASS 2
+[20:13:12.110] =============
+[20:13:12.144] Writing to /Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/090_QuoteLineItem/reports/MissingParentRecordsReport.csv ...
+Warning: [20:13:12.150] [WARNING] {QuoteLineItem} 6 missing parent lookup records were found. See MissingParentRecordsReport.csv file for the details.
+[20:13:12.157] {QuoteLineItem} Amount of records to Update: 3364.
+[20:13:12.157] {QuoteLineItem} Using BULK API V2 (API v68.0) to execute Update ...
+[20:13:12.157] {QuoteLineItem} The Update API operation has been started using BULK API V2.
+[20:13:12.390] [Job# 7509M00000qmUM2QAM:Update] {QuoteLineItem} The job has been created. Uploading data ...
+[20:13:12.390] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} The batch has been created. Uploading data ...
+[20:13:13.35] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} The data has been uploaded. Processing ...
+[20:13:18.694] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} Processing ... 400 records processed, 0 records failed.
+[20:13:24.105] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} Processing ... 1000 records processed, 0 records failed.
+[20:13:29.554] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} Processing ... 1400 records processed, 0 records failed.
+[20:13:34.932] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} Processing ... 2000 records processed, 0 records failed.
+[20:13:40.479] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} Processing ... 2800 records processed, 0 records failed.
+[20:13:45.943] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} Processing ... 3364 records processed, 0 records failed.
+[20:13:46.415] [Batch# 7509M00000qmUM2QAM:Update] {QuoteLineItem} Completed. 3364 records processed, 0 records failed.
+[20:13:46.415] {QuoteLineItem} The Update API operation has been completed.
+[20:13:46.431] {QuoteLineItem} The Target has been updated. Totally processed 3364 records.
+
+
+
+
+[20:13:46.431] The Target (STAGE 2) has been updated. Totally processed 6728 records.
+
+
+[20:13:46.432] Triggering Add-On events ...
+[20:13:46.432] No Add-On modules found to run.
+
+
+[20:13:46.432] ===== DATA PROCESSING SUMMARY =====
+[20:13:46.433] {OpportunityLineItem} Totally processed 0 records:
+[20:13:46.433] PASS 1: None.
+[20:13:46.433] PASS 2: None.
+[20:13:46.433] PASS 3: None.
+[20:13:46.433] {Quote} Totally processed 0 records:
+[20:13:46.433] PASS 1: None.
+[20:13:46.433] PASS 2: None.
+[20:13:46.433] PASS 3: None.
+[20:13:46.433] {PricebookEntry} Totally processed 0 records:
+[20:13:46.434] PASS 1: None.
+[20:13:46.434] PASS 2: None.
+[20:13:46.434] PASS 3: None.
+[20:13:46.434] {Product2} Totally processed 0 records:
+[20:13:46.434] PASS 1: None.
+[20:13:46.434] PASS 2: None.
+[20:13:46.434] PASS 3: None.
+[20:13:46.435] {User} Totally processed 0 records:
+[20:13:46.435] PASS 1: None.
+[20:13:46.435] PASS 2: None.
+[20:13:46.435] PASS 3: None.
+[20:13:46.435] {QuoteLineItem} Totally processed 10095 records:
+[20:13:46.435] PASS 1: Updated 0, Deleted 0, Inserted 3367.
+[20:13:46.435] PASS 2: Updated 3364, Deleted 0, Inserted 0.
+[20:13:46.435] PASS 3: Updated 3364, Deleted 0, Inserted 0.
+
+
+[20:13:46.436] Writing to /Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/090_QuoteLineItem/reports/MissingParentRecordsReport.csv ...
+
+
+[20:13:46.440] ===== MIGRATION JOB ENDED =====
+[20:13:46.440] Command succeeded.
+[20:13:46.440] Execution of the command sfdmu:run has been completed. Exit code 0 (SUCCESS).
+[20:13:46.440] Total time elapsed: 00h 03m 07s 897ms .
+
+--- beendet (Exit-Code 0) ---

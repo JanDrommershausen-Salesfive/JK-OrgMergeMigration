@@ -1,0 +1,48 @@
+{
+ "SL_T__c": {
+  "Support": 1004,
+  "Billing": 50,
+  "Sales": 40
+ },
+ "SunLync_Software_Build__c": {
+  "2": 6,
+  "4": 14,
+  "3": 8,
+  "0": 6,
+  "7": 6,
+  "6": 6,
+  "5": 10
+ },
+ "Sunlync_Case_Reason__c": {
+  "POS – Receipt and Document Issue": 80,
+  "EFT – Questions and Issue": 397,
+  "Offline Utility – Issues": 68,
+  "Back Office – Packages/Memberships Questions": 312,
+  "POS – Issue Processing a Sale": 194,
+  "T-Server – Timer Issue": 503,
+  "POS – Issue Connecting to Database": 186,
+  "Customers – Issue with a Specific Account": 108,
+  "Back Office – Email &amp; Texting": 72,
+  "POS – Hardware Issue": 84,
+  "Desktop – Issues": 260,
+  "Back Office – Configuration": 447,
+  "Appointments – Issue": 32
+ },
+ "SunLync_Software_Version__c": {
+  "V7.X.X.X": 2,
+  "V8.X.X.X": 2
+ },
+ "Service_Case_Type__c": {
+  "Certified Tech. Support": 806
+ },
+ "Service_Resolution__c": {
+  "Ordered Placed": 18
+ },
+ "Service_Case_Escalation__c": {
+  "Customer Service": 1992
+ },
+ "Error_Code__c": {
+  "E104/#420": 2,
+  "E170": 1
+ }
+}

@@ -1,0 +1,570 @@
+$ ./run.sh 120_Asset --live
+
+Resolving source org alias 'us-prod'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+Resolving target org alias 'FullCopy'...
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+
+LIVE RUN — this will write to FullCopy (jk-group--fullcopy.sandbox.my.salesforce.com).
+
+Source: us-prod (00DDn000006CppDMAS)
+Target: FullCopy (00D9M00000VmMXRUA3, jk-group--fullcopy.sandbox.my.salesforce.com)
+Object: 120_Asset
+Mode:   live
+
+ ›   Warning: @salesforce/cli update available from 2.118.20 to 2.157.8.
+[19:45:24.963] ===== MIGRATION JOB STARTED =====
+[19:45:24.966] Execution of the command sfdmu:run has been started.
+[19:45:24.966] Loading and validating the export.json script (/Users/jan.drommershausen/JK-OrgMergeMigration/JK-OrgMergeMigration/sfdmu/120_Asset/export.json)...
+
+
+[19:45:25.588] ===== OBJECT SET #1 STARTED =====
+
+
+[19:45:25.589] SOURCE: us-prod (production).
+[19:45:25.589] TARGET: FullCopy (sandbox).
+
+
+[19:45:25.595] Preparing data migration job ...
+[19:45:25.596] Building the migration strategy ...
+[19:45:25.596] Connecting to the us-prod
+[19:45:26.10] Successfully connected to the us-prod.
+[19:45:26.11] Connecting to the FullCopy
+[19:45:26.186] Successfully connected to the FullCopy.
+[19:45:26.188] Loading Core Add-On Module declarations ...
+[19:45:26.206] {User} Fetching metadata (SOURCE) ...
+[19:45:26.209] {Account} Fetching metadata (SOURCE) ...
+[19:45:26.211] {Contact} Fetching metadata (SOURCE) ...
+[19:45:26.212] {Product2} Fetching metadata (SOURCE) ...
+[19:45:26.212] {Asset} Fetching metadata (SOURCE) ...
+[19:45:26.551] {Asset} Fetching metadata (TARGET) ...
+[19:45:26.555] {Product2} Fetching metadata (TARGET) ...
+[19:45:26.650] {Contact} Fetching metadata (TARGET) ...
+[19:45:26.706] {Account} Fetching metadata (TARGET) ...
+[19:45:26.785] {User} Fetching metadata (TARGET) ...
+[19:45:26.801] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[19:45:26.849] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[19:45:27.42] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[19:45:27.150] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+[19:45:28.744] {FieldDefinition} Using REST API (v68.0) to retrieve the data ...
+
+
+[19:45:28.980] ANALYSING DATA...
+[19:45:28.980] {Product2} Processing the object ...
+[19:45:28.981] {Contact} Processing the object ...
+[19:45:28.981] {Account} Processing the object ...
+[19:45:28.984] {User} Processing the object ...
+[19:45:28.985] {Asset} Processing the object ...
+[19:45:29.0] {Product2} Using REST API (v68.0) to retrieve the data ...
+[19:45:29.202] {Product2} The original query string of this object is returning 6250 records from the SOURCE org.
+[19:45:29.203] {Product2} Using REST API (v68.0) to retrieve the data ...
+[19:45:29.288] {Product2} The original query string of this object is returning 40383 records from the TARGET org.
+[19:45:29.289] {Contact} Using REST API (v68.0) to retrieve the data ...
+[19:45:29.492] {Contact} The original query string of this object is returning 11114 records from the SOURCE org.
+[19:45:29.494] {Contact} Using REST API (v68.0) to retrieve the data ...
+[19:45:29.627] {Contact} The original query string of this object is returning 62238 records from the TARGET org.
+[19:45:29.628] {Account} Using REST API (v68.0) to retrieve the data ...
+[19:45:29.834] {Account} The original query string of this object is returning 18956 records from the SOURCE org.
+[19:45:29.835] {Account} Using REST API (v68.0) to retrieve the data ...
+[19:45:29.956] {Account} The original query string of this object is returning 95580 records from the TARGET org.
+[19:45:29.957] {User} Using REST API (v68.0) to retrieve the data ...
+[19:45:30.157] {User} The original query string of this object is returning 120 records from the SOURCE org.
+[19:45:30.160] {User} Using REST API (v68.0) to retrieve the data ...
+[19:45:30.228] {User} The original query string of this object is returning 1155 records from the TARGET org.
+[19:45:30.230] {Asset} Using REST API (v68.0) to retrieve the data ...
+[19:45:30.469] {Asset} The original query string of this object is returning 45141 records from the SOURCE org.
+[19:45:30.471] {Asset} Using REST API (v68.0) to retrieve the data ...
+[19:45:31.66] {Asset} The original query string of this object is returning 158155 records from the TARGET org.
+[19:45:31.67] Preparing of the data migration job has been completed.
+┌─────────────┬──────────────┬──────────────┐
+│ Query Order │ Delete Order │ Update Order │
+├─────────────┼──────────────┼──────────────┤
+│ Product2    │              │ Asset        │
+│ Contact     │              │              │
+│ Account     │              │              │
+│ User        │              │              │
+│ Asset       │              │              │
+└─────────────┴──────────────┴──────────────┘
+
+
+
+[19:45:31.111] Triggering Add-On events ...
+[19:45:31.111] No Add-On modules found to run.
+
+
+[19:45:31.111] Ready to process the data.
+
+
+[19:45:31.111] Deleting old data from the Target ...
+[19:45:31.111] Deleting data was skipped.
+
+
+[19:45:31.112] SOURCE:
+[19:45:31.112] =============
+
+
+[19:45:31.112] ===== Fetching the data (STAGE 1) =====
+[19:45:31.112] {Product2} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[19:45:31.112] {Product2} Query string: SELECT Id, Name FROM Product2.
+[19:45:31.112] {Product2} Using REST API (v68.0) to retrieve the data ...
+[19:45:31.529] In progress... Completed 2000 records.
+[19:45:31.926] In progress... Completed 4000 records.
+[19:45:32.743] In progress... Completed 6000 records.
+[19:45:32.952] In progress... Completed 6250 records.
+[19:45:32.962] {Product2} Data retrieval (SOURCE) has been completed. Got 6250 new records.
+[19:45:32.963] {Contact} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[19:45:32.963] {Contact} Query string: SELECT Id, LastName FROM Contact.
+[19:45:32.963] {Contact} Using REST API (v68.0) to retrieve the data ...
+[19:45:33.427] In progress... Completed 2000 records.
+[19:45:33.828] In progress... Completed 4000 records.
+[19:45:34.228] In progress... Completed 6000 records.
+[19:45:34.603] In progress... Completed 8000 records.
+[19:45:34.994] In progress... Completed 10000 records.
+[19:45:35.375] In progress... Completed 11114 records.
+[19:45:35.388] {Contact} Data retrieval (SOURCE) has been completed. Got 11114 new records.
+[19:45:35.389] {Account} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[19:45:35.389] {Account} Query string: SELECT Id, Name FROM Account.
+[19:45:35.389] {Account} Using REST API (v68.0) to retrieve the data ...
+[19:45:35.805] In progress... Completed 2000 records.
+[19:45:36.238] In progress... Completed 4000 records.
+[19:45:36.543] In progress... Completed 6000 records.
+[19:45:37.21] In progress... Completed 8000 records.
+[19:45:37.428] In progress... Completed 10000 records.
+[19:45:37.802] In progress... Completed 12000 records.
+[19:45:38.275] In progress... Completed 14000 records.
+[19:45:38.698] In progress... Completed 16000 records.
+[19:45:39.88] In progress... Completed 18000 records.
+[19:45:39.446] In progress... Completed 18956 records.
+[19:45:39.462] {Account} Data retrieval (SOURCE) has been completed. Got 18956 new records.
+[19:45:39.462] {User} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[19:45:39.463] {User} Query string: SELECT Id FROM User.
+[19:45:39.463] {User} Using REST API (v68.0) to retrieve the data ...
+[19:45:39.661] {User} Data retrieval (SOURCE) has been completed. Got 120 new records.
+[19:45:39.662] {Asset} Fetching the SOURCE data from Org (STAGE 1: all records) ...
+[19:45:39.662] {Asset} Query string: SELECT Id, Name, AccountId, ContactId, ParentId, Product2Id, Description, DigitalAssetStatus, ExternalIdentifier, InstallDate, IsCompetitorProduct, IsInternal, ManufactureDate, Price, PurchaseDate, Quantity, SerialNumber, Status, StatusReason, UsageE... FROM Asset.
+[19:45:39.662] {Asset} Using Bulk API Query (v68.0) to retrieve the data ...
+[19:45:52.56] In progress... Completed 2000 records.
+[19:45:52.86] In progress... Completed 4000 records.
+[19:45:52.207] In progress... Completed 6000 records.
+[19:45:52.251] In progress... Completed 8000 records.
+[19:45:52.357] In progress... Completed 10000 records.
+[19:45:52.385] In progress... Completed 12000 records.
+[19:45:52.502] In progress... Completed 14000 records.
+[19:45:52.525] In progress... Completed 16000 records.
+[19:45:52.553] In progress... Completed 18000 records.
+[19:45:52.578] In progress... Completed 20000 records.
+[19:45:52.601] In progress... Completed 22000 records.
+[19:45:52.623] In progress... Completed 24000 records.
+[19:45:52.646] In progress... Completed 26000 records.
+[19:45:52.667] In progress... Completed 28000 records.
+[19:45:52.690] In progress... Completed 30000 records.
+[19:45:52.714] In progress... Completed 32000 records.
+[19:45:52.734] In progress... Completed 34000 records.
+[19:45:52.755] In progress... Completed 36000 records.
+[19:45:52.776] In progress... Completed 38000 records.
+[19:45:52.796] In progress... Completed 40000 records.
+[19:45:52.819] In progress... Completed 42000 records.
+[19:45:52.839] In progress... Completed 44000 records.
+[19:45:52.864] In progress... Completed 45141 records.
+[19:45:53.68] {Asset} Data retrieval (SOURCE) has been completed. Got 45141 new records.
+[19:45:53.68] Data retrieval (STAGE 1) has been completed.
+
+
+[19:45:53.68] ===== Fetching the data (STAGE 2) =====
+[19:45:53.68] PASS 1
+[19:45:53.68] =============
+[19:45:53.68] No records
+
+
+[19:45:53.68] PASS 2
+[19:45:53.68] =============
+[19:45:53.69] No records
+
+
+[19:45:53.69] PASS 3
+[19:45:53.69] =============
+[19:45:53.69] No records
+
+
+[19:45:53.69] PASS 4
+[19:45:53.69] =============
+[19:45:53.69] No records
+
+
+[19:45:53.69] TARGET:
+[19:45:53.69] =============
+[19:45:53.69] {Product2} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[19:45:53.70] {Product2} Query string: SELECT ProductCrossOrgTraceID__c, Name, Id FROM Product2.
+[19:45:53.70] {Product2} Using Bulk API Query (v68.0) to retrieve the data ...
+[19:46:00.6] In progress... Completed 2000 records.
+[19:46:00.13] In progress... Completed 4000 records.
+[19:46:00.19] In progress... Completed 6000 records.
+[19:46:00.25] In progress... Completed 8000 records.
+[19:46:00.30] In progress... Completed 10000 records.
+[19:46:00.36] In progress... Completed 12000 records.
+[19:46:00.41] In progress... Completed 14000 records.
+[19:46:00.47] In progress... Completed 16000 records.
+[19:46:00.51] In progress... Completed 18000 records.
+[19:46:00.56] In progress... Completed 20000 records.
+[19:46:00.73] In progress... Completed 22000 records.
+[19:46:00.80] In progress... Completed 24000 records.
+[19:46:00.89] In progress... Completed 26000 records.
+[19:46:00.93] In progress... Completed 28000 records.
+[19:46:00.98] In progress... Completed 30000 records.
+[19:46:00.102] In progress... Completed 32000 records.
+[19:46:00.108] In progress... Completed 34000 records.
+[19:46:00.111] In progress... Completed 36000 records.
+[19:46:00.115] In progress... Completed 38000 records.
+[19:46:00.118] In progress... Completed 40000 records.
+[19:46:00.121] In progress... Completed 40383 records.
+[19:46:00.150] {Product2} Data retrieval (TARGET) has been completed. Got 40383 new records.
+[19:46:00.153] {Contact} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[19:46:00.153] {Contact} Query string: SELECT ContactCrossOrgTraceID__c, LastName, Id FROM Contact.
+[19:46:00.153] {Contact} Using Bulk API Query (v68.0) to retrieve the data ...
+[19:46:06.981] In progress... Completed 2000 records.
+[19:46:06.987] In progress... Completed 4000 records.
+[19:46:06.992] In progress... Completed 6000 records.
+[19:46:06.997] In progress... Completed 8000 records.
+[19:46:07.2] In progress... Completed 10000 records.
+[19:46:07.7] In progress... Completed 12000 records.
+[19:46:07.10] In progress... Completed 14000 records.
+[19:46:07.14] In progress... Completed 16000 records.
+[19:46:07.18] In progress... Completed 18000 records.
+[19:46:07.21] In progress... Completed 20000 records.
+[19:46:07.25] In progress... Completed 22000 records.
+[19:46:07.34] In progress... Completed 24000 records.
+[19:46:07.37] In progress... Completed 26000 records.
+[19:46:07.40] In progress... Completed 28000 records.
+[19:46:07.44] In progress... Completed 30000 records.
+[19:46:07.47] In progress... Completed 32000 records.
+[19:46:07.53] In progress... Completed 34000 records.
+[19:46:07.57] In progress... Completed 36000 records.
+[19:46:07.64] In progress... Completed 38000 records.
+[19:46:07.67] In progress... Completed 40000 records.
+[19:46:07.70] In progress... Completed 42000 records.
+[19:46:07.73] In progress... Completed 44000 records.
+[19:46:07.76] In progress... Completed 46000 records.
+[19:46:07.78] In progress... Completed 48000 records.
+[19:46:07.83] In progress... Completed 50000 records.
+[19:46:07.86] In progress... Completed 52000 records.
+[19:46:07.89] In progress... Completed 54000 records.
+[19:46:07.92] In progress... Completed 56000 records.
+[19:46:07.94] In progress... Completed 58000 records.
+[19:46:07.97] In progress... Completed 60000 records.
+[19:46:07.100] In progress... Completed 62000 records.
+[19:46:07.105] In progress... Completed 62238 records.
+[19:46:07.143] {Contact} Data retrieval (TARGET) has been completed. Got 62238 new records.
+[19:46:07.144] {Account} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[19:46:07.144] {Account} Query string: SELECT AccountCrossOrgTraceID__c, Name, Id FROM Account.
+[19:46:07.144] {Account} Using Bulk API Query (v68.0) to retrieve the data ...
+[19:46:13.508] In progress... Completed 2000 records.
+[19:46:13.514] In progress... Completed 4000 records.
+[19:46:13.520] In progress... Completed 6000 records.
+[19:46:13.525] In progress... Completed 8000 records.
+[19:46:13.530] In progress... Completed 10000 records.
+[19:46:13.537] In progress... Completed 12000 records.
+[19:46:13.542] In progress... Completed 14000 records.
+[19:46:13.546] In progress... Completed 16000 records.
+[19:46:13.550] In progress... Completed 18000 records.
+[19:46:13.554] In progress... Completed 20000 records.
+[19:46:13.565] In progress... Completed 22000 records.
+[19:46:13.568] In progress... Completed 24000 records.
+[19:46:13.571] In progress... Completed 26000 records.
+[19:46:13.575] In progress... Completed 28000 records.
+[19:46:13.580] In progress... Completed 30000 records.
+[19:46:13.583] In progress... Completed 32000 records.
+[19:46:13.590] In progress... Completed 34000 records.
+[19:46:13.594] In progress... Completed 36000 records.
+[19:46:13.598] In progress... Completed 38000 records.
+[19:46:13.601] In progress... Completed 40000 records.
+[19:46:13.605] In progress... Completed 42000 records.
+[19:46:13.608] In progress... Completed 44000 records.
+[19:46:13.611] In progress... Completed 46000 records.
+[19:46:13.616] In progress... Completed 48000 records.
+[19:46:13.620] In progress... Completed 50000 records.
+[19:46:13.623] In progress... Completed 52000 records.
+[19:46:13.626] In progress... Completed 54000 records.
+[19:46:13.630] In progress... Completed 56000 records.
+[19:46:13.633] In progress... Completed 58000 records.
+[19:46:13.638] In progress... Completed 60000 records.
+[19:46:13.641] In progress... Completed 62000 records.
+[19:46:13.644] In progress... Completed 64000 records.
+[19:46:13.647] In progress... Completed 66000 records.
+[19:46:13.650] In progress... Completed 68000 records.
+[19:46:13.654] In progress... Completed 70000 records.
+[19:46:13.659] In progress... Completed 72000 records.
+[19:46:13.663] In progress... Completed 74000 records.
+[19:46:13.667] In progress... Completed 76000 records.
+[19:46:13.671] In progress... Completed 78000 records.
+[19:46:13.676] In progress... Completed 80000 records.
+[19:46:13.681] In progress... Completed 82000 records.
+[19:46:13.687] In progress... Completed 84000 records.
+[19:46:13.695] In progress... Completed 86000 records.
+[19:46:13.699] In progress... Completed 88000 records.
+[19:46:13.702] In progress... Completed 90000 records.
+[19:46:13.706] In progress... Completed 92000 records.
+[19:46:13.709] In progress... Completed 94000 records.
+[19:46:13.716] In progress... Completed 95580 records.
+[19:46:13.774] {Account} Data retrieval (TARGET) has been completed. Got 95580 new records.
+[19:46:13.774] {User} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[19:46:13.775] {User} Query string: SELECT Legacy_User_id__c, Id FROM User.
+[19:46:13.775] {User} Using REST API (v68.0) to retrieve the data ...
+[19:46:13.867] {User} Data retrieval (TARGET) has been completed. Got 1155 new records.
+[19:46:13.869] {Asset} Fetching the TARGET data from Org (STAGE 2: all records) ...
+[19:46:13.869] {Asset} Query string: SELECT AssetCrossOrgTraceID__c, Name, AccountId, ContactId, ParentId, Product2Id, Description, DigitalAssetStatus, ExternalIdentifier, InstallDate, IsCompetitorProduct, IsInternal, ManufactureDate, Price, PurchaseDate, Quantity, SerialNumber, Status,... FROM Asset.
+[19:46:13.869] {Asset} Using Bulk API Query (v68.0) to retrieve the data ...
+[19:46:42.253] In progress... Completed 2000 records.
+[19:46:42.281] In progress... Completed 4000 records.
+[19:46:42.311] In progress... Completed 6000 records.
+[19:46:42.347] In progress... Completed 8000 records.
+[19:46:42.382] In progress... Completed 10000 records.
+[19:46:42.417] In progress... Completed 12000 records.
+[19:46:42.438] In progress... Completed 14000 records.
+[19:46:42.461] In progress... Completed 16000 records.
+[19:46:42.485] In progress... Completed 18000 records.
+[19:46:43.110] In progress... Completed 20000 records.
+[19:46:43.159] In progress... Completed 22000 records.
+[19:46:43.187] In progress... Completed 24000 records.
+[19:46:43.211] In progress... Completed 26000 records.
+[19:46:43.233] In progress... Completed 28000 records.
+[19:46:43.256] In progress... Completed 30000 records.
+[19:46:43.278] In progress... Completed 32000 records.
+[19:46:43.301] In progress... Completed 34000 records.
+[19:46:43.322] In progress... Completed 36000 records.
+[19:46:43.345] In progress... Completed 38000 records.
+[19:46:43.368] In progress... Completed 40000 records.
+[19:46:43.390] In progress... Completed 42000 records.
+[19:46:43.412] In progress... Completed 44000 records.
+[19:46:43.435] In progress... Completed 46000 records.
+[19:46:43.458] In progress... Completed 48000 records.
+[19:46:43.480] In progress... Completed 50000 records.
+[19:46:43.503] In progress... Completed 52000 records.
+[19:46:43.529] In progress... Completed 54000 records.
+[19:46:43.562] In progress... Completed 56000 records.
+[19:46:43.585] In progress... Completed 58000 records.
+[19:46:43.608] In progress... Completed 60000 records.
+[19:46:43.631] In progress... Completed 62000 records.
+[19:46:43.653] In progress... Completed 64000 records.
+[19:46:43.675] In progress... Completed 66000 records.
+[19:46:43.697] In progress... Completed 68000 records.
+[19:46:43.720] In progress... Completed 70000 records.
+[19:46:43.742] In progress... Completed 72000 records.
+[19:46:43.765] In progress... Completed 74000 records.
+[19:46:43.787] In progress... Completed 76000 records.
+[19:46:43.810] In progress... Completed 78000 records.
+[19:46:43.832] In progress... Completed 80000 records.
+[19:46:43.854] In progress... Completed 82000 records.
+[19:46:43.877] In progress... Completed 84000 records.
+[19:46:43.899] In progress... Completed 86000 records.
+[19:46:43.921] In progress... Completed 88000 records.
+[19:46:43.944] In progress... Completed 90000 records.
+[19:46:43.966] In progress... Completed 92000 records.
+[19:46:43.989] In progress... Completed 94000 records.
+[19:46:44.11] In progress... Completed 96000 records.
+[19:46:44.35] In progress... Completed 98000 records.
+[19:46:44.57] In progress... Completed 100000 records.
+[19:46:44.80] In progress... Completed 102000 records.
+[19:46:44.105] In progress... Completed 104000 records.
+[19:46:44.126] In progress... Completed 106000 records.
+[19:46:44.149] In progress... Completed 108000 records.
+[19:46:44.171] In progress... Completed 110000 records.
+[19:46:44.194] In progress... Completed 112000 records.
+[19:46:44.216] In progress... Completed 114000 records.
+[19:46:44.243] In progress... Completed 116000 records.
+[19:46:44.278] In progress... Completed 118000 records.
+[19:46:44.301] In progress... Completed 120000 records.
+[19:46:44.323] In progress... Completed 122000 records.
+[19:46:44.346] In progress... Completed 124000 records.
+[19:46:44.369] In progress... Completed 126000 records.
+[19:46:44.391] In progress... Completed 128000 records.
+[19:46:44.413] In progress... Completed 130000 records.
+[19:46:44.436] In progress... Completed 132000 records.
+[19:46:44.458] In progress... Completed 134000 records.
+[19:46:44.481] In progress... Completed 136000 records.
+[19:46:44.503] In progress... Completed 138000 records.
+[19:46:44.526] In progress... Completed 140000 records.
+[19:46:44.548] In progress... Completed 142000 records.
+[19:46:44.570] In progress... Completed 144000 records.
+[19:46:44.592] In progress... Completed 146000 records.
+[19:46:44.615] In progress... Completed 148000 records.
+[19:46:44.637] In progress... Completed 150000 records.
+[19:46:44.659] In progress... Completed 152000 records.
+[19:46:44.681] In progress... Completed 154000 records.
+[19:46:44.703] In progress... Completed 156000 records.
+[19:46:44.726] In progress... Completed 158000 records.
+[19:46:44.775] In progress... Completed 158155 records.
+[19:46:45.486] {Asset} Data retrieval (TARGET) has been completed. Got 158155 new records.
+[19:46:45.486] Data retrieval (STAGE 2) has been completed.
+
+
+[19:46:45.486] Triggering Add-On events ...
+[19:46:45.486] No Add-On modules found to run.
+
+
+[19:46:45.486] ===== DATA RETRIEVAL SUMMARY =====
+[19:46:45.486] {Product2} The total amount of the retrieved records from SOURCE by 1 queries: 6250.
+[19:46:45.486] {Product2} The total amount of the retrieved records from TARGET by 1 queries: 40383.
+[19:46:45.486] {Contact} The total amount of the retrieved records from SOURCE by 1 queries: 11114.
+[19:46:45.486] {Contact} The total amount of the retrieved records from TARGET by 1 queries: 62238.
+[19:46:45.486] {Account} The total amount of the retrieved records from SOURCE by 1 queries: 18956.
+[19:46:45.486] {Account} The total amount of the retrieved records from TARGET by 1 queries: 95580.
+[19:46:45.487] {User} The total amount of the retrieved records from SOURCE by 1 queries: 120.
+[19:46:45.487] {User} The total amount of the retrieved records from TARGET by 1 queries: 1155.
+[19:46:45.487] {Asset} The total amount of the retrieved records from SOURCE by 1 queries: 45141.
+[19:46:45.487] {Asset} The total amount of the retrieved records from TARGET by 1 queries: 158155.
+
+
+
+
+[19:46:45.487] ===== Updating the Target (STAGE 1) =====
+[19:46:45.880] {Asset} Amount of records to Insert: 45141.
+[19:46:45.890] {Asset} Using BULK API V2 (API v68.0) to execute Insert ...
+[19:46:45.890] {Asset} The Insert API operation has been started using BULK API V2.
+[19:46:46.242] [Job# 7509M00000qqY67QAE:Insert] {Asset} The job has been created. Uploading data ...
+[19:46:46.243] [Batch# 7509M00000qqY67QAE:Insert] {Asset} The batch has been created. Uploading data ...
+[19:46:50.105] [Batch# 7509M00000qqY67QAE:Insert] {Asset} The data has been uploaded. Processing ...
+[19:46:55.929] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 1200 records processed, 269 records failed.
+[19:47:01.290] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 4400 records processed, 761 records failed.
+[19:47:06.686] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 7200 records processed, 1236 records failed.
+[19:47:12.249] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 10600 records processed, 2053 records failed.
+[19:47:17.654] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 13600 records processed, 2653 records failed.
+[19:47:23.40] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 17000 records processed, 3440 records failed.
+[19:47:28.499] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 20000 records processed, 4162 records failed.
+[19:47:33.979] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 23200 records processed, 4894 records failed.
+[19:47:39.343] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 26600 records processed, 5770 records failed.
+[19:47:44.789] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 30141 records processed, 6814 records failed.
+[19:47:50.262] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 33141 records processed, 7544 records failed.
+[19:47:55.623] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 35941 records processed, 8218 records failed.
+[19:48:00.980] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 38741 records processed, 8809 records failed.
+[19:48:06.468] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 41341 records processed, 9211 records failed.
+[19:48:11.887] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 43341 records processed, 9702 records failed.
+[19:48:17.391] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 44541 records processed, 9964 records failed.
+[19:48:22.750] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Processing ... 45141 records processed, 10056 records failed.
+Warning: [19:48:24.583] [WARNING] [Batch# 7509M00000qqY67QAE:Insert] {Asset} Completed. 45141 records processed, 10056 records failed.
+[19:48:24.583] {Asset} The Insert API operation has been completed.
+[19:48:24.929] {Asset} The Target has been updated. Totally processed 45141 records.
+
+
+
+
+[19:48:24.929] The Target (STAGE 1) has been updated. Totally processed 45141 records.
+
+
+[19:48:24.929] ===== Updating the Target (STAGE 2) =====
+
+
+[19:48:24.929] PASS 1
+[19:48:24.929] =============
+[19:48:25.174] {Asset} Amount of records to Update: 35085.
+[19:48:25.178] {Asset} Using BULK API V2 (API v68.0) to execute Update ...
+[19:48:25.178] {Asset} The Update API operation has been started using BULK API V2.
+[19:48:25.483] [Job# 7509M00000qqaxYQAQ:Update] {Asset} The job has been created. Uploading data ...
+[19:48:25.484] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} The batch has been created. Uploading data ...
+[19:48:27.532] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} The data has been uploaded. Processing ...
+[19:48:33.577] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 1400 records processed, 1400 records failed.
+[19:48:39.202] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 3600 records processed, 3600 records failed.
+[19:48:44.585] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 5600 records processed, 5600 records failed.
+[19:48:50.18] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 7600 records processed, 7600 records failed.
+[19:48:55.492] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 9800 records processed, 9800 records failed.
+[19:49:00.915] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 11800 records processed, 11800 records failed.
+[19:49:06.330] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 14000 records processed, 14000 records failed.
+[19:49:11.784] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 16200 records processed, 16200 records failed.
+[19:49:17.282] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 18200 records processed, 18200 records failed.
+[19:49:22.741] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 20200 records processed, 20200 records failed.
+[19:49:28.215] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 22200 records processed, 22200 records failed.
+[19:49:33.624] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 24085 records processed, 24085 records failed.
+[19:49:39.79] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 25685 records processed, 25685 records failed.
+[19:49:44.399] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 27485 records processed, 27485 records failed.
+[19:49:49.815] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 29085 records processed, 29085 records failed.
+[19:49:55.190] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 30885 records processed, 30885 records failed.
+[19:50:00.625] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 32485 records processed, 32485 records failed.
+[19:50:06.144] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 33685 records processed, 33685 records failed.
+[19:50:11.570] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 34085 records processed, 34085 records failed.
+[19:50:17.49] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 34685 records processed, 34685 records failed.
+[19:50:22.399] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Processing ... 35085 records processed, 35085 records failed.
+Warning: [19:50:28.878] [WARNING] [Batch# 7509M00000qqaxYQAQ:Update] {Asset} Completed. 35085 records processed, 35085 records failed.
+[19:50:28.878] {Asset} The Update API operation has been completed.
+[19:50:29.84] {Asset} The Target has been updated. Totally processed 35085 records.
+
+
+
+
+[19:50:29.85] PASS 2
+[19:50:29.85] =============
+[19:50:29.351] {Asset} Amount of records to Update: 35085.
+[19:50:29.361] {Asset} Using BULK API V2 (API v68.0) to execute Update ...
+[19:50:29.361] {Asset} The Update API operation has been started using BULK API V2.
+[19:50:29.737] [Job# 7509M00000qqnLFQAY:Update] {Asset} The job has been created. Uploading data ...
+[19:50:29.738] [Batch# 7509M00000qqnLFQAY:Update] {Asset} The batch has been created. Uploading data ...
+[19:50:31.645] [Batch# 7509M00000qqnLFQAY:Update] {Asset} The data has been uploaded. Processing ...
+[19:50:37.604] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 1000 records processed, 1000 records failed.
+[19:50:43.10] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 3000 records processed, 3000 records failed.
+[19:50:48.352] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 4600 records processed, 4600 records failed.
+[19:50:53.800] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 6400 records processed, 6400 records failed.
+[19:50:59.188] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 8000 records processed, 8000 records failed.
+[19:51:04.688] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 9800 records processed, 9800 records failed.
+[19:51:10.135] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 11400 records processed, 11400 records failed.
+[19:51:15.538] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 13200 records processed, 13200 records failed.
+[19:51:21.11] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 15200 records processed, 15200 records failed.
+[19:51:26.479] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 16800 records processed, 16800 records failed.
+[19:51:32.359] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 18485 records processed, 18485 records failed.
+[19:51:37.789] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 19885 records processed, 19885 records failed.
+[19:51:43.222] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 21085 records processed, 21085 records failed.
+[19:51:48.772] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 22485 records processed, 22485 records failed.
+[19:51:54.180] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 23685 records processed, 23685 records failed.
+[19:51:59.662] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 25085 records processed, 25085 records failed.
+[19:52:05.167] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 26285 records processed, 26285 records failed.
+[19:52:10.668] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 27485 records processed, 27485 records failed.
+[19:52:16.93] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 29085 records processed, 29085 records failed.
+[19:52:21.547] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 30085 records processed, 30085 records failed.
+[19:52:27.51] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 31285 records processed, 31285 records failed.
+[19:52:32.464] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 32485 records processed, 32485 records failed.
+[19:52:37.865] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 33885 records processed, 33885 records failed.
+[19:52:43.493] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 34285 records processed, 34285 records failed.
+[19:52:48.844] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 34685 records processed, 34685 records failed.
+[19:52:54.196] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Processing ... 35085 records processed, 35085 records failed.
+Warning: [19:53:00.850] [WARNING] [Batch# 7509M00000qqnLFQAY:Update] {Asset} Completed. 35085 records processed, 35085 records failed.
+[19:53:00.850] {Asset} The Update API operation has been completed.
+[19:53:01.40] {Asset} The Target has been updated. Totally processed 35085 records.
+
+
+
+
+[19:53:01.40] The Target (STAGE 2) has been updated. Totally processed 70170 records.
+
+
+[19:53:01.40] Triggering Add-On events ...
+[19:53:01.40] No Add-On modules found to run.
+
+
+[19:53:01.40] ===== DATA PROCESSING SUMMARY =====
+[19:53:01.41] {Product2} Totally processed 0 records:
+[19:53:01.41] PASS 1: None.
+[19:53:01.41] PASS 2: None.
+[19:53:01.41] PASS 3: None.
+[19:53:01.41] {Contact} Totally processed 0 records:
+[19:53:01.41] PASS 1: None.
+[19:53:01.41] PASS 2: None.
+[19:53:01.41] PASS 3: None.
+[19:53:01.41] {Account} Totally processed 0 records:
+[19:53:01.41] PASS 1: None.
+[19:53:01.41] PASS 2: None.
+[19:53:01.41] PASS 3: None.
+[19:53:01.41] {User} Totally processed 0 records:
+[19:53:01.41] PASS 1: None.
+[19:53:01.41] PASS 2: None.
+[19:53:01.41] PASS 3: None.
+[19:53:01.41] {Asset} Totally processed 115311 records:
+[19:53:01.41] PASS 1: Updated 0, Deleted 0, Inserted 45141.
+[19:53:01.42] PASS 2: Updated 35085, Deleted 0, Inserted 0.
+[19:53:01.42] PASS 3: Updated 35085, Deleted 0, Inserted 0.
+
+
+
+
+[19:53:01.45] ===== MIGRATION JOB ENDED =====
+[19:53:01.45] Command succeeded.
+[19:53:01.46] Execution of the command sfdmu:run has been completed. Exit code 0 (SUCCESS).
+[19:53:01.46] Total time elapsed: 00h 07m 36s 083ms .
+
+--- beendet (Exit-Code 0) ---
